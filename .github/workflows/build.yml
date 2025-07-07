@@ -13,13 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'PCL2.Nova.Plus'
+          - name: 'PCL.Nova.Plus'
             platform: 'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'PCL2.Nova.Plus'
+          - name: 'PCL.Nova.Plus'
             platform: 'windows/amd64'
             os: 'windows-latest'
-          - name: 'PCL2.Nova.Plus'
+          - name: 'PCL.Nova.Plus'
             platform: 'darwin/universal'
             os: 'macos-latest'
 
