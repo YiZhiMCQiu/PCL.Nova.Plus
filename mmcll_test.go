@@ -17,8 +17,3 @@ func TestMMCLL(t *testing.T) {
 		t.Error(err)
 	}
 }
-
-func TestMainMethod(t *testing.T) {
-	a := App{}
-	fmt.Println(a.GetTodayLucky("2E97-2E0C-4038-BE81"))
-}
