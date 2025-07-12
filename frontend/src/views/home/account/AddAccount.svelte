@@ -1,6 +1,6 @@
 <script lang="ts">
     import MyNavButton from "../../../component/button/MyNavButton.svelte";
-    import {current_account} from "../../../logic/changeBody";
+    import {current_account} from "../../../store/changeBody";
     import {onDestroy} from "svelte";
     import {quadInOut} from "svelte/easing";
     import Microsoft from "./Microsoft.svelte";

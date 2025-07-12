@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {current_view, dark_mode} from "../logic/changeBody";
+    import {current_view, dark_mode} from "../store/changeBody";
     import HomeLeft from './home/Left.svelte'
     import DownloadLeft from './download/Left.svelte'
     import OnlineLeft from './online/Left.svelte'

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {DarkAndThemeToConst} from "../logic/functions"
-    import {current_view, dark_mode, theme_mode} from "../logic/changeBody"
+    import {DarkAndThemeToConst} from "../store/functions"
+    import {current_view, dark_mode, theme_mode} from "../store/changeBody"
     import {Quit, WindowMinimise} from '../../wailsjs/runtime'
     function changeButtonState(name: string) {
         current_view.set(name)

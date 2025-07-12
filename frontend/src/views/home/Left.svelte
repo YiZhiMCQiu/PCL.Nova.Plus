@@ -1,6 +1,6 @@
 <script lang="ts">
     import MyNormalButton from "../../component/button/MyNormalButton.svelte";
-    import {current_account_page} from "../../logic/changeBody";
+    import {current_account_page} from "../../store/changeBody";
     import {quadInOut} from "svelte/easing";
     import {onDestroy} from "svelte";
     import AccountSelect from "./account/AccountSelect.svelte";

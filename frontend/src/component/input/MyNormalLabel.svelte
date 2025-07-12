@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {dark_mode} from "../../logic/changeBody";
+    import {dark_mode} from "../../store/changeBody";
     $: light = $dark_mode ? "#e6e6e6cf" : "#1a1a1acf"
     export let style_in = ""
 </script>

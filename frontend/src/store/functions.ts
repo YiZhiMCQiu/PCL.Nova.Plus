@@ -68,6 +68,33 @@ export function DarkAndThemeToMain(darkMode: boolean, themeMode: number): string
     ]]
     return co[darkMode ? 0 : 1][themeMode - 1] ?? "linear-gradient(to left bottom, rgb(150, 212, 235), rgb(179, 196, 241))"
 }
+function judgeVersion(left: string, right: string): boolean {
+    let splitLeft = left.split(".")
+    let splitRight = right.split(".")
+    for(let i = 0; i < 3; i++) {
+        let sLeft = parseInt(splitLeft[i]) || 0
+        let sRight = parseInt(splitRight[i]) || 0
+        if(sLeft > sRight) {
+            return false
+        }else if(sLeft < sRight) {
+            return true
+        }
+    }
+    return false
+}
+// 按照 Forge 版本进行排序（boo是指：当boo为true时，则调用arr[i].version，否则直接排序arr。）
+// 下列方法只适用于：arr要么是个里面包含对象的键值数组，要么直接就是个字符串数组
+export function SortForgeVersion(arr: any[], boo: boolean = false) {
+    for(let i = 0; i < arr.length; i++) {
+        for(let j = 0; j < arr.length - i - 1; j++) {
+            if(judgeVersion(boo ? arr[j].version : arr[j], boo ? arr[j + 1].version : arr[j + 1])) {
+                let a = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = a
+            }
+        }
+    }
+}
 export function OpenCustomURL(url: string) {
     BrowserOpenURL(url)
 }

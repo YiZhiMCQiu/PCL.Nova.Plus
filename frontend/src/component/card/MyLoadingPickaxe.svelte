@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {dark_mode} from "../../logic/changeBody";
+    import {dark_mode} from "../../store/changeBody";
     export let loading_text = "正在加载……"
     // false: 加载中、true: 失败
     export let state = false

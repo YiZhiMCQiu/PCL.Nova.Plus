@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {dark_mode} from "../../logic/changeBody";
+    import {dark_mode} from "../../store/changeBody";
 
     export let isSelect = false
     export let html_close_span = ""

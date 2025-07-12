@@ -9,6 +9,13 @@ import (
 	"path/filepath"
 )
 
+func If(condition bool, trueVal, falseVal interface{}) interface{} {
+	if condition {
+		return trueVal
+	}
+	return falseVal
+}
+
 // GetFile 获取文件内容
 func GetFile(path string) (string, error) {
 	content, err := os.ReadFile(path)

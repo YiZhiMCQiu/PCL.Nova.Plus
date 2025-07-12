@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {dark_mode} from "../../logic/changeBody";
+    import {dark_mode} from "../../store/changeBody";
     export let isChecked = false
     export let in_style = ""
     export let click = null

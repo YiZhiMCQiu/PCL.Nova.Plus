@@ -11,7 +11,7 @@
         Steve,
         Sunny,
         Zuri
-    } from "../../../logic/changeBody";
+    } from "../../../store/changeBody";
     import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
     import MyTextInput from "../../../component/input/MyTextInput.svelte";
     import MyRadioButton from "../../../component/button/MyRadioButton.svelte";
@@ -19,7 +19,7 @@
     import {GenerateBukkitUUID, UUIDToAvatar} from "../../../../wailsjs/go/launcher/MainMethod";
     import {launcher} from "../../../../wailsjs/go/models";
     import {SetAccountConfig} from "../../../../wailsjs/go/launcher/Account";
-    import {messagebox} from "../../../logic/messagebox";
+    import {messagebox} from "../../../store/messagebox";
     export let opacity = null
     export let after_leave = null
     let uuid_standard = true
@@ -27,28 +27,27 @@
     let useruuid = ""
     let avatar = Steve
     async function usernameInput(name: string) {
-        const reg: RegExp = /^[a-zA-Z0-9_]{3,16}/g
-        if(!reg.test(name)) { return }
         username = name
+        if(!uuid_standard) { return }
         useruuid = await GenerateBukkitUUID(name)
         let arr = [Alex, Ari, Efe, Kai, Makena, Noor, Steve, Sunny, Zuri]
         let mod = await UUIDToAvatar(useruuid) % 18
         avatar = arr[mod >= 9 ? mod - 9 : mod]
     }
     async function useruuidInput(uuid: string) {
-        const re: RegExp = /^[a-f0-9]{32}$/g;
-        if(re.test(uuid)) {
-            useruuid = uuid
+        useruuid = uuid
+        const reg: RegExp = /^[a-f0-9]{32}$/g;
+        if(reg.test(uuid)) {
             let mod = await UUIDToAvatar(uuid) % 18
             let arr = [Alex, Ari, Efe, Kai, Makena, Noor, Steve, Sunny, Zuri]
             avatar = arr[mod >= 9 ? mod - 9 : mod]
         }
     }
     async function createAccount() {
-        const re1: RegExp = /^[a-zA-Z0-9_]{3,16}/g
+        const re1: RegExp = /^[a-zA-Z0-9_]{3,16}$/g
         const re2: RegExp = /^[a-f0-9]{32}$/g
         if(!re1.test(username)) {
-            await messagebox("账户名称错误", "输入的账号名称错误，请输入英文状态下的英文数字和下划线。", 2, ['ok'])
+            await messagebox("账户名称错误", "输入的账号名称错误，请输入英文状态下的英文数字和下划线，长度需要在3-16个之间。", 2, ['ok'])
             return
         }
         if(!re2.test(useruuid)) {
@@ -89,7 +88,7 @@
             </tr>
             <tr style:display={uuid_standard ? 'none' : ''}>
                 <td style="text-align: right;"><MyNormalLabel>玩家 UUID</MyNormalLabel></td>
-                <td><MyTextInput placeholder="请输入 UUID" style_in="width: 160px; height: 24px; margin-left: 4px" title="应为 32 位 16 进制字符串，不含连字符。" handleInput={useruuidInput}/></td>
+                <td><MyTextInput placeholder="请输入 UUID" style_in="width: 160px; height: 24px; margin-left: 4px" title="应为 32 位 16 进制字符串，不含连字符。" value={useruuid} handleInput={useruuidInput}/></td>
             </tr>
             <tr>
                 <td colspan="2">

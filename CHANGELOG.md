@@ -83,3 +83,23 @@
 ### style:
 
 1. style(name): 名称已更换成PCL.Nova.Plus【不再使用原有的PCL2.Nova.App】
+
+# 0.0.14
+
+### fix:
+
+1. fix(OfflineLogin): 修复了一个bug，无法自动通过账号名称绑定UUID到输入框的bug（未显示，但是能登录成功。。）
+2. fix(OfflineLogin): 修复了名字可以命名超过3-16个字符的bug。。
+3. fix(Card's Inner Margin): 稍微调整了一下所有有关于卡片内控件的外边距，现在已经变得更加贴合卡片了！
+4. fix(About): 重新修改了帮助界面，现在帮助界面的按钮全部采用组件的形式了~但、但是缺点就是右边的Github主页变成icon形式的了。。
+5. fix(MessageBox): 修复了当窗口移动到特别靠右的位置时，如果此时触发了信息框，很可能拉不回来。。修复方式为：现在信息框的背景是可以拖拽窗口的了！
+
+### feat:
+
+1. feat(Thirdparty): 在外置登录上，添加了【应用 Littleskin 服务器】的按钮，与此同时，如果 Littleskin 将来需要采用设备验证流方式登录，这边也会同样开始适配~
+   1. 目前外置登录依旧不能用，因为此时MC都无法启动（所以登录的话即使做好了目前也暂时不会应用上去。。
+
+### refactor:
+
+1. refactor(Download): 初步重构下载部分，现在仅能获取 Minecraft 版本列表和 Forge、Fabric 的手动安装列表。但是无法下载，请见谅~
+   1. 默认官方源，目前还没有做适配 BMCLAPI 的部分。下个版本把 Quilt、NeoForge、Optifine、LiteLoader 四个版本适配了之后，再做适配 BMCLAPI 的吧~

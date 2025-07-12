@@ -1,8 +1,8 @@
 <script lang="ts">
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
-    import {messagebox} from "../../../logic/messagebox";
-    import {dont_click} from "../../../logic/changeBody";
+    import {messagebox} from "../../../store/messagebox";
+    import {dont_click} from "../../../store/changeBody";
     import {GetMachineCode} from "../../../../wailsjs/go/main/App";
     import {GetTodayLucky} from "../../../../wailsjs/go/main/App.js";
 

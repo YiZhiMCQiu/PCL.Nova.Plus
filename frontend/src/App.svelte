@@ -1,11 +1,11 @@
 <script lang="ts">
   import NavBar from './views/NavBar.svelte'
   import Body from './views/Body.svelte'
-  import {dark_mode, dont_click, theme_mode} from "./logic/changeBody";
+  import {dark_mode, dont_click, theme_mode} from "./store/changeBody";
   import {onMount} from "svelte";
   import {GetConfigIniPath, ReadConfig} from "../wailsjs/go/launcher/ReaderWriter";
   import {GetBackgroundImage} from "../wailsjs/go/launcher/MainMethod";
-  import {DarkAndThemeToMain} from "./logic/functions";
+  import {DarkAndThemeToMain} from "./store/functions";
   import MyMessageBox from "./component/card/MyMessageBox.svelte";
   function ConvertDarkToRGB(dark: boolean, theme: number) {
     const d = DarkAndThemeToMain(dark, theme)

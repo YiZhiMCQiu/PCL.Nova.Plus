@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { current_setting } from "../../logic/changeBody";
+    import { current_setting } from "../../store/changeBody";
     import {quadInOut} from "svelte/easing";
     import {onDestroy} from "svelte";
     import Launch from "./content/Launch.svelte";

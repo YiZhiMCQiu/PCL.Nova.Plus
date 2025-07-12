@@ -53,3 +53,5 @@ export const current_select_account = writable(-1)
 export const current_account_page = writable(true)
 // 【千万别点，0：正常，1：倒置】
 export const dont_click = writable(0)
+
+export const current_manual = writable("Forge")

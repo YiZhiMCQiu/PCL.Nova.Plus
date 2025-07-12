@@ -1,24 +1,26 @@
 <script lang="ts">
-    import {dark_mode} from "../../logic/changeBody.js";
+    import {dark_mode} from "../../store/changeBody.js";
     import {onMount} from "svelte";
-    // $: light = $dark_mode ? '#f8f8f8cf' : '#151515cf'
-    // $: dark = $dark_mode ? '#151515cf' : '#f8f8f8cf'
-    // $: hov = $dark_mode ? '#151545cf' : '#c8c8f8cf'
     $: ({light, dark, hov} = $dark_mode ? {light: '#f8f8f8cf', dark: '#151515cf', hov: '#151525cf'} : {light: '#151515cf', dark: '#f8f8f8cf', hov: '#e8e8f8cf'})
     export let in_style = ""
     export let title = ""
     export let isExpand = false
+    export let maxHeight = 0
+    export let onComp: ((height: number, isExpand: boolean, title: string) => void | null) = null
     let cardHeight = "43px"
     let isExpandComp = !isExpand
     let myCardRef: (HTMLElement | null) = null
     function changeProps() {
         if(!isExpand) return
         isExpandComp = !isExpandComp
-        cardHeight = isExpandComp ? (myCardRef!.offsetHeight + 43) + 'px' : '43px'
+        cardHeight = maxHeight == 0 ? (isExpandComp ? (myCardRef!.offsetHeight + 43) + 'px' : '43px') : (isExpandComp ? (maxHeight + 43) + "px" : "43px")
+        if(onComp != null) {
+            onComp(maxHeight != 0 ? maxHeight : myCardRef!.offsetHeight, isExpandComp, title)
+        }
     }
     onMount(() => {
         if(!isExpand) {
-            cardHeight = (myCardRef!.offsetHeight + 43) + "px"
+            cardHeight = maxHeight == 0 ? ((myCardRef!.offsetHeight + 43) + "px") : (maxHeight + 43) + "px"
         }
     })
 </script>

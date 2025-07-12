@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {AccountPart, current_select_account, current_account_page} from "../../../logic/changeBody";
+    import {AccountPart, current_select_account, current_account_page} from "../../../store/changeBody";
     import {GetOtherIniPath, ReadConfig, WriteConfig} from "../../../../wailsjs/go/launcher/ReaderWriter";
     import {GetAccountConfig, SetAccountConfig} from "../../../../wailsjs/go/launcher/Account";
     import {onMount} from "svelte";
@@ -11,23 +11,30 @@
 
     async function selectAccount(index: number) {
         if($current_select_account != index) {
-            $current_select_account = index
+            current_select_account.set(index)
             await WriteConfig(await GetOtherIniPath(), "Account", "SelectAccount", index.toString())
         }
     }
     async function deleteAccount(index: number) {
         if(index < $current_select_account) {
-            $current_select_account -= 1
+            current_select_account.update((value) => value - 1)
         }else if(index == $current_select_account) {
-            $current_select_account = -1
+            current_select_account.set(-1)
         }
-        $AccountPart.accounts.splice(index, 1)
+        AccountPart.update((account) => {
+            account.accounts.splice(index, 1)
+            return account
+        })
         await SetAccountConfig($AccountPart)
     }
     onMount(async () => {
-        Object.assign($AccountPart.accounts, (await GetAccountConfig()).accounts)
+        let config = await GetAccountConfig()
+        AccountPart.update((account) => {
+            Object.assign(account, config.accounts)
+            return account
+        })
         let index = await ReadConfig(await GetOtherIniPath(), "Account", "SelectAccount")
-        $current_select_account = Number(index)
+        current_select_account.set(Number(index))
     })
 </script>
 <div
@@ -65,7 +72,7 @@
                             <MyNormalLabel style_in="">{account.name}</MyNormalLabel>
                             <MyNormalLabel style_in="font-size: 13px; color: gray;">{account.type === "Offline" ? "离线登录" : account.type === "Microsoft" ? "正版登录" : "第三方登录"}</MyNormalLabel>
                         </div>
-                        <button class="a-delete cursor-pointer" on:click={() => deleteAccount(index)}>
+                        <button class="a-delete cursor-pointer" on:click|stopPropagation={() => deleteAccount(index)}>
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -130,6 +137,7 @@
     }
     /* 以下是单个账号控件的样式 */
     .a-account {
+        position: relative;
         transition: all 0.2s;
         border-radius: 10px;
         height: 50px;
@@ -164,7 +172,9 @@
         margin-left: 10px;
     }
     .a-delete {
-        margin-left: 80px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
         width: 30px;
         height: 30px;
         background-color: transparent;

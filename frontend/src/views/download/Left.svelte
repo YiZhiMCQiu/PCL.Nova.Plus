@@ -1,6 +1,6 @@
 <script lang="ts">
     import MySidebarButton from "../../component/button/MySidebarButton.svelte";
-    import {current_download} from "../../logic/changeBody";
+    import {current_download} from "../../store/changeBody";
 
     export let width = "144px"
     export let slide = null

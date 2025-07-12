@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {b_button, b_content, b_level, b_resolve, b_show_all, b_title} from '../../logic/messagebox'
-    import {dark_mode} from '../../logic/changeBody'
+    import {b_button, b_content, b_level, b_resolve, b_show_all, b_title} from '../../store/messagebox'
+    import {dark_mode} from '../../store/changeBody'
     import {quadInOut} from "svelte/easing";
     function getColors(isDark: boolean) {
         return {
@@ -99,6 +99,7 @@
         width: 100%;
         height: 100%;
         z-index: 1000;
+        --wails-draggable: drag;
     }
 
     .back-class {
@@ -115,6 +116,7 @@
 
     .return-button {
         width: max-content;
+        min-width: 50px;
         height: 30px;
         margin: 10px;
         float: right;

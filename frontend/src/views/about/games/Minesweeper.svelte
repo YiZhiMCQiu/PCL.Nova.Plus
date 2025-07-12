@@ -1,6 +1,5 @@
 <script lang="ts">
     import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
-
     export let slide = null
     export let after_leave = null
 </script>

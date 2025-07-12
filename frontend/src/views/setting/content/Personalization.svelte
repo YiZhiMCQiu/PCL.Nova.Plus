@@ -3,12 +3,12 @@
 
     export let slide = null
     export let after_leave = null
-    import { theme_mode, dark_mode } from "../../../logic/changeBody";
+    import { theme_mode, dark_mode } from "../../../store/changeBody";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
     import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import MyRadioButton from "../../../component/button/MyRadioButton.svelte";
-    import {OpenCustomURL} from "../../../logic/functions";
+    import {OpenCustomURL} from "../../../store/functions";
     import {GetConfigIniPath, WriteConfig} from "../../../../wailsjs/go/launcher/ReaderWriter";
 
     async function changeTheme(index: number) {

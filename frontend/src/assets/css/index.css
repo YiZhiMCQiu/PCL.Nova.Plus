@@ -13,7 +13,7 @@ body {
 }
 .proc {
     height: max-content;
-    margin: 20px;
+    margin: 5px 20px 15px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;

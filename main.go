@@ -96,6 +96,7 @@ func main() {
 			&launcher.ReaderWriter{},
 			&launcher.MainMethod{},
 			&launcher.Account{},
+			&launcher.Network{},
 		},
 	})
 

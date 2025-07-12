@@ -1,7 +1,7 @@
 <script lang="ts">
     import MySelectCard from "../../component/card/MySelectCard.svelte";
     import MyNormalButton from "../../component/button/MyNormalButton.svelte";
-    import {messagebox} from "../../logic/messagebox";
+    import {messagebox} from "../../store/messagebox";
     import MyLoadingPickaxe from "../../component/card/MyLoadingPickaxe.svelte";
 
     export let slide = null
@@ -27,7 +27,7 @@
         out:slide
         on:outroend={after_leave}>
     <MySelectCard title="可以折叠的卡片~" isExpand={true}>
-        <div id="test">
+        <div class="test">
             <MyLoadingPickaxe state={loading_state} loading_text={loading_text} />
             <div style="margin: 10px 0">
                 <MyNormalButton style_in="width: 80px; height: 30px" click={() => {loading_state = false; loading_text = "加载中~"}}>加载中</MyNormalButton>
@@ -37,23 +37,24 @@
         </div>
     </MySelectCard>
     <MySelectCard title="">
-        <div style="height: max-content; margin: 20px; display: flex; flex-direction: column; align-items: center">
+        <div class="test">
             <p>这是无标题的卡片</p>
             <p>无标题的卡片默认会无视isExpand，因为它不会折叠</p>
         </div>
     </MySelectCard>
     <MySelectCard title="带有标题的卡片">
-        <div style="height: max-content; margin: 20px; display: flex; flex-direction: column; align-items: center">
+        <div class="test">
             <p>这是带有标题的卡片</p>
             <p>卡片默认的isExpand是false，因此如果你想要显式的可折叠卡片，你需要手动将isExpand设为true</p>
         </div>
     </MySelectCard>
-    <MySelectCard title="带有标题的卡片" isExpand={true}>
-        <div style="height: max-content; margin: 20px; display: flex; flex-direction: column; align-items: center">
+    <MySelectCard title="加载一个苹果~" isExpand={true}>
+        <div class="test">
             <p>加载一张苹果图片~</p>
             <img src="https://ts1.tc.mm.bing.net/th/id/R-C.54916b18a985e6a9c2b4cf1be60eef25?rik=8Ti1QEH7JkbCLA&riu=http%3a%2f%2fpic.616pic.com%2fys_bnew_img%2f00%2f03%2f69%2fg70yiNCFvx.jpg&ehk=uOYCWB%2fXSgQtsQC%2fRiCa8pW1wvaSMke8Md4zcEJTKUI%3d&risl=&pid=ImgRaw&r=0" alt="头像" width="300" height="300">
         </div>
     </MySelectCard>
+
 </div>
 <style>
     .component-right {
@@ -64,9 +65,10 @@
         height: 100%;
         overflow-y: auto;
     }
-    #test {
+    .test {
         height: max-content;
         margin: 20px;
+        width: calc(100% - 40px);
         display: flex;
         flex-direction: column;
         align-items: center;
