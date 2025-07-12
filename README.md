@@ -10,7 +10,7 @@
 
 
 1. 目前，本项目由[@FireDragon0659](https://github.com/FireDragon0659)和[@xphost008](https://github.com/xphost008)合作进行开发和维护，你可以随时随地查看本项目更新日志：[Changelog](./CHANGELOG.md)
-2. 如果你使用的操作系统与作者的一样，是```Windows```系统！那么恭喜你，你可以直接从[蓝奏云](https://wwdy.lanzoub.com/b0sxw1u2h)，密码:aix5
+2. 如果你使用的操作系统与作者的一样，是```Windows```系统！那么恭喜你，你可以直接从[蓝奏云](https://wwdy.lanzoub.com/b0sx0e10h)，密码：eim6
 3. 如果你的系统是类似于```MacOS```或者```Linux```的话，请试图从```Actions```当中下载可用的二进制文件。。
 4. 欢迎随时随地收看来自老作者**MoYuan-CN**的新项目[NovaCL](https://github.com/NEXORA-Studios/NovaCL)！！
 5. 如果你还不认识这位新作者的话，你随时可以参阅[作者的博客](https://xphost008.github.io)。
