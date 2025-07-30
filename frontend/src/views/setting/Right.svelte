@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { current_setting } from "../../store/changeBody";
-    import {quadInOut} from "svelte/easing";
+    import { current_setting } from "../../store/changeBody"
     import {onDestroy} from "svelte";
     import Launch from "./content/Launch.svelte";
     import Personalization from "./content/Personalization.svelte";
     import Other from "./content/Other.svelte";
+    import {slide_up} from "../../store/functions";
     export let slide = null
     export let after_leave = null
     let isTransitioning = true
@@ -20,18 +20,6 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
-    }
     onDestroy(unsubscribe_current_setting)
 </script>
 <div

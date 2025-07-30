@@ -1,6 +1,5 @@
 <script lang="ts">
     import { current_about } from "../../store/changeBody";
-    import {quadInOut} from "svelte/easing";
     import {onDestroy} from "svelte";
     import Help from "./content/Help.svelte";
     import About from "./content/About.svelte";
@@ -9,6 +8,7 @@
     import Discussion from "./content/Discussion.svelte";
     import Minesweeper from "./games/Minesweeper.svelte";
     import P2048 from "./games/P2048.svelte";
+    import {slide_up} from "../../store/functions";
     export let slide = null
     export let after_leave = null
     let isTransitioning = true
@@ -24,18 +24,6 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
-    }
     onDestroy(unsubscribe_current_about)
 </script>
 <div

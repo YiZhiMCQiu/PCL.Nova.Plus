@@ -1,10 +1,7 @@
 <script lang="ts">
     import MySidebarButton from "../../../component/button/MySidebarButton.svelte";
-    export let slide = null
-    export let after_leave = null
-    import { dark_mode } from "../../../store/changeBody";
-    import { current_manual } from "../../../store/changeBody";
-    import {quadInOut} from "svelte/easing";
+    import { dark_mode, current_manual } from "../../../store/changeBody";
+    import {slide_up} from "../../../store/functions";
     import {onDestroy} from "svelte";
     import Forge from "./manual/Forge.svelte";
     import Fabric from "./manual/Fabric.svelte";
@@ -12,6 +9,8 @@
     import NeoForge from "./manual/NeoForge.svelte";
     import Optifine from "./manual/Optifine.svelte";
     import LiteLoader from "./manual/LiteLoader.svelte";
+    export let slide = null
+    export let after_leave = null
     $: dark = $dark_mode ? "rgba(32, 32, 32, 0.6)" : "rgba(255, 255, 255, 0.8)"
     let isTransitioning = true
     function control_leave() {
@@ -26,18 +25,6 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
-    }
     onDestroy(unsubscribe_current_manual)
 </script>
 <div

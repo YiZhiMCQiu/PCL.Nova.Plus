@@ -6,8 +6,20 @@ export function GenerateBukkitUUID(arg1) {
   return window['go']['launcher']['MainMethod']['GenerateBukkitUUID'](arg1);
 }
 
+export function GetAllIPv6() {
+  return window['go']['launcher']['MainMethod']['GetAllIPv6']();
+}
+
+export function GetAvailableMemory() {
+  return window['go']['launcher']['MainMethod']['GetAvailableMemory']();
+}
+
 export function GetBackgroundImage(arg1) {
   return window['go']['launcher']['MainMethod']['GetBackgroundImage'](arg1);
+}
+
+export function GetTotalMemory() {
+  return window['go']['launcher']['MainMethod']['GetTotalMemory']();
 }
 
 export function UUIDToAvatar(arg1) {

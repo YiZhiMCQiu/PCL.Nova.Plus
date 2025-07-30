@@ -28,7 +28,7 @@
     {#if title !== ''}
         <div class="grid {isExpand ? 'cursor-pointer' : ''}"
             data-isOpen={isExpandComp ? 'expand' : 'close'}
-            on:click={() => changeProps()} on:keydown={(e) => e.preventDefault()}
+            on:click={() => changeProps()} on:keydown|preventDefault
         >
             {title}
             <svg

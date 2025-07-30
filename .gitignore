@@ -8,3 +8,8 @@ frontend/package.json.md5
 .idea/
 go.sum
 
+# ignore privacy.go!
+# In Future, This file will be replace!
+
+module/launcher/privacy.go
+my/

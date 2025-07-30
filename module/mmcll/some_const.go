@@ -6,7 +6,10 @@ const (
 	LauncherName      = "MMCLL"          // LauncherName 启动器名称（请自行修改）
 	LauncherVersion   = "0.0.1-Alpha-12" // LauncherVersion 启动器版本
 	LauncherUserAgent = "MMCLL/0.0.1.12" // LauncherUserAgent 启动器UserAgent，用于在网络请求时的设置
-	// 启动游戏检查
+)
+
+// 启动游戏检查
+const (
 	ErrUserNameInvalid     = 1  // ErrUserNameInvalid 启动游戏时用户名输入不正确
 	ErrUserUUIDInvalid     = 2  // ErrUserUUIDInvalid 启动游戏时用户UUID输入不正确
 	ErrJavaPathInvalid     = 3  // ErrJavaPathInvalid Java路径错误
@@ -31,4 +34,10 @@ func (e ErrorMMCLL) Error() string {
 }
 func NewMMCLLError(code int32, msg string) ErrorMMCLL {
 	return ErrorMMCLL{code, msg}
+}
+func (e ErrorMMCLL) Code() int32 {
+	return e.code
+}
+func (e ErrorMMCLL) Msg() string {
+	return e.msg
 }

@@ -1,4 +1,3 @@
-import type {launcher} from '../../wailsjs/go/models'
 import {writable} from "svelte/store";
 export const Steve =
     'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAHMSURBVHhe7dsxS0JRHAVwr099WqQRYVIgzUHQ1tSsEA3RF6iGICForKmmigja6hPUFC1FNIRfpCAsoYJCUMSe+p41nPHvfW' +
@@ -38,20 +37,23 @@ export const Ari =
     'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABcElEQVR4nO2aMUoDQRhGExmSLSKIrGBjGRFsPILgDVJZeAZ7C0HxAsEzWHsDwUsIYi5gEYvAIksIaCsI388yLg+Z77X/7vLyGJhJssObk92vgeBgb0eNB5/rjZxHzE7P5Pzx+Snr+RFbvT79H+AAtACNA9ACNA5AC9' +
     'Ck8XgkL4j2+Wgfn9TbnaW6PD86J3ysGjkvfgU4AC1A4wC0AI0D0AI0aVLpc0C0D9dH07/0+UVV78v5LLg/OicUvwIcgBagcQBagMYBaAGaFF3Q9z6fS+jnc4DGAWgBGgegBWgcgBagSU27lheMzq/kfJr0UeLl4a6z1E+OL67lfLHR/1s083s5L34FOAAtQOMAtACNA9ACNMPV7aV8' +
     'TzCiOtS/2/dN+/aedX/xK8ABaAEaB6AFaByAFqBJfe/jy9dF1v3R7/65/sWvAAegBWgcgBagcQBagCa1S/19OnpPL4J+vyD6fMWvAAegBWgcgBagcQBagOYblfMz+bzIKgUAAAAASUVORK5CYII=';
+// 【千万别点，0：正常，1：倒置】
+export const dont_click = writable(0)
+// 暗色模式
 export const dark_mode = writable(false)
+// 以下是 MC 的正常模式
 export const theme_mode = writable(1)
 export const current_view = writable('home')
 export const current_account = writable('Microsoft')
 export const current_download = writable('Auto-Install')
+export const current_online = writable("IPv6")
 export const current_about = writable('Help')
 export const current_setting = writable('Launch')
-export const AccountPart = writable(<launcher.AccountList>{
-    accounts: <launcher.AccountType[]>[]
-})
-export const current_select_account = writable(-1)
+export const current_manual = writable("Forge")
 // 为 true 则是【处在添加账号界面】，为 false 则是【处在选择添加账号类型界面】，该配置项不会保存到外部。
 export const current_account_page = writable(true)
-// 【千万别点，0：正常，1：倒置】
-export const dont_click = writable(0)
 
-export const current_manual = writable("Forge")
+export const select_account = writable([])
+export const current_account_index = writable(-1)
+
+export const select_ipv6 = writable([])

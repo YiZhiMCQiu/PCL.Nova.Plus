@@ -3,6 +3,7 @@
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import {HttpGet} from "../../../../wailsjs/go/launcher/Network";
     import MyLoadingPickaxe from "../../../component/card/MyLoadingPickaxe.svelte";
+    import {slide_up, slide_opacity} from "../../../store/functions";
     import {
         latest_release,
         latest_snapshot,
@@ -71,18 +72,6 @@
         temp_list[2].height = $mc_list_old_beta.length * 50 + 10
         temp_list[3].height = $mc_list_old_alpha.length * 50 + 10
     })
-    function onComp(height: number, isExpand: boolean, title: string) {
-        scrollStep += (isExpand ? height : -height) * 0.05
-        if(title == "正式版") {
-            temp_list[0].list = isExpand ? $mc_list_release : []
-        }else if(title == "快照版") {
-            temp_list[1].list = isExpand ? $mc_list_snapshot : []
-        }else if(title == "远古 Beta 版") {
-            temp_list[2].list = isExpand ? $mc_list_old_beta : []
-        }else if(title == "远古 Alpha 版") {
-            temp_list[3].list = isExpand ? $mc_list_old_alpha : []
-        }
-    }
     let isTransitioning = true
     function control_leave() {
         isTransitioning = true
@@ -96,41 +85,8 @@
             isTransitioning = !isTransitioning
         }
     })
-
-    function slide_opacity(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number) => {
-                return `opacity: ${t};`;
-            }
-        };
-    }
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
-    }
-    function slide_button_opacity(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number) => {
-                return `
-                    transform: scale(${t});
-                `
-            }
-        }
-    }
     onDestroy(unsubscribe_mc_list_ok)
-
+    // 以下均是来自 回到顶部 按钮的函数
     let scrollStep = 10
     let scrollTop = 0
     function onDivScroll(e: Event) {
@@ -148,6 +104,29 @@
                 clearInterval(s)
             }
         }, 10)
+    }
+    function slide_button_opacity(node: HTMLElement) {
+        return {
+            duration: 200,
+            easing: quadInOut,
+            css: (t: number) => {
+                return `
+                    transform: scale(${t});
+                `
+            }
+        }
+    }
+    function onComp(height: number, isExpand: boolean, title: string) {
+        scrollStep += (isExpand ? height : -height) * 0.05
+        if(title == "正式版") {
+            temp_list[0].list = isExpand ? $mc_list_release : []
+        }else if(title == "快照版") {
+            temp_list[1].list = isExpand ? $mc_list_snapshot : []
+        }else if(title == "远古 Beta 版") {
+            temp_list[2].list = isExpand ? $mc_list_old_beta : []
+        }else if(title == "远古 Alpha 版") {
+            temp_list[3].list = isExpand ? $mc_list_old_alpha : []
+        }
     }
 </script>
 <div
@@ -365,90 +344,5 @@
     }
     .component-auto_install > div:last-child {
         height: calc(100% - 20px);
-    }
-
-    .version-all {
-        margin: 0 25px 10px 25px;
-        width: calc(100% - 50px);
-        height: max-content;
-    }
-
-    .version {
-        width: 100%;
-        height: 50px;
-        transition: all 0.2s;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-
-    .version:hover {
-        background-color: rgba(100, 100, 156, 0.2);
-    }
-
-    .version-info {
-        display: flex;
-        align-items: center;
-        float: left;
-        height: 50px;
-    }
-
-    .version-info img {
-        width: 35px;
-        height: 35px;
-        margin-left: 10px;
-    }
-
-    .version-desc {
-        display: flex;
-        flex-direction: column;
-        margin-left: 8px;
-    }
-
-    .version-desc p {
-        padding: 0;
-        margin: 0;
-    }
-
-    .version-desc p:last-child {
-        color: gray;
-    }
-
-    .version-buttons {
-        float: right;
-        width: 120px;
-        height: 50px;
-        margin-right: 10px;
-    }
-
-    .version-buttons button {
-        position: relative;
-        top: 10px;
-        margin: 0 3px;
-        width: 30px;
-        height: 30px;
-        background-color: transparent;
-        border: 0;
-        transition: all 0.2s;
-        border-radius: 50%;
-        cursor: pointer;
-        float: right;
-    }
-
-    .version:hover .version-buttons button svg {
-        stroke: skyblue;
-    }
-
-    .version:hover .version-buttons button:hover svg {
-        stroke: #0089f4;
-    }
-
-    .version-buttons button svg {
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
-        stroke: transparent;
-        transition: all 0.2s;
-        position: relative;
-        left: -1px;
     }
 </style>

@@ -6,8 +6,20 @@ export function GetConfigIniPath() {
   return window['go']['launcher']['ReaderWriter']['GetConfigIniPath']();
 }
 
+export function GetCurrentExeDir() {
+  return window['go']['launcher']['ReaderWriter']['GetCurrentExeDir']();
+}
+
 export function GetOtherIniPath() {
   return window['go']['launcher']['ReaderWriter']['GetOtherIniPath']();
+}
+
+export function OpenDirectoryDialog(arg1) {
+  return window['go']['launcher']['ReaderWriter']['OpenDirectoryDialog'](arg1);
+}
+
+export function OpenFileDialog(arg1, arg2) {
+  return window['go']['launcher']['ReaderWriter']['OpenFileDialog'](arg1, arg2);
 }
 
 export function ReadConfig(arg1, arg2, arg3) {

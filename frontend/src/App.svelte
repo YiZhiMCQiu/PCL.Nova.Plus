@@ -7,6 +7,8 @@
   import {GetBackgroundImage} from "../wailsjs/go/launcher/MainMethod";
   import {DarkAndThemeToMain} from "./store/functions";
   import MyMessageBox from "./component/card/MyMessageBox.svelte";
+  import MyNormalHint from "./component/card/MyNormalHint.svelte";
+  import MyInputBox from "./component/card/MyInputBox.svelte";
   function ConvertDarkToRGB(dark: boolean, theme: number) {
     const d = DarkAndThemeToMain(dark, theme)
     return {
@@ -18,7 +20,8 @@
   $: rotate = $dont_click == 1 ? '180deg' : '0'
   let backImage = ""
   onMount(async () => {
-    dark_mode.set(await ReadConfig(await GetConfigIniPath(), "Misc", "DarkMode") === "1")
+    let d = await ReadConfig(await GetConfigIniPath(), "Misc", "DarkMode")
+    dark_mode.set(d == "1" ? true : d == "0" ? false : window.matchMedia("(prefers-color-scheme: light)").matches)
     let back = await GetBackgroundImage(-1)
     if (back.length != 0) {
       backImage = `url('data:image/${back[1]};base64,${back[0]}')`
@@ -41,6 +44,8 @@
     </main>
   </main>
   <MyMessageBox />
+  <MyNormalHint />
+  <MyInputBox />
 </div>
 
 <style>

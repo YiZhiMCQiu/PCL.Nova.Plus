@@ -2,10 +2,10 @@
     import MyNavButton from "../../../component/button/MyNavButton.svelte";
     import {current_account} from "../../../store/changeBody";
     import {onDestroy} from "svelte";
-    import {quadInOut} from "svelte/easing";
-    import Microsoft from "./Microsoft.svelte";
-    import Offline from "./Offline.svelte";
-    import Thirdparty from "./Thirdparty.svelte";
+    import Microsoft from "./login/Microsoft.svelte";
+    import Offline from "./login/Offline.svelte";
+    import Thirdparty from "./login/Thirdparty.svelte";
+    import {slide_opacity} from '../../../store/functions'
     export let opacity = null
     export let after_leave = null
 
@@ -22,15 +22,6 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_opacity(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number) => {
-                return `opacity: ${t};`
-            }
-        }
-    }
     onDestroy(unsubscribe_current_view)
 </script>
 <div

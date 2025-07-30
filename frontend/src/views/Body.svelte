@@ -5,23 +5,20 @@
     import OnlineLeft from './online/Left.svelte'
     import SettingLeft from './setting/Left.svelte'
     import AboutLeft from './about/Left.svelte'
+    import VersionLeft from './version/Left.svelte'
     import HomeRight from './home/Right.svelte'
     import DownloadRight from './download/Right.svelte'
     import OnlineRight from './online/Right.svelte'
     import SettingRight from './setting/Right.svelte'
     import AboutRight from './about/Right.svelte'
-    import {quadInOut} from "svelte/easing";
+    import VersionRight from './version/Right.svelte'
     import {onDestroy} from "svelte";
+    import {slide_left, slide_up} from "../store/functions";
 
-    let isTransitioning = true
-    let left_width = "330px"
-    let right_height = "330px"
+    let left_width = "370px"
+    let right_left = "370px"
     $: dark = $dark_mode ? "rgba(32, 32, 32, 0.6)" : "rgba(255, 255, 255, 0.8)"
 
-    function control_leave() {
-        right_height = $current_view === "home" ? "330px" : $current_view === "setting" ? "110px" : "144px"
-        isTransitioning = true
-    }
     // 用了点奇妙的小魔法解决了一点奇妙的小问题（（
     // 能跑就行，别动以下部分了（除非你非常确保你的逻辑比我的清晰并且比我的更加简便。
     // 最主要的是你的逻辑能正常跑，否则我不建议你动以下部分。
@@ -29,9 +26,10 @@
     // 1. home/Left.svelte
     // 2. 其余view组件/Right.svelte
     // 】
+    let isTransitioning = true
     let f = false
     const unsubscribe_current_view = current_view.subscribe((value) => {
-        left_width = value === "home" ? "330px" : value === "setting" ? '110px' : '144px'
+        left_width = value === "home" ? "370px" : value === "setting" ? '110px' : value === 'version' ? '211px' : '144px'
         if (!f) {
             f = true
             isTransitioning = true;
@@ -39,31 +37,9 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_left(node: HTMLElement, param: { x: number }) {
-        const x = param.x || 144
-        return {
-            duration: 150,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                  transform: translateX(${-x * n}px);
-                  opacity: ${t};
-                `;
-            }
-        };
-    }
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
+    function control_leave() {
+        right_left = $current_view === "home" ? "370px" : $current_view === "setting" ? "110px" : $current_view === 'version' ? '211px' : "144px"
+        isTransitioning = true
     }
     onDestroy(unsubscribe_current_view)
 </script>
@@ -79,9 +55,11 @@
             <SettingLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
         {:else if $current_view === "about" && isTransitioning}
             <AboutLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+        {:else if $current_view === "version" && isTransitioning}
+            <VersionLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
         {/if}
     </div>
-    <div id="right" style:left={right_height} style:width="calc(100% - {right_height})">
+    <div id="right" style:left={right_left} style:width="calc(100% - {right_left})">
         {#if $current_view === "home" && isTransitioning}
             <HomeRight after_leave={control_leave} slide={slide_up}/>
         {:else if $current_view === "download" && isTransitioning}
@@ -92,6 +70,8 @@
             <SettingRight after_leave={control_leave} slide={slide_up}/>
         {:else if $current_view === "about" && isTransitioning}
             <AboutRight after_leave={control_leave} slide={slide_up}/>
+        {:else if $current_view === "version" && isTransitioning}
+            <VersionRight after_leave={control_leave} slide={slide_up}/>
         {/if}
     </div>
 </div>

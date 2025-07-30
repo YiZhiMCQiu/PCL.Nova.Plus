@@ -1,7 +1,7 @@
 <script lang="ts">
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
-    import {messagebox} from "../../../store/messagebox";
+    import {messagebox, MSG_ERROR, MSG_INFO, MSG_WARNING} from "../../../store/messagebox";
     import {dont_click} from "../../../store/changeBody";
     import {GetMachineCode} from "../../../../wailsjs/go/main/App";
     import {GetTodayLucky} from "../../../../wailsjs/go/main/App.js";
@@ -10,18 +10,18 @@
     export let after_leave = null
 
     async function dontClick() {
-        await messagebox("警告", "PCL Nova Plus 作者不会受理由于点击千万别点造成的任何 Bug。这是最后的警告，是否继续操作？", 2, ['ok', 'ok', 'ok'])
+        await messagebox("警告", "PCL Nova Plus 作者不会受理由于点击千万别点造成的任何 Bug。这是最后的警告，是否继续操作？", MSG_ERROR, ['ok', 'ok', 'ok'])
         let rand = Math.floor(Math.random() * 1 + 1)
         dont_click.set(rand)
     }
     async function todayLucky() {
         let luck = await GetTodayLucky(await GetMachineCode())
         if(luck == -1) {
-            await messagebox("警告", "PCL Nova Plus 无法正常获取到 当前硬件配置UUID 你可能在虚拟机中运行 Nova Plus!", 1, ["ok"])
+            await messagebox("警告", "PCL Nova Plus 无法正常获取到 当前硬件配置UUID 你可能在虚拟机中运行 Nova Plus!", MSG_WARNING)
         }else if(luck == -2) {
-            await messagebox("警告", "PCL Nova Plus 无法正常获取到 PCL ID 请尝试在官版 PCL 获取一次识别码，随后再使用 Nova 查看今日人品~", 1, ["ok"])
+            await messagebox("警告", "PCL Nova Plus 无法正常获取到 PCL ID 请尝试在官版 PCL 获取一次识别码，随后再使用 Nova 查看今日人品~", MSG_WARNING)
         }else if(luck == -3) {
-            await messagebox("暂不支持", "PCL Nova Plus 暂时无法为除了 Windows 操作系统的系统提供 今日人品，请见谅~", 0, ["ok"])
+            await messagebox("暂不支持", "PCL Nova Plus 暂时无法为除了 Windows 操作系统的系统提供 今日人品，请见谅~")
         }else{
             let str;
             if(luck == 100) {
@@ -44,12 +44,12 @@
                 str = "……（没错，是百分制）"
             } else {
                 str = "……"
-                if(await messagebox("今日人品 - 附加使用条款", "在查看结果前，请先同意以下附加使用条款：<br><br>1. 我知晓并了解 PCL2 的今日人品功能完全没有出 Bug。<br>2. PCL2 不对使用本软件所间接造成的一切财产损失（如砸电脑等）等负责。", 2, ["再见", "同意并查看结果"]) == 0) {
+                if(await messagebox("今日人品 - 附加使用条款", "在查看结果前，请先同意以下附加使用条款：<br><br>1. 我知晓并了解 PCL2 的今日人品功能完全没有出 Bug。<br>2. PCL2 不对使用本软件所间接造成的一切财产损失（如砸电脑等）等负责。", MSG_ERROR, ["再见", "同意并查看结果"]) == 0) {
                     return
                 }
             }
             const date = new Date()
-            await messagebox("今日人品 - " + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(), "你今天的人品值是：" + luck + str, 0, ["我知道了"])
+            await messagebox("今日人品 - " + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(), "你今天的人品值是：" + luck + str, MSG_INFO, ["我知道了"])
         }
     }
 </script>

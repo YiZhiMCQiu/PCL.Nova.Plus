@@ -2,6 +2,8 @@
     import MyNormalLabel from "../input/MyNormalLabel.svelte";
     // 图片
     export let image = null
+    // 悬停提示
+    export let hint = ""
     // 大标题
     export let title = ""
     // 描述
@@ -19,7 +21,7 @@
                 if(click !== null) {
                     click()
                 }
-            }} on:keydown={(e) => {e.preventDefault()}}>
+            }} on:keydown|preventDefault title={hint}>
     <div class="info">
         <img src={image} alt="图片" style={image_style}>
         <div class="desc">
@@ -76,6 +78,7 @@
         display: flex;
         flex-direction: column;
         margin-left: 8px;
+        pointer-events: none;
     }
     .desc p {
         padding: 0;
@@ -107,7 +110,8 @@
     .comp-click:hover .buttons button:hover :global(svg) {
         stroke: #0080ff;
     }
-    .buttons button :global(svg) {
+    .buttons button :global(svg),
+    .buttons button :global(img) {
         width: 22px;
         height: 22px;
         vertical-align: middle;

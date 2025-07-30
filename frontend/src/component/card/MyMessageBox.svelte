@@ -2,22 +2,16 @@
     import {b_button, b_content, b_level, b_resolve, b_show_all, b_title} from '../../store/messagebox'
     import {dark_mode} from '../../store/changeBody'
     import {quadInOut} from "svelte/easing";
-    function getColors(isDark: boolean) {
-        return {
-            dark: isDark ? '#1a1a1acf' : '#f6f6f6cf',
-            light: isDark ? '#f6f6f6cf' : '#1a1a1acf',
-            hov: isDark ? '#0a0a0acf' : '#d6d6d6cf',
-            bg: isDark ? "#282828cf" : "#f0f8ffcf"
-        };
-    }
-    $: ({ dark, light, hov, bg } = getColors($dark_mode));
-    function getColors2(level: number) {
+    import MyNormalButton from "../button/MyNormalButton.svelte";
+    import MyNormalLabel from "../input/MyNormalLabel.svelte";
+    $: bg = $dark_mode ? "#282828cf" : "#f0f8ffcf"
+    function getColors(level: number) {
         return {
             font_color: level == 0 ? "#3142b7cf" : level == 1 ? "#c7ad2acf" : "#ff4c4ccf",
             back_color: level == 0 ? '#0000005f' : level == 1 ? '#4f4f005f' : '#4f00005f',
         }
     }
-    $: ({font_color, back_color} = getColors2($b_level))
+    $: ({font_color, back_color} = getColors($b_level))
     let m_resolve = 0
     function traLeave() {
         b_title.set("")
@@ -65,13 +59,15 @@
 </script>
 {#if $b_show_all}
     <div id="back" class={b_show_all ? 'back-class' : 'back-class-hide'} in:back_anim out:back_anim style="--m-back-color: {back_color};"></div>
-    <div class="content-box-class" in:slide_anim out:slide_anim on:outroend={traLeave} style="--m-font-color: {font_color}; --light-color: {light}; --dark-color: {dark}; --hov-color: {hov}; --bg-color: {bg}">
+    <div class="content-box-class" in:slide_anim out:slide_anim on:outroend={traLeave} style="--m-font-color: {font_color}; --bg-color: {bg}">
         <div id="content-title">{$b_title}</div>
-        <div id="content">{@html $b_content}</div>
+        <div id="content">
+            <MyNormalLabel>{@html $b_content}</MyNormalLabel>
+        </div>
         {#each $b_button as b, i}
-            <button class="return-button cursor-pointer" on:click={() => {buttonClick(i)}}>
+            <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" click={() => {buttonClick(i)}}>
                 { b === "ok" ? "确认" : b === "cancel" ? "取消" : b === "yes" ? "是" : b === "no" ? "否" : b }
-            </button>
+            </MyNormalButton>
         {/each}
     </div>
 {/if}
@@ -87,9 +83,7 @@
 
     #content {
         margin: 10px;
-        font-size: 16px;
         padding: 5px;
-        color:  var(--light-color)
     }
 
     #back {
@@ -112,28 +106,6 @@
         backdrop-filter: blur(0);
         background-color: rgba(0, 0, 0, 0);
         transition: all 0.33s;
-    }
-
-    .return-button {
-        width: max-content;
-        min-width: 50px;
-        height: 30px;
-        margin: 10px;
-        float: right;
-        background-color: var(--dark-color);
-        border-radius: 6px;
-        border: 1px solid var(--light-color);
-        font-weight: bold;
-        transition: all 0.2s;
-        color: var(--light-color);
-    }
-
-    .return-button:hover {
-        background-color: var(--hov-color);
-    }
-
-    .return-button:active {
-        transform: scale(0.96);
     }
 
     .content-box-class {

@@ -68,7 +68,7 @@
 
 ## 将更新日志按照标准github语义来书写~
 
-### refactor: 
+### refactor:
 
 1. refactor(frontend): 将前端架构换成了svelte，以进一步减小打包体积。
 
@@ -103,3 +103,36 @@
 
 1. refactor(Download): 初步重构下载部分，现在仅能获取 Minecraft 版本列表和 Forge、Fabric 的手动安装列表。但是无法下载，请见谅~
    1. 默认官方源，目前还没有做适配 BMCLAPI 的部分。下个版本把 Quilt、NeoForge、Optifine、LiteLoader 四个版本适配了之后，再做适配 BMCLAPI 的吧~
+
+# 0.0.15
+
+### refactor:
+
+1. refactor(Launch): 已经可以启动游戏了！
+   1. 目前，版本文件夹的选择是在【版本选择】里面，包括版本也是。点击之后的行为也与 PCL 一致。但是顶部菜单栏不会变（
+   2. 版本独立设置目前暂时还没有，请见谅（
+   3. 版本全局设置在【设置 -> 启动】里，这里也同样可以设置 Java
+   4. Java 管理目前已被重构，重构得非常好看（确信）
+2. refactor(Online): 现在可以在启动器中使用【IPv6】进行联机，
+   1. 启动器支持以下 IPv6 功能：
+      1. 检测本机 IPv6
+      2. 尝试 ping 一次 IPv6
+      3. 列举出本局域网 IPv6 是**临时**还是**永久**
+      4. 输入游戏内端口，点击按钮复制 IPv6 地址与端口一同发送给朋友进行联机~
+   2. 本启动器承诺绝对不会搜集您电脑本身的 IPv6 地址，如有疑问，请查阅源码。
+   3. 本启动器检测 IPv6 的行为将与 LLL 启动器一致：[查看 LLL 源码](https://github.com/xphost008/lllauncher/blob/master/LittleLimboLauncher/OnlineIPv6Method.pas)
+
+### feat:
+
+1. feat(Controls): 更新了四个控件：
+   1. MyInputBox: 用来显示输入框的
+   2. MyNormalHint: 用来显示一个左下角提示。
+   3. MyProgressBar: 滑动条组件
+   4. MyCardButton: 在帮助页面、下载界面中显示的默认【类 PCL2 按钮】（
+2. feat(GameSetting): 在 设置 -> 游戏 中新增了各种游戏设置，目前你已经可以正常的去玩了！
+3. feat(about): 在 更多 -> 关于与鸣谢 中，明确指出了引用 MMCLL 的部分内容！
+
+### style:
+
+1. style(Left): 略微调整了主界面的左侧栏的宽度。
+2. style(AccountSelect): 账号选择部分不再使用border来代替选中，而是在前方加上 MyRadioButton！

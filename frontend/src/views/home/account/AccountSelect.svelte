@@ -1,40 +1,43 @@
 <script lang="ts">
-    import {AccountPart, current_select_account, current_account_page} from "../../../store/changeBody";
+    import {select_account, current_account_index, current_account_page} from "../../../store/changeBody";
     import {GetOtherIniPath, ReadConfig, WriteConfig} from "../../../../wailsjs/go/launcher/ReaderWriter";
-    import {GetAccountConfig, SetAccountConfig} from "../../../../wailsjs/go/launcher/Account";
+    import {GetAccountConfig, SetAccountConfig} from "../../../../wailsjs/go/launcher/AccountMethod";
     import {onMount} from "svelte";
     import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
+    import {launcher} from "../../../../wailsjs/go/models";
+    import {showHint} from "../../../store/messagebox";
+    import MyRadioButton from "../../../component/button/MyRadioButton.svelte";
 
     export let opacity = null
     export let after_leave = null
 
     async function selectAccount(index: number) {
-        if($current_select_account != index) {
-            current_select_account.set(index)
+        if($current_account_index != index) {
+            current_account_index.set(index)
             await WriteConfig(await GetOtherIniPath(), "Account", "SelectAccount", index.toString())
         }
     }
     async function deleteAccount(index: number) {
-        if(index < $current_select_account) {
-            current_select_account.update((value) => value - 1)
-        }else if(index == $current_select_account) {
-            current_select_account.set(-1)
+        if(index < $current_account_index) {
+            current_account_index.update((value) => value - 1)
+        }else if(index == $current_account_index) {
+            current_account_index.set(-1)
         }
-        AccountPart.update((account) => {
-            account.accounts.splice(index, 1)
-            return account
+        select_account.update((value) => {
+            value.splice(index, 1)
+            return value
         })
-        await SetAccountConfig($AccountPart)
+        await SetAccountConfig(launcher.AccountList.createFrom({accounts: $select_account}))
     }
     onMount(async () => {
         let config = await GetAccountConfig()
-        AccountPart.update((account) => {
+        select_account.update((account) => {
             Object.assign(account, config.accounts)
             return account
         })
         let index = await ReadConfig(await GetOtherIniPath(), "Account", "SelectAccount")
-        current_select_account.set(Number(index))
+        current_account_index.set(Number(index))
     })
 </script>
 <div
@@ -44,7 +47,7 @@
         on:outroend={after_leave}
 >
     <div id="main-style">
-        {#if $AccountPart.accounts.length <= 0}
+        {#if $select_account.length <= 0}
             <svg
                     role="img"
                     xmlns="http://www.w3.org/2000/svg"
@@ -59,17 +62,18 @@
         {/if}
         <div id="all-account">
             <div id="account-list">
-                {#each $AccountPart.accounts as account, index}
+                {#each $select_account as account, index}
                     <div
                             class="a-account"
                             title="玩家 ID: {account.name}&#13;UUID: {account.uuid}"
                             on:click={() => selectAccount(index)}
                             on:keydown={(e) => {e.preventDefault()}}
-                            style="border: {index === $current_select_account ? '1px solid skyblue' : '0'};"
+                            style={$current_account_index === index ? 'cursor: default;' : 'cursor: pointer'}
                     >
+                        <MyRadioButton isChecked={index === $current_account_index} style_in="margin-left: 5px"/>
                         <img src="data:image/png;base64,{account.head_skin}" alt="头像" class="a-avatar">
-                        <div class="info">
-                            <MyNormalLabel style_in="">{account.name}</MyNormalLabel>
+                        <div class="info" style="pointer-events: none">
+                            <MyNormalLabel>{account.name}</MyNormalLabel>
                             <MyNormalLabel style_in="font-size: 13px; color: gray;">{account.type === "Offline" ? "离线登录" : account.type === "Microsoft" ? "正版登录" : "第三方登录"}</MyNormalLabel>
                         </div>
                         <button class="a-delete cursor-pointer" on:click|stopPropagation={() => deleteAccount(index)}>
@@ -87,7 +91,7 @@
             </div>
             <div id="control">
                 <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;" click={() => current_account_page.set(false)}>添加新账号</MyNormalButton>
-                <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;">修改选中账号</MyNormalButton>
+                <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;" click={() => showHint("目前修改选中账号暂时还没有做好😭，请敬请期待吧！")}>修改选中账号</MyNormalButton>
             </div>
         </div>
     </div>
@@ -143,8 +147,6 @@
         height: 50px;
         width: calc(100% - 2px);
         flex-shrink: 0;
-        box-sizing: border-box;
-        margin-bottom: 5px;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -155,10 +157,7 @@
         image-rendering: pixelated;
         border-radius: 10px;
         box-shadow: 0 0 5px gray;
-        margin-left: 10px;
-    }
-    .a-account:last-child {
-        margin-bottom: 0;
+        margin-left: 5px;
     }
     .a-account:hover {
         background-color: rgba(128, 128, 128, 0.5);

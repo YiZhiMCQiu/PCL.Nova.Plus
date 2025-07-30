@@ -1,4 +1,5 @@
 import {BrowserOpenURL} from "../../wailsjs/runtime";
+import {quadInOut} from "svelte/easing";
 
 export function DarkAndThemeToConst(darkMode: boolean, themeMode: number): string {
     let co = [[
@@ -97,4 +98,46 @@ export function SortForgeVersion(arr: any[], boo: boolean = false) {
 }
 export function OpenCustomURL(url: string) {
     BrowserOpenURL(url)
+}
+export function copyToClipBoard(message: string) {
+    let aux = document.createElement("input");
+    aux.setAttribute("value", message);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+}
+export function slide_up(node: HTMLElement) {
+    return {
+        duration: 200,
+        easing: quadInOut,
+        css: (t: number, n: number) => {
+            return `
+                transform: translateY(${-50 * n}%);
+                opacity: ${t};
+            `
+        }
+    }
+}
+export function slide_left(node: HTMLElement, param: { x: number }) {
+    const x = param.x || 144
+    return {
+        duration: 150,
+        easing: quadInOut,
+        css: (t: number, n: number) => {
+            return `
+                transform: translateX(${-x * n}px);
+                opacity: ${t};
+            `;
+        }
+    }
+}
+export function slide_opacity(node: HTMLElement) {
+    return {
+        duration: 200,
+        easing: quadInOut,
+        css: (t: number) => {
+            return `opacity: ${t};`
+        }
+    }
 }

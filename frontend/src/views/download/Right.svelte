@@ -1,6 +1,6 @@
 <script lang="ts">
     import {current_download} from "../../store/changeBody";
-    import {quadInOut} from "svelte/easing";
+    import {slide_up} from "../../store/functions";
     import {onDestroy} from "svelte";
     import AutoInstall from "./content/AutoInstall.svelte";
     import ManualInstall from "./content/ManualInstall.svelte";
@@ -24,18 +24,6 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
-    }
     onDestroy(unsubscribe_current_download)
 </script>
 <div

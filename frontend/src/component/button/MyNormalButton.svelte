@@ -3,10 +3,11 @@
     export let isDisabled = false;
     export let style_in = ""
     export let click = null;
+    export let title = ""
     $: light = $dark_mode ? "#f6f6f6cf" : "#0a0a0aaf"
     $: hov = $dark_mode ? "#213646cf" : "#c3e0fdcf"
 </script>
-<button on:click={click} style="{style_in}; --hov-color: {hov}; --light-color: {light};" class="button-style cursor-pointer" disabled={isDisabled}>
+<button title={title} on:click={() => {click == null ? (() => {})() : click()}} style="{style_in}; --hov-color: {hov}; --light-color: {light};" class="button-style cursor-pointer" disabled={isDisabled}>
     <slot />
 </button>
 <style>
@@ -16,6 +17,12 @@
         border: 1px solid var(--light-color);
         transition: all 0.2s;
         color: var(--light-color);
+    }
+    .button-style:hover {
+        background-color: var(--hov-color);
+    }
+    .button-style:active {
+        transform: scale(0.96);
     }
     .button-style[disabled] {
         color: #7f7f7f7f;
@@ -27,11 +34,5 @@
     }
     .button-style[disabled]:active {
         transform: scale(1);
-    }
-    .button-style:hover {
-        background-color: var(--hov-color);
-    }
-    .button-style:active {
-        transform: scale(0.96);
     }
 </style>

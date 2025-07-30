@@ -19,14 +19,24 @@
         avatar: string,
         title: string,
         desc: string,
-        button: [string, () => void, string]
+        buttons: {
+            title: string,
+            click: () => void
+            icon: string
+        }[]
     }
     const dev: People[] = [
         {
             avatar: xphost,
             title: "xphost008",
             desc: "Plain Craft Launcher II: Nova Plus 的现作者之一",
-            button: ["Github 主页", () => {OpenCustomURL("https://github.com/xphost008")}, `<svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/xphost008")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -35,13 +45,28 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+                {
+                    title: "爱发电",
+                    click: () => {
+                        OpenCustomURL("https://afdian.com/a/xphost")
+                    },
+                    icon: `<img src="/src/assets/images/afdian.ico" alt="爱发电" style="border-radius: 50%; width: 30px; height: 30px">`
+                }
+            ]
         },
         {
             avatar: FireDragon0659,
             title: "FireDragon0659",
             desc: "Plain Craft Launcher II: Nova Plus 的现作者之一",
-            button: ["Github 主页", () => {OpenCustomURL("https://github.com/firedragon0659")}, `<svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/FireDragon0659")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -50,14 +75,21 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+            ]
         },
         {
             avatar: T3Project,
             title: "T3 Project",
             desc: "T3 Project 开发团队",
-            button: ["Github 主页", () => {OpenCustomURL("https://github.com/3TProject")}, `
-                            <svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/3TProject")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -66,14 +98,21 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+            ]
         },
         {
             avatar: NovaPlus,
             title: "Plain Craft Launcher II: Nova Plus",
             desc: "当前版本：Dev 0.0.13",
-            button: ["查看源代码", () => {OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus")}, `
-                            <svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -82,7 +121,9 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+            ]
         },
     ]
     const credit: People[] = [
@@ -90,8 +131,13 @@
             avatar: LtCatt,
             title: "龙腾猫跃",
             desc: "Plain Craft Launcher II 的原作者",
-            button: ["Github 主页", () => {OpenCustomURL("https://github.com/MoYuan-CN")}, `
-                            <svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/LTCatt")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -100,14 +146,28 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+                {
+                    title: "爱发电",
+                    click: () => {
+                        OpenCustomURL("https://afdian.com/a/LTCat")
+                    },
+                    icon: `<img src="/src/assets/images/afdian.ico" alt="爱发电" style="border-radius: 50%; width: 30px; height: 30px">`
+                }
+            ]
         },
         {
             avatar: MoYuan,
             title: "墨渊",
             desc: "Plain Craft Launcher II: Nova 的原作者",
-            button: ["Github 主页", () => {OpenCustomURL("https://github.com/MoYuan-CN")}, `
-                            <svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/MoYuan-CN")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -116,14 +176,21 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+            ]
         },
         {
             avatar: Hill233,
             title: "Hill233",
             desc: "Plain Craft Launcher II: Neo 的原作者",
-            button: ["Github 主页", () => {OpenCustomURL("https://github.com/Hill23333")}, `
-                            <svg
+            buttons: [
+                {
+                    title: "Github 主页",
+                    click: () => {
+                        OpenCustomURL("https://github.com/Hill23333")
+                    },
+                    icon: `<svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 stroke-linecap="round"
@@ -132,7 +199,9 @@
                                 style="width: 30px; height: 30px"
                                 fill="${$dark_mode ? '#ffffff' : '#000000'}">
                                 <path d="M6.517 17.113c.395.578 1.592 1.81 3.225 2.12M9.864 22C8.836 21.83 2 19.606 2 12.093C2 5.063 8.002 2 12 2c4 0 10 3.063 10 10.093c0 7.513-6.836 9.738-7.864 9.907c0 0-.21-3.417-.087-4.003c.122-.586-.294-1.528-.294-1.528c.971-.364 2.45-.884 2.945-2.282c.385-1.084.627-2.658-.45-4.138c0 0 .282-2.39-.25-2.484c-.533-.092-2.1.947-2.1.947c-.457-.13-1.476-.377-1.898-.333c-.423-.044-1.445.203-1.902.333c0 0-1.568-1.04-2.1-.947s-.25 2.484-.25 2.484c-1.077 1.48-.835 3.054-.45 4.138c.496 1.398 1.974 1.918 2.945 2.282c0 0-.416.942-.294 1.528S9.864 22 9.864 22" color="currentColor"/>
-                            </svg>`]
+                    </svg>`
+                },
+            ]
         }
     ]
 </script>
@@ -151,13 +220,17 @@
                     desc={d.desc}
                     image_style="border-radius: 50%;"
                     button_style="width: 50px; height: 50px; top: 0;"
-                    buttons={[
-                        {
-                            title: d.button[0],
-                            click: d.button[1],
-                            icon: d.button[2],
+                    buttons={((b) => {
+                        let be = []
+                        for(let i = 0; i < b.length; i++) {
+                            be.push({
+                                title: b[i].title,
+                                click: b[i].click,
+                                icon: b[i].icon
+                            })
                         }
-                    ]}
+                        return be
+                    })(d.buttons)}
                 >
                 </MyCardButton>
             {/each}
@@ -167,18 +240,22 @@
         <div class="proc">
             {#each credit as d}
                 <MyCardButton
-                        image={d.avatar}
-                        title={d.title}
-                        desc={d.desc}
-                        image_style="border-radius: 50%;"
-                        button_style="width: 50px; height: 50px; top: 0;"
-                        buttons={[
-                        {
-                            title: d.button[0],
-                            click: d.button[1],
-                            icon: d.button[2],
+                    image={d.avatar}
+                    title={d.title}
+                    desc={d.desc}
+                    image_style="border-radius: 50%;"
+                    button_style="width: 50px; height: 50px; top: 0;"
+                    buttons={((b) => {
+                        let be = []
+                        for(let i = 0; i < b.length; i++) {
+                            be.push({
+                                title: b[i].title,
+                                click: b[i].click,
+                                icon: b[i].icon
+                            })
                         }
-                    ]}
+                        return be
+                    })(d.buttons)}
                 >
                 </MyCardButton>
             {/each}
@@ -188,24 +265,26 @@
         <div class="proc">
             <div style="margin: 0 20px">
                 <MyNormalLabel>PCL.Nova.Plus 开源项目及其官方衍生程序均遵循 GNU General Public License 3.0 (GPL v3) 协议开源。本项目主导组织为 T3 Project 以及 PCL Community，任何人都可以提 Pull Request！</MyNormalLabel><br><br>
-                <MyNormalButton style_in="width: 150px; height: 40px">查看源代码</MyNormalButton>
-                <MyNormalButton style_in="width: 150px; height: 40px; margin-left: 20px">查看许可证</MyNormalButton>
+                <MyNormalButton style_in="width: 150px; height: 40px" click={() => OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus")}>查看源代码</MyNormalButton>
+                <MyNormalButton style_in="width: 150px; height: 40px; margin-left: 20px" click={() => OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus/blob/main/LICENSE")}>查看许可证</MyNormalButton>
             </div>
         </div>
     </MySelectCard>
     <MySelectCard title="许可与版权声明" isExpand={true}>
         <div class="proc">
             <div style="margin: 0 20px; width: calc(100% - 40px)">
-                <MyNormalLabel>PCL.Nova.Plus</MyNormalLabel><br>
+                <MyNormalLabel>PCL.Nova.Plus（游戏主程序）</MyNormalLabel><br>
                 <span class="gray">GNU-GPL v3</span>&nbsp;<span class="code">https://github.com/3TProject/PCL.Nova.Plus</span><br>
-                <MyNormalLabel>Wails</MyNormalLabel><br>
+                <MyNormalLabel>Wails（WebView程序）</MyNormalLabel><br>
                 <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/wailsapp/wails</span><br>
-                <MyNormalLabel>Golang</MyNormalLabel><br>
+                <MyNormalLabel>Golang（后端语言）</MyNormalLabel><br>
                 <span class="gray">BSD 3</span>&nbsp;<span class="code">https://github.com/golang/go</span><br>
-                <MyNormalLabel>Svelte</MyNormalLabel><br>
+                <MyNormalLabel>Svelte（前端架构）</MyNormalLabel><br>
                 <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/sveltejs/svelte</span><br>
-                <MyNormalLabel>TypeScript</MyNormalLabel><br>
+                <MyNormalLabel>TypeScript（前端语言）</MyNormalLabel><br>
                 <span class="gray">Apache License 2.0</span>&nbsp;<span class="code">https://github.com/microsoft/TypeScript</span><br>
+                <MyNormalLabel>MMCLL（启动器类库）</MyNormalLabel><br>
+                <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/xphost008/MMCLL</span><br>
             </div>
         </div>
     </MySelectCard>
@@ -219,39 +298,6 @@
         width: 100%;
         height: 100%;
         overflow-y: auto;
-    }
-    .all {
-        height: 60px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-    .all img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin: 0 10px 5px 20px;
-    }
-    .desc p{
-        padding: 0;
-        margin: 0;
-    }
-    .info {
-        display: flex;
-        flex-direction: row;
-    }
-    .buttons {
-        display: flex;
-        flex-direction: row;
-    }
-    .desc {
-        display: flex;
-        flex-direction: column;
-    }
-    .desc p:last-child {
-        color: gray;
     }
     .gray {
         color: gray;

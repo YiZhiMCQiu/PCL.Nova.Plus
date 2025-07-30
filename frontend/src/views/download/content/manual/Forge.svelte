@@ -240,9 +240,4 @@
     .component-forge > div:last-child {
         height: calc(100% - 186px);
     }
-    .version-all {
-        margin: 0 25px 10px 25px;
-        width: calc(100% - 50px);
-        height: max-content;
-    }
 </style>

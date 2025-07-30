@@ -1,14 +1,19 @@
 package launcher
 
-import "NovaPlus/module/mmcll"
+import (
+	"NovaPlus/module/mmcll"
+	"context"
+)
 
-type Network struct{}
+type Network struct {
+	Ctx context.Context
+}
 
 func (n *Network) HttpGet(url, authorization string) string {
 	m := mmcll.NewUrlMethod(url)
 	if authorization == "" {
 		getDefault, err := m.GetDefault()
-		return mmcll.If(err != nil, "", getDefault).(string)
+		return mmcll.If(err != nil, "", string(getDefault)).(string)
 	} else {
 		get, err := m.Get(authorization)
 		return mmcll.If(err != nil, "", get).(string)

@@ -11,6 +11,11 @@ body {
 .font-pcl {
     font-family: 'PCL';
 }
+.version-all {
+    margin: 0 25px 10px 25px;
+    width: calc(100% - 50px);
+    height: max-content;
+}
 .proc {
     height: max-content;
     margin: 5px 20px 15px 20px;
