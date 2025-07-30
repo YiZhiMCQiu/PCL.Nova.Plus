@@ -259,7 +259,7 @@
                                      placeholder="请输入自定义信息" value={customInfo} handleInput={customInfoInput}/>
                     </div>
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 100px" title="任意一个框填入【0】，则默认全屏">窗口大小
+                        <MyNormalLabel style_in="width: 100px">窗口大小
                         </MyNormalLabel>
                         <MyTextInput style_in="flex: 1; margin-left: 20px; height: 25px" placeholder="宽" title="宽度"
                                      value={winWidth.toString()} handleInput={widthInput}/>&nbsp;×&nbsp;
@@ -267,7 +267,7 @@
                                      value={winHeight.toString()} handleInput={heightInput}/>
                         <MyNormalLabel style_in="width: 100px; margin-left: 20px" title="任意一个框填入【0】，则默认全屏">是否全屏
                         </MyNormalLabel>
-                        <MyToggleSwitch isSelect={additionalGame.indexOf("--fullScreen") >= 0} click={toggleFullScreen}></MyToggleSwitch>
+                        <MyToggleSwitch isSelect={additionalGame.indexOf("--fullScreen") >= 0} click={toggleFullScreen} title="开启这个即忽略宽高属性，直接全屏启动"></MyToggleSwitch>
                     </div>
                     <div class="settings">
                         <MyNormalLabel style_in="width: 100px"

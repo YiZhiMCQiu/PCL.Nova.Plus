@@ -1,8 +1,11 @@
 package launcher
 
 import (
+	"fmt"
+	"os/exec"
 	"os/user"
 	"path/filepath"
+	"time"
 )
 
 func GetMachineCode() string {
