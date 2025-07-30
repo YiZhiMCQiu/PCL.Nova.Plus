@@ -45,7 +45,7 @@ func (lm *LaunchMethod) GetMCVersionConfig() MCConfigs {
 		if err != nil {
 			panic(err)
 		}
-		return MCConfigs{}
+		return MCConfigs{Mc: make([]MCConfig, 0)}
 	} else {
 		var arr MCConfigs
 		err = json.Unmarshal([]byte(content), &arr)
