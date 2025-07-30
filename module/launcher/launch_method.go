@@ -78,12 +78,12 @@ func (lm *LaunchMethod) GetJavaConfig() JavaConfigs {
 	if err != nil {
 		panic(err)
 	}
-	if content, _ := mmcll.GetFile(cur); content == "" {
+	if content, err := mmcll.GetFile(cur); err != nil {
 		err := mmcll.SetFile(cur, "{\n\t\"java\": []\n}")
 		if err != nil {
 			panic(err)
 		}
-		return JavaConfigs{}
+		return JavaConfigs{Java: make([]JavaConfig, 0)}
 	} else {
 		var arr JavaConfigs
 		err = json.Unmarshal([]byte(content), &arr)

@@ -10,6 +10,8 @@ export function GetAvailableMemory():Promise<number>;
 
 export function GetBackgroundImage(arg1:number):Promise<Array<string>>;
 
+export function GetJavaExecutableFileName():Promise<Array<string>>;
+
 export function GetTotalMemory():Promise<number>;
 
 export function UUIDToAvatar(arg1:string):Promise<number>;

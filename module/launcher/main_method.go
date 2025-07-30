@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	runtime2 "runtime"
 	"strings"
 	"time"
 )
@@ -306,4 +307,14 @@ func (mm *MainMethod) GetTotalMemory() uint64 {
 func (mm *MainMethod) GetAvailableMemory() uint64 {
 	v, _ := mem.VirtualMemory()
 	return v.Available / 1024 / 1024
+}
+
+// GetJavaExecutableFileName 可以跨平台获取到 Java 的可执行文件，并且 O(1) 的复杂度，在前端想怎么调用就怎么调用。。
+// 永远返回一个列表，第一个元素是 java 第二个元素是 javaw
+func (mm *MainMethod) GetJavaExecutableFileName() []string {
+	if runtime2.GOOS == "windows" {
+		return []string{"java.exe", "javaw.exe"}
+	} else {
+		return []string{"java", "javaw"}
+	}
 }

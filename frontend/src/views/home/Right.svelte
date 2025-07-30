@@ -38,6 +38,9 @@
         console.log(test3)
         let test4 = await messagebox("多按钮测试", "这是一个多按钮测试", MSG_INFO, ["ok", "ok", "ok", "ok", "ok", "ok"]);
         console.log(test4)
+        let test5 = await messagebox("输入框测试", "这是一个文字非常长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的输入框")
+        console.log(test5)
+        await messagebox("输入的文字2", `你的选项是：${test5}`)
     }
     function testHint() {
         showHint("这是一个提示框😀", HNT_INFO)
@@ -55,9 +58,6 @@
         let test1 = await inputbox("输入框测试", "这是一个非常简单的输入框", 0, "请任意输入文字")
         console.log(test1)
         await messagebox("输入的文字1", `你输入的文字是：${test1}`)
-        let test2 = await inputbox("输入框测试", "这是一个文字非常长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的输入框", 0, "请任意输入文字")
-        console.log(test2)
-        await messagebox("输入的文字2", `你输入的文字是：${test2}`)
     }
     let progress = 20
     function dragProgressBar(value: number) {

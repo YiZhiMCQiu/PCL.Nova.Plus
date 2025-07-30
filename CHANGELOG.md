@@ -136,3 +136,13 @@
 
 1. style(Left): 略微调整了主界面的左侧栏的宽度。
 2. style(AccountSelect): 账号选择部分不再使用border来代替选中，而是在前方加上 MyRadioButton！
+
+# 0.0.15.1
+
+### fix:
+
+1. fix(Java): 修复了在选择 Java 的时候，在没有选择任何 Java，第一次进入设置界面并生成 JavaJson.json 配置文件时，会弹出一个本不应该出现的报错（
+
+### style:
+
+1. style(messagebox): 略微调整了一下信息框的 padding

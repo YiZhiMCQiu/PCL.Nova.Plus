@@ -21,7 +21,7 @@
     import {launcher} from "../../../../wailsjs/go/models";
     import MyProgressBar from "../../../component/input/MyProgressBar.svelte";
     import {GetAvailableMemory} from "../../../../wailsjs/go/launcher/MainMethod.js";
-    import {GetTotalMemory} from "../../../../wailsjs/go/launcher/MainMethod";
+    import {GetJavaExecutableFileName, GetTotalMemory} from "../../../../wailsjs/go/launcher/MainMethod";
 
     export let slide = null
     export let after_leave = null
@@ -144,7 +144,8 @@
     }
 
     async function addJava() {
-        let java = await OpenFileDialog("请选择 Java 路径", ["javaw.exe", "java.exe"])
+        let executable = await GetJavaExecutableFileName()
+        let java = await OpenFileDialog("请选择 Java 路径", executable)
         if (java == "") {
             return
         }

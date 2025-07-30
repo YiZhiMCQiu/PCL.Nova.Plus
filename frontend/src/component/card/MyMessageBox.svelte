@@ -77,7 +77,6 @@
         font-size: 30px;
         font-weight: bold;
         border-bottom: 3px solid var(--m-font-color);
-        padding: 5px;
         color: var(--m-font-color);
     }
 
@@ -115,10 +114,13 @@
         transform: translate(-50%, -50%);
         min-width: 200px;
         min-height: 50px;
+        width: max-content;
+        max-width: 800px;
         background-color: var(--bg-color);
         border-radius: 20px;
         border: 1px solid black;
         z-index: 1001;
+        padding: 10px 20px;
         transition: box-shadow 0.2s;
     }
     .content-box-class:hover {

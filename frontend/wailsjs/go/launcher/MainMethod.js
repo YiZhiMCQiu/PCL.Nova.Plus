@@ -18,6 +18,10 @@ export function GetBackgroundImage(arg1) {
   return window['go']['launcher']['MainMethod']['GetBackgroundImage'](arg1);
 }
 
+export function GetJavaExecutableFileName() {
+  return window['go']['launcher']['MainMethod']['GetJavaExecutableFileName']();
+}
+
 export function GetTotalMemory() {
   return window['go']['launcher']['MainMethod']['GetTotalMemory']();
 }
