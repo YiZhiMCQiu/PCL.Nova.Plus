@@ -39,6 +39,5 @@ func GetMachineCode() string {
 }
 
 func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
-	cmd := exec.Command("ping", "-n", "1", "-w", fmt.Sprintf("%d", timeout.Milliseconds()), ip)
-	return cmd
+	return exec.Command("ping", "-n", "1", "-w", fmt.Sprintf("%d", timeout.Milliseconds()), ip)
 }

@@ -92,7 +92,7 @@
                 for (let i = 0; i < v.java.length; i++) {
                     select_java.set([...$select_java, {
                         path: v.java[i].path,
-                        version: v.java[i].path,
+                        version: v.java[i].version,
                         arch: v.java[i].arch,
                         vendor: v.java[i].vendor,
                     }])

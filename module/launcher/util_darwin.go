@@ -22,6 +22,5 @@ func GetHomeDir() (string, error) {
 }
 
 func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
-	cmd := exec.Command("ping", "-c", "1", "-W", fmt.Sprintf("%d", timeout.Seconds()), ip)
-	return cmd
+	return exec.Command("ping", "-c", "1", "-W", fmt.Sprintf("%d", timeout.Seconds()), ip)
 }

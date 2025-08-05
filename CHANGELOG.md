@@ -146,3 +146,11 @@
 ### style:
 
 1. style(messagebox): 略微调整了一下信息框的 padding
+
+# 0.0.15.2
+
+### fix:
+
+1. fix(cmd): 稍微优化了一下执行终端的逻辑，现在开始，所有执行终端的输出，都将会静默执行，不会再显示终端的窗口了。（包括 Windows 的 cmd、Linux 的 bash、macOS 的终端）
+2. fix(Java): 修复了 Java 在前端展示信息时，误把路径写成版本号的 bug（
+3. fix(IPv6): 稍微修复了一丢丢的 IPv6 获取逻辑（现在应该不会再

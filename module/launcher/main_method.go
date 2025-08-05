@@ -16,6 +16,7 @@ import (
 	"regexp"
 	runtime2 "runtime"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -31,15 +32,14 @@ type IPv6Struct struct {
 	Success bool   `json:"success"`
 }
 
-// TCPPing 对本机 IPv6 进行一次 ping 操作，也就是仅进行一次 Dial 连接。
+// Ping 对本机 IPv6 进行一次 ping 操作，也就是仅进行一次 Dial 连接。
 // 使用 Golang 内置库达到跨平台效果！
-func TCPPing(host string, timeout time.Duration) error {
+func Ping(host string, timeout time.Duration) error {
 	cmd := PingCMD(host, timeout)
-	err := cmd.Run()
-	if err != nil {
-		return err
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		HideWindow: true,
 	}
-	return nil
+	return cmd.Run()
 }
 
 // EnsureConfigFile 生成所有父文件夹，以及在此处生成一个文件
@@ -75,10 +75,10 @@ func (mm *MainMethod) GetAllIPv6() []IPv6Struct {
 		}
 		ip := ipNet.IP
 		if ip.To4() == nil && ip.To16() != nil && !ip.IsLoopback() && !ip.IsLinkLocalUnicast() {
-			if err = TCPPing(ip.String(), time.Second); err == nil {
+			if err = Ping(ip.String(), time.Second); err == nil {
 				result = append(result, IPv6Struct{Ip: ip.String(), Success: true})
 			} else {
-				result = append(result, IPv6Struct{Ip: err.Error(), Success: false})
+				result = append(result, IPv6Struct{Ip: ip.String(), Success: false})
 			}
 		}
 	}
@@ -250,6 +250,8 @@ func (mm *MainMethod) UUIDToAvatar(uuid string) int64 {
 	}
 	return -1
 }
+
+// GetBackgroundImage 获取一张附带索引的背景图片
 func (mm *MainMethod) GetBackgroundImage(index int) []string {
 	res := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "BackgroundImage")
 	if err := os.MkdirAll(res, fs.ModePerm); err != nil {
@@ -271,15 +273,12 @@ func (mm *MainMethod) GetBackgroundImage(index int) []string {
 	}
 	i := 0
 	for _, file := range files {
-		// 跳过目录，只处理文件
 		if file.IsDir() {
 			continue
 		}
 
 		fileName := file.Name()
-		ext := strings.ToLower(filepath.Ext(fileName)) // 获取小写扩展名
-
-		// 检查是否为图片文件
+		ext := strings.ToLower(filepath.Ext(fileName))
 		if ext != ".png" && ext != ".jpg" {
 			continue
 		}
@@ -300,10 +299,14 @@ func (mm *MainMethod) GetBackgroundImage(index int) []string {
 	}
 	return []string{}
 }
+
+// GetTotalMemory 获取内存总量
 func (mm *MainMethod) GetTotalMemory() uint64 {
 	v, _ := mem.VirtualMemory()
 	return v.Total / 1024 / 1024
 }
+
+// GetAvailableMemory 获取内存余量
 func (mm *MainMethod) GetAvailableMemory() uint64 {
 	v, _ := mem.VirtualMemory()
 	return v.Available / 1024 / 1024

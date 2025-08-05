@@ -21,6 +21,5 @@ func GetHomeDir() (string, error) {
 	return filepath.Join(currentUser.HomeDir, ".PCL.Nova"), nil
 }
 func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
-	cmd := exec.Command("ping", "-c", "1", "-W", fmt.Sprintf("%.0f", timeout.Seconds()), ip)
-	return cmd
+	return exec.Command("ping", "-c", "1", "-W", fmt.Sprintf("%.0f", timeout.Seconds()), ip)
 }

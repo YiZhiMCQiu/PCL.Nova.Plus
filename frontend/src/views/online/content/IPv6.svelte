@@ -28,11 +28,11 @@
     })
     async function reloadIPv6(){
         if($select_ipv6.length <= 0) {
-            loading_text = "正在加载 IPv6 端口"
+            loading_text = "正在加载 IPv6"
             loading_state = false
             let meta = await GetAllIPv6()
             if(meta.length <= 0) {
-                loading_text = "无法加载 IPv6，您可能目前暂未拥有 IPv6！"
+                loading_text = "无法加载 IPv6，您可能目前暂未拥有 IPv6！\n如果你确保你本机拥有 IPv6，清尝试使用 sudo 或者管理员权限再次打开次界面！"
                 loading_state = true
                 return
             }

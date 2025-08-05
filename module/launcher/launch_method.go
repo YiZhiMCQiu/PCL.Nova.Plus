@@ -2,16 +2,15 @@ package launcher
 
 import (
 	"NovaPlus/module/mmcll"
-	"bufio"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 type MCConfig struct {
@@ -141,6 +140,9 @@ func (lm *LaunchMethod) GetCurrentMinecraftDir() string {
 
 func (lm *LaunchMethod) GetJavaInfo(path string) JavaConfig {
 	cmd := exec.Command(path, "-XshowSettings:properties", "-version")
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		HideWindow: true,
+	}
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return JavaConfig{
@@ -157,13 +159,13 @@ func (lm *LaunchMethod) GetJavaInfo(path string) JavaConfig {
 	for _, line := range outStrSlice {
 		lc := strings.Split(line, "=")
 		if len(lc) == 2 {
-			lc0 := strings.Trim(lc[0], " ")
+			lc0 := strings.Trim(lc[0], " \n\r")
 			if lc0 == "java.vendor" {
-				result.Vendor = strings.Trim(lc[1], " ")
+				result.Vendor = strings.Trim(lc[1], " \n\r")
 			} else if lc0 == "java.version" {
-				result.Version = strings.Trim(lc[1], " ")
+				result.Version = strings.Trim(lc[1], " \n\r")
 			} else if lc0 == "os.arch" {
-				result.Arch = strings.Trim(lc[1], " ")
+				result.Arch = strings.Trim(lc[1], " \n\r")
 			}
 		}
 	}
@@ -271,22 +273,29 @@ func (lm *LaunchMethod) LaunchGame() string {
 	err = mmcll.LaunchGame(*option, true, func(back []string) {
 		runtime.EventsEmit(lm.Ctx, "launch_success")
 		cmd := exec.Command(back[0], back[1:]...)
-		stdout, _ := cmd.StdoutPipe()
-		err := cmd.Start()
-		if err != nil {
-			panic(err)
-			return
+		cmd.SysProcAttr = &syscall.SysProcAttr{
+			HideWindow: true,
 		}
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
-			runtime.EventsEmit(lm.Ctx, "game_log", scanner.Text())
+		e := cmd.Run()
+		if e != nil {
+			panic(e)
 		}
-		err = cmd.Wait()
-		if err != nil {
-			panic(err)
-			return
-		}
+		//stdout, _ := cmd.StdoutPipe()
+		//e := cmd.Start()
+		//if e != nil {
+		//	panic(e)
+		//	return
+		//}
+		//scanner := bufio.NewScanner(stdout)
+		//for scanner.Scan() {
+		//	fmt.Println(scanner.Text())
+		//	runtime.EventsEmit(lm.Ctx, "game_log", scanner.Text())
+		//}
+		//e = cmd.Wait()
+		//if e != nil {
+		//	panic(e)
+		//	return
+		//}
 	})
 	if err != nil {
 		return "You have some error! please try to view it: " + err.Error()
