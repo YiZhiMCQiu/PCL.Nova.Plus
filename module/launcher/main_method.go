@@ -16,7 +16,6 @@ import (
 	"regexp"
 	runtime2 "runtime"
 	"strings"
-	"syscall"
 	"time"
 )
 
@@ -35,11 +34,7 @@ type IPv6Struct struct {
 // Ping 对本机 IPv6 进行一次 ping 操作，也就是仅进行一次 Dial 连接。
 // 使用 Golang 内置库达到跨平台效果！
 func Ping(host string, timeout time.Duration) error {
-	cmd := PingCMD(host, timeout)
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		HideWindow: true,
-	}
-	return cmd.Run()
+	return PingCMD(host, timeout).Run()
 }
 
 // EnsureConfigFile 生成所有父文件夹，以及在此处生成一个文件

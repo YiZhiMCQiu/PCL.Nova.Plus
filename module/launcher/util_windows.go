@@ -8,11 +8,11 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
 func GetHomeDir() (string, error) {
-	// 获取当前用户
 	currentUser, err := user.Current()
 	if err != nil {
 		return "", err
@@ -39,5 +39,12 @@ func GetMachineCode() string {
 }
 
 func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
-	return exec.Command("ping", "-n", "1", "-w", fmt.Sprintf("%d", timeout.Milliseconds()), ip)
+	return CMD("ping", "-n", "1", "-w", fmt.Sprintf("%d", timeout.Milliseconds()), ip)
+}
+func CMD(name string, args ...string) *exec.Cmd {
+	cmd := exec.Command(name, args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		HideWindow: true,
+	}
+	return cmd
 }

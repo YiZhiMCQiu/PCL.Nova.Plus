@@ -6,11 +6,9 @@ import (
 	"encoding/json"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"syscall"
 )
 
 type MCConfig struct {
@@ -139,10 +137,7 @@ func (lm *LaunchMethod) GetCurrentMinecraftDir() string {
 }
 
 func (lm *LaunchMethod) GetJavaInfo(path string) JavaConfig {
-	cmd := exec.Command(path, "-XshowSettings:properties", "-version")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		HideWindow: true,
-	}
+	cmd := CMD(path, "-XshowSettings:properties", "-version")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return JavaConfig{
@@ -272,10 +267,7 @@ func (lm *LaunchMethod) LaunchGame() string {
 	}
 	err = mmcll.LaunchGame(*option, true, func(back []string) {
 		runtime.EventsEmit(lm.Ctx, "launch_success")
-		cmd := exec.Command(back[0], back[1:]...)
-		cmd.SysProcAttr = &syscall.SysProcAttr{
-			HideWindow: true,
-		}
+		cmd := CMD(back[0], back[1:]...)
 		e := cmd.Run()
 		if e != nil {
 			panic(e)

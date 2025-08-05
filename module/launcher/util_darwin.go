@@ -13,7 +13,6 @@ func GetMachineCode() string {
 }
 
 func GetHomeDir() (string, error) {
-	// 获取当前用户
 	currentUser, err := user.Current()
 	if err != nil {
 		return "", err
@@ -22,5 +21,9 @@ func GetHomeDir() (string, error) {
 }
 
 func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
-	return exec.Command("ping", "-c", "1", "-W", fmt.Sprintf("%d", timeout.Seconds()), ip)
+	return CMD("ping", "-c", "1", "-W", fmt.Sprintf("%d", timeout.Seconds()), ip)
+}
+
+func CMD(name string, args ...string) *exec.Cmd {
+	return exec.Command(name, args...)
 }
