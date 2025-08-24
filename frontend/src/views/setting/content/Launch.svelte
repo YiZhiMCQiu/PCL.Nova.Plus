@@ -1,7 +1,7 @@
 <script lang="ts">
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import MyToggleSwitch from "../../../component/button/MyToggleSwitch.svelte";
-    import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../../../component/input/MyNormalSpan.svelte";
     import MyTextInput from "../../../component/input/MyTextInput.svelte";
     import MyRadioButton from "../../../component/button/MyRadioButton.svelte";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
@@ -22,6 +22,7 @@
     import MyProgressBar from "../../../component/input/MyProgressBar.svelte";
     import {GetAvailableMemory} from "../../../../wailsjs/go/launcher/MainMethod.js";
     import {GetJavaExecutableFileName, GetTotalMemory} from "../../../../wailsjs/go/launcher/MainMethod";
+    import {current_setting, current_view} from "../../../store/changeBody";
 
     export let slide = null
     export let after_leave = null
@@ -80,26 +81,27 @@
     }
 
     setInterval(async () => {
-        availableMemory = await GetAvailableMemory()
+        if($current_view == "setting" && $current_setting == "Launch") {
+            availableMemory = await GetAvailableMemory()
+        }
     }, 1000)
 
     async function reloadJava() {
         if ($select_java.length <= 0) {
             loading_text = "正在加载 Java 中~"
             loading_state = false
-            try {
-                let v = await GetJavaConfig()
-                for (let i = 0; i < v.java.length; i++) {
-                    select_java.set([...$select_java, {
-                        path: v.java[i].path,
-                        version: v.java[i].version,
-                        arch: v.java[i].arch,
-                        vendor: v.java[i].vendor,
-                    }])
-                }
-            } catch (e) {
-                await messagebox("JSON 文件有误", "你擅自修改了 JavaJson.json 文件，请立刻恢复原样！如果你不知道如何恢复原样，请尝试删除该文件后重试！", MSG_ERROR, ["ok"])
+            let v = await GetJavaConfig()
+            if(!v.status) {
+                await messagebox("JSON 文件有误", "你擅自修改了 JavaJson.json 文件，错误信息：" + v.message, MSG_ERROR)
                 return
+            }
+            for (let i = 0; i < v.data.java.length; i++) {
+                select_java.set([...$select_java, {
+                    path: v.data.java[i].path,
+                    version: v.data.java[i].version,
+                    arch: v.data.java[i].arch,
+                    vendor: v.data.java[i].vendor,
+                }])
             }
         }
         if ($select_java.length <= 0) {
@@ -150,16 +152,17 @@
             return
         }
         let javaConfig = await GetJavaInfo(java)
-        if (javaConfig.arch == "" && javaConfig.vendor == "" && javaConfig.version == "") {
-            await messagebox("输入的 Java 有误", "您输入的 Java 有误，请重新输入！错误信息：" + javaConfig.path, MSG_ERROR)
+        if(!javaConfig.status) {
+            await messagebox("输入的 Java 有误", "您输入的 Java 有误，请重新输入！错误信息：" + javaConfig.message, MSG_ERROR)
             return
         }
-        select_java.set([...$select_java, javaConfig])
+        select_java.set([...$select_java, javaConfig.data])
         await SetJavaConfig(launcher.JavaConfigs.createFrom({java: $select_java}))
         showHint("添加成功😀", HNT_PASS)
     }
 
-    async function onBarDragging(num: number) {
+    async function onBarDragging(event: CustomEvent) {
+        let num = event.detail.value
         currentMemory = Math.round(totalMemory / (33 - num))
         currentNum = num
         await WriteConfig(await GetConfigIniPath(), "Document", "MaxMemoryLevel", num.toString())
@@ -170,28 +173,22 @@
         await WriteConfig(await GetConfigIniPath(), "Version", "SelectIsolation", isIsolation ? '4' : '1')
     }
 
-    async function customInfoInput(value: string) {
-        customInfo = value
+    async function customInfoInput(event: CustomEvent) {
+        customInfo = event.detail.value
         await WriteConfig(await GetConfigIniPath(), "Version", "CustomInfo", customInfo)
     }
 
-    async function widthInput(value: string) {
-        let v = parseInt(value)
-        if(Number.isNaN(v)) {
-            return
-        }
-        if (v >= 854) {
+    async function widthInput(event: CustomEvent) {
+        let v = parseInt(event.detail.value)
+        if (!Number.isNaN(v) && v >= 854) {
             winWidth = v
             await WriteConfig(await GetConfigIniPath(), "Document", "WindowWidth", v.toString())
         }
     }
 
-    async function heightInput(value: string) {
-        let v = parseInt(value)
-        if(Number.isNaN(v)) {
-            return
-        }
-        if (v >= 480) {
+    async function heightInput(event: CustomEvent) {
+        let v = parseInt(event.detail.value)
+        if (!Number.isNaN(v) && v >= 480) {
             winHeight = v
             await WriteConfig(await GetConfigIniPath(), "Document", "WindowHeight", v.toString())
         }
@@ -247,42 +244,42 @@
             <MySelectCard title="启动选项">
                 <div class="proc">
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 100px"
-                                       title="如果选中则默认所有版本均隔离，否则均不隔离。（建议在加 Mod 的时候开启全部隔离）">
+                        <MyNormalSpan style_in="width: 100px"
+                                      title="如果选中则默认所有版本均隔离，否则均不隔离。（建议在加 Mod 的时候开启全部隔离）">
                             默认版本隔离
-                        </MyNormalLabel>
-                        <MyToggleSwitch isSelect={isIsolation} click={toggleIsolation}></MyToggleSwitch>
+                        </MyNormalSpan>
+                        <MyToggleSwitch isSelect={isIsolation} on:click={toggleIsolation}></MyToggleSwitch>
                     </div>
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 100px">自定义信息</MyNormalLabel>
+                        <MyNormalSpan style_in="width: 100px">自定义信息</MyNormalSpan>
                         <MyTextInput style_in="flex: 1; margin-left: 20px; height: 25px"
                                      title="该信息会显示在 MC 主界面左下角，与游戏中按 F3 调试界面的左上角"
-                                     placeholder="请输入自定义信息" value={customInfo} handleInput={customInfoInput}/>
+                                     placeholder="请输入自定义信息" value={customInfo} on:blur={customInfoInput}/>
                     </div>
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 100px">窗口大小
-                        </MyNormalLabel>
+                        <MyNormalSpan style_in="width: 100px">窗口大小
+                        </MyNormalSpan>
                         <MyTextInput style_in="flex: 1; margin-left: 20px; height: 25px" placeholder="宽" title="宽度"
-                                     value={winWidth.toString()} handleInput={widthInput}/>&nbsp;×&nbsp;
+                                     value={winWidth.toString()} on:blur={widthInput}/>&nbsp;×&nbsp;
                         <MyTextInput style_in="flex: 1; height: 25px" placeholder="高" title="高度"
-                                     value={winHeight.toString()} handleInput={heightInput}/>
-                        <MyNormalLabel style_in="width: 100px; margin-left: 20px" title="任意一个框填入【0】，则默认全屏">是否全屏
-                        </MyNormalLabel>
-                        <MyToggleSwitch isSelect={additionalGame.indexOf("--fullScreen") >= 0} click={toggleFullScreen} title="开启这个即忽略宽高属性，直接全屏启动"></MyToggleSwitch>
+                                     value={winHeight.toString()} on:blur={heightInput}/>
+                        <MyNormalSpan style_in="width: 100px; margin-left: 20px" title="任意一个框填入【0】，则默认全屏">是否全屏
+                        </MyNormalSpan>
+                        <MyToggleSwitch isSelect={additionalGame.indexOf("--fullScreen") >= 0} on:click={toggleFullScreen} title="开启这个即忽略宽高属性，直接全屏启动"></MyToggleSwitch>
                     </div>
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 100px"
-                                       title={"通过设置 Java 虚拟机参数来设置 MC 的 IP 协议版本偏好。\n一般建议设置为 \"Java 默认\"，如果在将来更新了联机大厅，或许需要确保大厅正常工作而设置 IPv4 优先。\n如果你目前需要体验 Nova 的 IPv6 检测联机，你需要设置成 IPv6 优先。"}>
+                        <MyNormalSpan style_in="width: 100px"
+                                      title={"通过设置 Java 虚拟机参数来设置 MC 的 IP 协议版本偏好。\n一般建议设置为 \"Java 默认\"，如果在将来更新了联机大厅，或许需要确保大厅正常工作而设置 IPv4 优先。\n如果你目前需要体验 Nova 的 IPv6 检测联机，你需要设置成 IPv6 优先。"}>
                             IP 协议偏好
-                        </MyNormalLabel>
+                        </MyNormalSpan>
                         <MyRadioButton style_in="flex: 1; margin-left: 20px; height: 25px"
-                                       title="将添加额外 JVM 参数：-Djava.net.preferIPv4Stack=true" isChecked={additionalJVM.indexOf("-Djava.preferIPv4Stack=true") >= 0} click={() => chooseIPPreference(1)}>IPv4 优先
+                                       title="将添加额外 JVM 参数：-Djava.net.preferIPv4Stack=true" isChecked={additionalJVM.indexOf("-Djava.preferIPv4Stack=true") >= 0} on:click={() => chooseIPPreference(1)}>IPv4 优先
                         </MyRadioButton>
                         <MyRadioButton style_in="flex: 1; margin-left: 20px; height: 25px"
-                                       title="将不会添加任何额外 JVM 参数" isChecked={additionalJVM.indexOf("-Djava.preferIPv4Stack=true") < 0 && additionalJVM.indexOf("-Djava.preferIPv6Stack=true") < 0} click={() => chooseIPPreference(2)}>Java 默认
+                                       title="将不会添加任何额外 JVM 参数" isChecked={additionalJVM.indexOf("-Djava.preferIPv4Stack=true") < 0 && additionalJVM.indexOf("-Djava.preferIPv6Stack=true") < 0} on:click={() => chooseIPPreference(2)}>Java 默认
                         </MyRadioButton>
                         <MyRadioButton style_in="flex: 1; margin-left: 20px; height: 25px"
-                                       title="将添加额外 JVM 参数：-Djava.net.preferIPv6Stack=true" isChecked={additionalJVM.indexOf("-Djava.preferIPv6Stack=true") >= 0} click={() => chooseIPPreference(3)}>IPv6 优先
+                                       title="将添加额外 JVM 参数：-Djava.net.preferIPv6Stack=true" isChecked={additionalJVM.indexOf("-Djava.preferIPv6Stack=true") >= 0} on:click={() => chooseIPPreference(3)}>IPv6 优先
                         </MyRadioButton>
                     </div>
                 </div>
@@ -290,16 +287,16 @@
             <MySelectCard title="Java 管理">
                 <div class="version-all">
                     <MyNormalButton style_in="width: 100px; height: 30px"
-                                    title="让用户手动添加一个 Java，自主选择 java.exe 或者 javaw.exe" click={addJava}>
+                                    title="让用户手动添加一个 Java，自主选择 java.exe 或者 javaw.exe" on:click={addJava}>
                         手动添加
                     </MyNormalButton>
                     <MyNormalButton style_in="width: 100px; height: 30px; margin-left: 20px"
-                                    click={() => {showHint("目前 Java 浅搜索暂时还没有做好😭，请敬请期待吧！")}}
+                                    on:click={() => {showHint("目前 Java 浅搜索暂时还没有做好😭，请敬请期待吧！")}}
                                     title={"浅层搜索 Java\nNova 只会从以下路径按顺序开始遍历：\n\nWindows：\n注册表\n64 位文件夹的 Java 目录\n32 位文件夹的 Java 目录\n官启目录\nNova 手动安装的目录\n\nMacOS：\n注册表\n/Library/Java\n/usr/local/opt\n~/Library/Java\n\nLinux：\n/usr/lib\n/usr/java\n/usr/local/java\n/opt/java"}>
                         浅搜索
                     </MyNormalButton>
                     <MyNormalButton style_in="width: 100px; height: 30px; margin-left: 20px"
-                                    click={() => {showHint("目前 Java 深搜索暂时还没有做好😭，请敬请期待吧！")}}
+                                    on:click={() => {showHint("目前 Java 深搜索暂时还没有做好😭，请敬请期待吧！")}}
                                     title={"深层搜索 Java\nNova 会尝试遍历你的整个文件系统，以最全面的形式找到你系统里所有可能存在的 Java。\n该举动会导致扫盘，可能会很慢，如果没有必要，请不要使用这个。除非你真的忘记了你的 Java 安装路径。"}>
                         深搜索
                     </MyNormalButton>
@@ -317,7 +314,7 @@
                                 <MyRadioButton isChecked={i === $current_java_index} style_in="margin-left: 5px"/>
                                 <img src={Java} alt="Java" class="a-java-icon">
                                 <div class="info" style="pointer-events: none">
-                                    <MyNormalLabel>{java.version}</MyNormalLabel>
+                                    <MyNormalSpan>{java.version}</MyNormalSpan>
                                     <div style="font-size: 13px; color: gray"><span
                                             class="code">{java.arch}</span>&nbsp;<span
                                             class="code">{java.vendor}</span>&nbsp;<span>{java.path}</span>
@@ -347,25 +344,25 @@
             <MySelectCard title="游戏内存">
                 <div class="proc">
                     <div style="width: 100%; height: 50px">
-                        <MyProgressBar max={32} min={0} onDragging={onBarDragging} value={currentNum}/>
+                        <MyProgressBar max={32} min={0} on:dragging={onBarDragging} value={currentNum}/>
                     </div>
-                    <MyNormalLabel>已安装内存：{totalMemory}MB，剩余内存：{availableMemory}MB，游戏分配：{currentMemory}MB
-                    </MyNormalLabel>
+                    <MyNormalSpan>已安装内存：{totalMemory}MB，剩余内存：{availableMemory}MB，游戏分配：{currentMemory}MB
+                    </MyNormalSpan>
                 </div>
             </MySelectCard>
-            <MySelectCard title="高级启动设置" isExpand={true}>
+            <MySelectCard title="高级启动设置" isExpand={true} canExpand={true}>
                 <div class="version-all">
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 120px">额外 JVM 参数</MyNormalLabel>
+                        <MyNormalSpan style_in="width: 120px">额外 JVM 参数</MyNormalSpan>
                         <MyTextInput style_in="flex: 1; margin-left: 20px; height: 25px"
                                      title="启动 Minecraft 时使用的额外 JVM 参数，除非有确定把我，否则请不要修改。"
-                                     placeholder="请输入额外 JVM 参数" value={additionalJVM} handleInput={(v) => handleAdditionalInput(v, 1)}/>
+                                     placeholder="请输入额外 JVM 参数" value={additionalJVM} on:blur={(e) => handleAdditionalInput(e.detail.value, 1)}/>
                     </div>
                     <div class="settings">
-                        <MyNormalLabel style_in="width: 120px">额外游戏参数</MyNormalLabel>
+                        <MyNormalSpan style_in="width: 120px">额外游戏参数</MyNormalSpan>
                         <MyTextInput style_in="flex: 1; margin-left: 20px; height: 25px"
                                      title="文本框中的内容将会被直接拼合在启动参数的末尾。&#13;例如，输入 --demo 则会以试玩模式启动游戏。"
-                                     placeholder="请输入额外游戏参数" value={additionalGame} handleInput={(v) => handleAdditionalInput(v, 2)}/>
+                                     placeholder="请输入额外游戏参数" value={additionalGame} on:blur={(e) => handleAdditionalInput(e.detail.value, 2)}/>
                     </div>
                 </div>
             </MySelectCard>

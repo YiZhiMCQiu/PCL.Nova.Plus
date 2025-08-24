@@ -18,6 +18,10 @@ export function OpenDirectoryDialog(arg1) {
   return window['go']['launcher']['ReaderWriter']['OpenDirectoryDialog'](arg1);
 }
 
+export function OpenExplorer(arg1) {
+  return window['go']['launcher']['ReaderWriter']['OpenExplorer'](arg1);
+}
+
 export function OpenFileDialog(arg1, arg2) {
   return window['go']['launcher']['ReaderWriter']['OpenFileDialog'](arg1, arg2);
 }

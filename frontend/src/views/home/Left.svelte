@@ -3,8 +3,8 @@
     import {current_account_page, current_view} from "../../store/changeBody";
     import {quadInOut} from "svelte/easing";
     import {onDestroy, onMount} from "svelte";
-    import AccountSelect from "./account/AccountSelect.svelte";
-    import AddAccount from "./account/AddAccount.svelte";
+    import AccountSelect from "./precon/AccountSelect.svelte";
+    import AddAccount from "./precon/AddAccount.svelte";
     import {
         GetCurrentMinecraftDir,
         GetMCAllVersion,
@@ -12,7 +12,7 @@
     } from "../../../wailsjs/go/launcher/LaunchMethod";
     import {GetConfigIniPath} from "../../../wailsjs/go/launcher/ReaderWriter";
     import {ReadConfig} from "../../../wailsjs/go/launcher/ReaderWriter.js";
-    import {current_mc_version_path, game_log} from "../../store/mc";
+    import {current_mc_version_path/* , game_log */} from "../../store/mc";
     import {HNT_PASS, messagebox, MSG_ERROR, showHint} from "../../store/messagebox";
     import {EventsOn} from "../../../wailsjs/runtime";
 
@@ -64,11 +64,14 @@
         } else {
             try {
                 let v = await GetMCVersionConfig()
-                let mci = parseInt(await ReadConfig(await GetConfigIniPath(), "MC", "SelectMC"))
-                if (Number.isNaN(mci) || mci < 0 || mci > v.mc.length) {
+                if(!v.status) {
                     return
                 }
-                let rp = mci == 0 ? await GetCurrentMinecraftDir() : v.mc[mci - 1].path
+                let mci = parseInt(await ReadConfig(await GetConfigIniPath(), "MC", "SelectMC"))
+                if (Number.isNaN(mci) || mci < 0 || mci > v.data.mc.length) {
+                    return
+                }
+                let rp = mci == 0 ? await GetCurrentMinecraftDir() : v.data.mc[mci - 1].path
                 let p2 = await GetMCAllVersion(rp)
                 let j = parseInt(await ReadConfig(await GetConfigIniPath(), "MC", "SelectVer"))
                 if (Number.isNaN(j) || j < 0 || j > p2.length - 1) {
@@ -92,15 +95,14 @@
     async function launchGame() {
         showHint("游戏正在启动，请稍后~")
         let l = await LaunchGame()
-        if(l != "") {
-            await messagebox("游戏出错了！", "启动游戏时出现了错误！错误信息：" + await LaunchGame(), MSG_ERROR)
+        if(!l.status) {
+            await messagebox("游戏出错了！", "启动游戏时出现了错误！错误信息：" + l.message + "<br>" + "错误描述：" + l.data, MSG_ERROR)
         } else {
             showHint("游戏已结束，玩得愉快！", HNT_PASS)
         }
     }
     EventsOn("launch_success", () => {
         showHint("参数拼接成功啦！正在等待启动游戏嗷~")
-        game_log.set("")
     })
 </script>
 <div

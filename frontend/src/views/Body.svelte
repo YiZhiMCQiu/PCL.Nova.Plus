@@ -6,12 +6,14 @@
     import SettingLeft from './setting/Left.svelte'
     import AboutLeft from './about/Left.svelte'
     import VersionLeft from './version/Left.svelte'
+    import EditAccountLeft from './editAccount/Left.svelte'
     import HomeRight from './home/Right.svelte'
     import DownloadRight from './download/Right.svelte'
     import OnlineRight from './online/Right.svelte'
     import SettingRight from './setting/Right.svelte'
     import AboutRight from './about/Right.svelte'
     import VersionRight from './version/Right.svelte'
+    import EditAccountRight from './editAccount/Right.svelte'
     import {onDestroy} from "svelte";
     import {slide_left, slide_up} from "../store/functions";
 
@@ -29,7 +31,7 @@
     let isTransitioning = true
     let f = false
     const unsubscribe_current_view = current_view.subscribe((value) => {
-        left_width = value === "home" ? "370px" : value === "setting" ? '110px' : value === 'version' ? '211px' : '144px'
+        left_width = value === "home" || value === 'editAccount' ? "370px" : value === "setting" ? '110px' : value === 'version' ? '211px' : '144px'
         if (!f) {
             f = true
             isTransitioning = true;
@@ -38,7 +40,7 @@
         }
     })
     function control_leave() {
-        right_left = $current_view === "home" ? "370px" : $current_view === "setting" ? "110px" : $current_view === 'version' ? '211px' : "144px"
+        right_left = $current_view === "home" || $current_view === 'editAccount' ? "370px" : $current_view === "setting" ? "110px" : $current_view === 'version' ? '211px' : "144px"
         isTransitioning = true
     }
     onDestroy(unsubscribe_current_view)
@@ -57,6 +59,8 @@
             <AboutLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
         {:else if $current_view === "version" && isTransitioning}
             <VersionLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+        {:else if $current_view === "editAccount" && isTransitioning}
+            <EditAccountLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
         {/if}
     </div>
     <div id="right" style:left={right_left} style:width="calc(100% - {right_left})">
@@ -72,6 +76,8 @@
             <AboutRight after_leave={control_leave} slide={slide_up}/>
         {:else if $current_view === "version" && isTransitioning}
             <VersionRight after_leave={control_leave} slide={slide_up}/>
+        {:else if $current_view === "editAccount" && isTransitioning}
+            <EditAccountRight after_leave={control_leave} slide={slide_up}/>
         {/if}
     </div>
 </div>

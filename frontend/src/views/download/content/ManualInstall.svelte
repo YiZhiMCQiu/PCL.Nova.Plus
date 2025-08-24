@@ -34,7 +34,7 @@
         on:outroend={after_leave}
 >
     <div id="left" style:background-color={dark}>
-        <MySidebarButton isChecked={$current_manual === 'Forge'} in_style="margin-top: 8px" click={() => current_manual.set('Forge')}>
+        <MySidebarButton isChecked={$current_manual === 'Forge'} in_style="margin-top: 8px" on:click={() => current_manual.set('Forge')}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -46,7 +46,7 @@
             </svg>
             <span style="margin-left: 8px;">Forge</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_manual === 'Fabric'} click={() => current_manual.set('Fabric')}>
+        <MySidebarButton isChecked={$current_manual === 'Fabric'} on:click={() => current_manual.set('Fabric')}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -58,7 +58,7 @@
             </svg>
             <span style="margin-left: 8px;">Fabric</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_manual === 'Quilt'} click={() => current_manual.set('Quilt')}>
+        <MySidebarButton isChecked={$current_manual === 'Quilt'} on:click={() => current_manual.set('Quilt')}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -77,7 +77,7 @@
             </svg>
             <span style="margin-left: 8px;">Quilt</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_manual === 'NeoForge'} click={() => current_manual.set('NeoForge')}>
+        <MySidebarButton isChecked={$current_manual === 'NeoForge'} on:click={() => current_manual.set('NeoForge')}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -92,7 +92,7 @@
             </svg>
             <span style="margin-left: 8px;">NeoForge</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_manual === 'Optifine'} click={() => current_manual.set('Optifine')}>
+        <MySidebarButton isChecked={$current_manual === 'Optifine'} on:click={() => current_manual.set('Optifine')}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -107,7 +107,7 @@
             </svg>
             <span style="margin-left: 8px;">Optifine</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_manual === 'LiteLoader'} click={() => current_manual.set('LiteLoader')}>
+        <MySidebarButton isChecked={$current_manual === 'LiteLoader'} on:click={() => current_manual.set('LiteLoader')}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

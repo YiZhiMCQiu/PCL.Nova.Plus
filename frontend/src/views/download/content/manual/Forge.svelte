@@ -7,7 +7,7 @@
     import MyLoadingPickaxe from "../../../../component/card/MyLoadingPickaxe.svelte";
     import {quadInOut} from "svelte/easing";
     import MySelectCard from "../../../../component/card/MySelectCard.svelte";
-    import MyNormalLabel from "../../../../component/input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../../../../component/input/MyNormalSpan.svelte";
     import MyNormalButton from "../../../../component/button/MyNormalButton.svelte";
     import {OpenCustomURL, SortForgeVersion} from "../../../../store/functions";
     import MyCardButton from "../../../../component/button/MyCardButton.svelte";
@@ -58,7 +58,8 @@
         SortForgeVersion(temp_forge_support, true)
     })
     // 当任意卡片下拉的事件
-    function onComp(height: number, isExpand: boolean, title: string) {
+    function onComp(event: CustomEvent) {
+        let {height, isExpand, title} = event.detail
         scrollStep += (isExpand ? height : -height) * 0.05
         if(isExpand) {
             temp_forge_list[title] = $forge_list[title]
@@ -140,9 +141,9 @@
 >
     <div style="width: 100%; height: max-content">
         <MySelectCard title="Forge 简介">
-            <div class="proc" style="align-items: start; margin-left: 40px">
-                <div><MyNormalLabel>Forge 是一个 Mod 加载器，你需要先安装 Forge 才能安装各种 Forge 模组。</MyNormalLabel></div>
-                <div style="margin-top: 10px"><MyNormalButton style_in="width: 150px; height: 40px; border: 1px solid skyblue" click={() => {OpenCustomURL("https://files.minecraftforge.net/")}}>打开官网</MyNormalButton></div>
+            <div class="version-all">
+                <MyNormalSpan>Forge 是一个 Mod 加载器，你需要先安装 Forge 才能安装各种 Forge 模组。</MyNormalSpan><br>
+                <MyNormalButton style_in="width: 150px; height: 40px; border: 1px solid skyblue" on:click={() => {OpenCustomURL("https://files.minecraftforge.net/")}}>打开官网</MyNormalButton>
             </div>
         </MySelectCard>
     </div>
@@ -156,7 +157,7 @@
                 out:slide_up
                 on:outroend={control_leave}>
             {#each temp_forge_support as support}
-                <MySelectCard title={support.version} isExpand={true} onComp={onComp} maxHeight={support.height}>
+                <MySelectCard title={support.version} isExpand={true} on:comp={onComp} maxHeight={support.height} canExpand={true}>
                     <div class="version-all">
                         {#each temp_forge_list[support.version] as f}
                             <MyCardButton

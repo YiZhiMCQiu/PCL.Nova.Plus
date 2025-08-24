@@ -43,7 +43,7 @@
                 fill="#ff1f1fcf"
                 fill-rule="evenodd" class="loading-icon" />
     </svg><br>
-    { loading_text }
+    {@html loading_text }
 </div>
 <style>
     .ala {

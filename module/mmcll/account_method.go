@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type UrlMethod struct {
@@ -37,6 +38,7 @@ func (url *UrlMethod) baseRequest(reqMethod string, header map[string]string, da
 		req.Header.Set(k, v)
 	}
 	client := &http.Client{}
+	client.Timeout = time.Second * 10
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -72,6 +74,16 @@ func (url *UrlMethod) Get(authorization string) (string, error) {
 func (url *UrlMethod) GetDefault() ([]byte, error) {
 	res, err := url.baseRequest(http.MethodGet, nil, []byte(""))
 	return res, err
+}
+
+// GetCurseForge 默认请求，但是附带上x-api-key，返回string
+func (url *UrlMethod) GetCurseForge(XApiKey string) (string, error) {
+	res, err := url.baseRequest(http.MethodGet, map[string]string{
+		"Accept":       "application/json",
+		"Content-Type": "application/json",
+		"x-api-key":    XApiKey,
+	}, []byte(""))
+	return string(res), err
 }
 
 type AccountResult struct {
@@ -200,24 +212,25 @@ func (account *AccountLogin) microsoft(loginCode string) (*AccountResult, error)
 	if w3 == "" {
 		ww3 := int64(Safe(j3, -1.0, "XErr").(float64))
 		if ww3 == 2148916233 {
-			return nil, NewMMCLLError(-17, "Your Account has not Xbox account, maybe you need to create an xbox account and buy Minecraft, then try to login again!")
+			return nil, NewMMCLLError(-17, "Your Account has not Xbox precon, maybe you need to create an xbox precon and buy Minecraft, then try to precon again!")
 		} else if ww3 == 2148316235 {
-			return nil, NewMMCLLError(-18, "Your Account is banned, cause country or area is banned, so you cannot to login, please try to mount a VPN and try again!")
+			return nil, NewMMCLLError(-18, "Your Account is banned, cause country or area is banned, so you cannot to precon, please try to mount a VPN and try again!")
 		} else if ww3 == 2148316236 {
-			return nil, NewMMCLLError(-19, "Your Account is a child account, please login with family.microsoft.com and authorization your child account!")
+			return nil, NewMMCLLError(-19, "Your Account is a child precon, please precon with family.microsoft.com and authorization your child precon!")
 		} else if ww3 == 2148316237 {
-			return nil, NewMMCLLError(-20, "Your Account has risk, please login your account and pass the MSA authorization procedure!")
+			return nil, NewMMCLLError(-20, "Your Account has risk, please precon your precon and pass the MSA authorization procedure!")
 		} else if ww3 == 2148316238 {
-			return nil, NewMMCLLError(-21, "Your Account adult verification is failed, please login your account and pass the adult verify!")
+			return nil, NewMMCLLError(-21, "Your Account adult verification is failed, please precon your precon and pass the adult verify!")
 		} else if ww3 == 2148316239 {
-			return nil, NewMMCLLError(-22, "Your Account Service Term is not pass, please login your account and pass the Service Term!")
+			return nil, NewMMCLLError(-22, "Your Account Service Term is not pass, please precon your precon and pass the Service Term!")
 		} else {
 			return nil, NewMMCLLError(-1001, "Unknown Error, please feedback to author by this window! The error code is: "+strconv.FormatInt(ww3, 10))
 		}
 	}
+
 	uhsXsts := Safe(j3, "", "DisplayClaims", "xui", 0, "uhs")
 	if uhsXsts != uhsXbox {
-		return nil, NewMMCLLError(-23, "The User Hash Xbox is not equal to the User Hash Xsts, Please try to login again!")
+		return nil, NewMMCLLError(-23, "The User Hash Xbox is not equal to the User Hash Xsts, Please try to precon again!")
 	}
 	k4 := fmt.Sprintf("{\"identityToken\":\"XBL3.0 x=%s;%s\"}", uhsXsts, w3)
 	u4 := NewUrlMethod(McLive)

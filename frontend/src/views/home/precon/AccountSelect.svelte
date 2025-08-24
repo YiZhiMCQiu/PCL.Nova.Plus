@@ -3,7 +3,7 @@
     import {GetOtherIniPath, ReadConfig, WriteConfig} from "../../../../wailsjs/go/launcher/ReaderWriter";
     import {GetAccountConfig, SetAccountConfig} from "../../../../wailsjs/go/launcher/AccountMethod";
     import {onMount} from "svelte";
-    import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../../../component/input/MyNormalSpan.svelte";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
     import {launcher} from "../../../../wailsjs/go/models";
     import {showHint} from "../../../store/messagebox";
@@ -37,6 +37,9 @@
             return account
         })
         let index = await ReadConfig(await GetOtherIniPath(), "Account", "SelectAccount")
+        if(!Number(index)) {
+            await WriteConfig(await GetOtherIniPath(), "Account", "SelectAccount", "0")
+        }
         current_account_index.set(Number(index))
     })
 </script>
@@ -73,8 +76,8 @@
                         <MyRadioButton isChecked={index === $current_account_index} style_in="margin-left: 5px"/>
                         <img src="data:image/png;base64,{account.head_skin}" alt="头像" class="a-avatar">
                         <div class="info" style="pointer-events: none">
-                            <MyNormalLabel>{account.name}</MyNormalLabel>
-                            <MyNormalLabel style_in="font-size: 13px; color: gray;">{account.type === "Offline" ? "离线登录" : account.type === "Microsoft" ? "正版登录" : "第三方登录"}</MyNormalLabel>
+                            <MyNormalSpan>{account.name}</MyNormalSpan>
+                            <MyNormalSpan style_in="font-size: 13px; color: gray;">{account.type === "Offline" ? "离线登录" : account.type === "Microsoft" ? "正版登录" : "第三方登录"}</MyNormalSpan>
                         </div>
                         <button class="a-delete cursor-pointer" on:click|stopPropagation={() => deleteAccount(index)}>
                             <svg
@@ -90,8 +93,8 @@
                 {/each}
             </div>
             <div id="control">
-                <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;" click={() => current_account_page.set(false)}>添加新账号</MyNormalButton>
-                <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;" click={() => showHint("目前修改选中账号暂时还没有做好😭，请敬请期待吧！")}>修改选中账号</MyNormalButton>
+                <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;" on:click={() => current_account_page.set(false)}>添加新账号</MyNormalButton>
+                <MyNormalButton style_in="width: calc(50% - 5px); height: 35px; border: 1px solid skyblue;" on:click={() => showHint("目前修改选中账号暂时还没有做好😭，请敬请期待吧！")}>修改选中账号</MyNormalButton>
             </div>
         </div>
     </div>

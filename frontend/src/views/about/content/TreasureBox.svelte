@@ -11,7 +11,8 @@
 
     async function dontClick() {
         await messagebox("警告", "PCL Nova Plus 作者不会受理由于点击千万别点造成的任何 Bug。这是最后的警告，是否继续操作？", MSG_ERROR, ['ok', 'ok', 'ok'])
-        let rand = Math.floor(Math.random() * 1 + 1)
+        let rand = Math.floor(Math.random() * 3 + 1)
+        // let rand = 2
         dont_click.set(rand)
     }
     async function todayLucky() {
@@ -63,9 +64,9 @@
         <div class="proc">
             <div style="margin: 0 20px; width: calc(100% - 40px)">
                 {#if $dont_click === 0}
-                    <MyNormalButton style_in="border: 1px solid red; color: red; width: 130px; height: 35px" click={dontClick}>千万别点</MyNormalButton>
+                    <MyNormalButton style_in="border: 1px solid red; color: red; width: 130px; height: 35px" on:click={dontClick}>千万别点</MyNormalButton>
                 {/if}
-                <MyNormalButton style_in="width: 130px; height: 35px; margin-left: 10px" click={todayLucky}>今日人品</MyNormalButton>
+                <MyNormalButton style_in="width: 130px; height: 35px; margin-left: 10px" on:click={todayLucky}>今日人品</MyNormalButton>
             </div>
         </div>
     </MySelectCard>

@@ -2,9 +2,9 @@
     import MyNavButton from "../../../component/button/MyNavButton.svelte";
     import {current_account} from "../../../store/changeBody";
     import {onDestroy} from "svelte";
-    import Microsoft from "./login/Microsoft.svelte";
-    import Offline from "./login/Offline.svelte";
-    import Thirdparty from "./login/Thirdparty.svelte";
+    import Microsoft from "./account/Microsoft.svelte";
+    import Offline from "./account/Offline.svelte";
+    import Thirdparty from "./account/Thirdparty.svelte";
     import {slide_opacity} from '../../../store/functions'
     export let opacity = null
     export let after_leave = null
@@ -32,7 +32,7 @@
 >
     <div class="all">
         <div id="top">
-            <MyNavButton in_style="width: 80px; height: 30px" isChecked={$current_account === "Microsoft"} click={() => current_account.set("Microsoft")}>
+            <MyNavButton in_style="width: 80px; height: 30px" isChecked={$current_account === "Microsoft"} on:click={() => current_account.set("Microsoft")}>
                 <svg
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@
                 </svg>
                 正版
             </MyNavButton>
-            <MyNavButton in_style="width: 80px; height: 30px" isChecked={$current_account === "Offline"} click={() => current_account.set("Offline")}>
+            <MyNavButton in_style="width: 80px; height: 30px" isChecked={$current_account === "Offline"} on:click={() => current_account.set("Offline")}>
                 <svg
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +60,7 @@
                 </svg>
                 离线
             </MyNavButton>
-            <MyNavButton in_style="width: 80px; height: 30px" isChecked={$current_account === "Thirdparty"} click={() => current_account.set("Thirdparty")}>
+            <MyNavButton in_style="width: 80px; height: 30px" isChecked={$current_account === "Thirdparty"} on:click={() => current_account.set("Thirdparty")}>
                 <svg
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"

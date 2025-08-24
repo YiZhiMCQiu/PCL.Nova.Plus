@@ -1,4 +1,8 @@
 import {writable} from "svelte/store";
+export const CurseForgeBaseURL = 'https://api.curseforge.com/v1'
+export const CurseForgeSearchURL = 'https://api.curseforge.com/v1/mods/search?gameId=432&page_size=50&sortOrder=desc'
+export const ModrinthBaseURL = 'https://api.modrinth.com/v2'
+export const ModrinthSearchURL = 'https://api.modrinth.com/v2/search?limit=50&index=relevance'
 export const Steve =
     'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAHMSURBVHhe7dsxS0JRHAVwr099WqQRYVIgzUHQ1tSsEA3RF6iGICForKmmigja6hPUFC1FNIRfpCAsoYJCUMSe+p41nPHvfW' +
     'BDw/n/lnMWBc/jwlXQzE5nehELP0DpwzFRNFnb76LJul0fTRaN2t8/HnPQZD3rp/t9fyQtHQBJSwdA0tIBkLTMTN5+D/grNxFDk6Vd+zMIQp7RV8NDk/lByD0DSUsHQNLSAZC0dAAkrdB7wOHWKposEU+gyVLJNJqs1ayj9eHYn1Ht4w1NdnJ1hybTI4CkpQMgaekASFr0A5iLvU3r' +
@@ -57,3 +61,10 @@ export const select_account = writable([])
 export const current_account_index = writable(-1)
 
 export const select_ipv6 = writable([])
+
+export const select_homepage = writable(-1)
+export const current_homepage = writable(-1)
+export const homepage_url = writable("")
+export const homepage_list = writable([])
+
+export const homepage_cache = writable("")

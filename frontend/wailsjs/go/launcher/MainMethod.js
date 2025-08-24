@@ -6,6 +6,14 @@ export function GenerateBukkitUUID(arg1) {
   return window['go']['launcher']['MainMethod']['GenerateBukkitUUID'](arg1);
 }
 
+export function GenerateTutorialHomePage() {
+  return window['go']['launcher']['MainMethod']['GenerateTutorialHomePage']();
+}
+
+export function GetAllHomePage() {
+  return window['go']['launcher']['MainMethod']['GetAllHomePage']();
+}
+
 export function GetAllIPv6() {
   return window['go']['launcher']['MainMethod']['GetAllIPv6']();
 }
@@ -24,6 +32,10 @@ export function GetJavaExecutableFileName() {
 
 export function GetTotalMemory() {
   return window['go']['launcher']['MainMethod']['GetTotalMemory']();
+}
+
+export function ReadFile(arg1) {
+  return window['go']['launcher']['MainMethod']['ReadFile'](arg1);
 }
 
 export function UUIDToAvatar(arg1) {

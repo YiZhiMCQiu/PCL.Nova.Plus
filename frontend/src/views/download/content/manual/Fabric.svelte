@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {OpenCustomURL} from "../../../../store/functions";
+    import {OpenCustomURL, slide_up, slide_opacity} from "../../../../store/functions";
     import MySelectCard from "../../../../component/card/MySelectCard.svelte";
-    import MyNormalLabel from "../../../../component/input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../../../../component/input/MyNormalSpan.svelte";
     import MyNormalButton from "../../../../component/button/MyNormalButton.svelte";
     import {fabric_list} from "../../../../store/mc";
     import {quadInOut} from "svelte/easing";
@@ -47,27 +47,6 @@
             isTransitioning = !isTransitioning
         }
     })
-    function slide_opacity(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number) => {
-                return `opacity: ${t};`;
-            }
-        };
-    }
-    function slide_up(node: HTMLElement) {
-        return {
-            duration: 200,
-            easing: quadInOut,
-            css: (t: number, n: number) => {
-                return `
-                    transform: translateY(${-50 * n}%);
-                    opacity: ${t};
-                `
-            }
-        }
-    }
     onDestroy(unsubscribe_fabric_list)
     function slide_button_opacity(node: HTMLElement) {
         return {
@@ -108,12 +87,10 @@
 >
     <div style="width: 100%; height: max-content">
         <MySelectCard title="Fabric 简介" maxHeight={150}>
-            <div class="proc" style="align-items: start; margin-left: 40px">
-                <div>
-                    <MyNormalLabel>Fabric Loader 是新版 Minecraft 下的轻量化 Mod 加载器，你需要先安装它才能安装各种 Fabric 模组</MyNormalLabel><br>
-                    <MyNormalLabel>本页面提供 Fabric 安装器下载，在下载后你需要手动打开安装器进行安装。</MyNormalLabel>
-                </div>
-                <div style="margin-top: 10px"><MyNormalButton style_in="width: 150px; height: 40px; border: 1px solid skyblue" click={() => {OpenCustomURL("https://www.fabricmc.net/")}}>打开官网</MyNormalButton></div>
+            <div class="version-all">
+                <MyNormalSpan>Fabric Loader 是新版 Minecraft 下的轻量化 Mod 加载器，你需要先安装它才能安装各种 Fabric 模组</MyNormalSpan><br>
+                <MyNormalSpan>本页面提供 Fabric 安装器下载，在下载后你需要手动打开安装器进行安装。</MyNormalSpan><br>
+                <MyNormalButton style_in="width: 150px; height: 40px; border: 1px solid skyblue" on:click={() => {OpenCustomURL("https://www.fabricmc.net/")}}>打开官网</MyNormalButton>
             </div>
         </MySelectCard>
     </div>

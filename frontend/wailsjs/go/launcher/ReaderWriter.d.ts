@@ -9,6 +9,8 @@ export function GetOtherIniPath():Promise<string>;
 
 export function OpenDirectoryDialog(arg1:string):Promise<string>;
 
+export function OpenExplorer(arg1:string):Promise<boolean>;
+
 export function OpenFileDialog(arg1:string,arg2:Array<string>):Promise<string>;
 
 export function ReadConfig(arg1:string,arg2:string,arg3:string):Promise<string>;

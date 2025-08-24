@@ -116,7 +116,8 @@
             }
         }
     }
-    function onComp(height: number, isExpand: boolean, title: string) {
+    function onComp(event: CustomEvent) {
+        let {height, isExpand, title} = event.detail
         scrollStep += (isExpand ? height : -height) * 0.05
         if(title == "正式版") {
             temp_list[0].list = isExpand ? $mc_list_release : []
@@ -242,9 +243,9 @@
                 </div>
             </MySelectCard>
             {#each temp_list as temp}
-                <MySelectCard title={temp.version === 0 ? '正式版' : temp.version === 1 ? '快照版' : temp.version === 2 ? '远古 Beta 版' : temp.version === 3 ? '远古 Alpha 版' : ''} onComp={onComp} maxHeight={temp.height} isExpand={true}>
+                <MySelectCard title={temp.version === 0 ? '正式版' : temp.version === 1 ? '快照版' : temp.version === 2 ? '远古 Beta 版' : temp.version === 3 ? '远古 Alpha 版' : ''} on:comp={onComp} maxHeight={temp.height} isExpand={true} canExpand={true}>
                     <div class="version-all">
-                         {#each temp.list as list, index}
+                         {#each temp.list as list}
                              <MyCardButton
                                      image={temp.version === 0 ? Grass : temp.version === 1 ? CommandBlock : temp.version === 2 ? CobbleStone : temp.version === 3 ? CobbleStone : ''}
                                      title={list["id"]}

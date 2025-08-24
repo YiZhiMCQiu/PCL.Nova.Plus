@@ -134,11 +134,11 @@ func TestIPv6(t *testing.T) {
 func TestCMD(t *testing.T) {
 	var lm launcher.LaunchMethod
 	java1 := lm.GetJavaInfo("D:/Languages/Java/jdk-21.0.8/bin/java.exe")
-	t.Logf("%s\n%s\n%s\n%s", java1.Path, java1.Arch, java1.Vendor, java1.Version)
+	t.Logf("%s\n%s\n%s\n%s", java1.Data.Path, java1.Data.Arch, java1.Data.Vendor, java1.Data.Version)
 	java2 := lm.GetJavaInfo("D:/Languages/Java/jdk-17.0.12/bin/java.exe")
-	t.Logf("%s\n%s\n%s\n%s", java2.Path, java2.Arch, java2.Vendor, java2.Version)
+	t.Logf("%s\n%s\n%s\n%s", java2.Data.Path, java2.Data.Arch, java2.Data.Vendor, java2.Data.Version)
 	java3 := lm.GetJavaInfo("D:/Languages/Java/jdk1.8.0_311/bin/java.exe")
-	t.Logf("%s\n%s\n%s\n%s", java3.Path, java3.Arch, java3.Vendor, java3.Version)
+	t.Logf("%s\n%s\n%s\n%s", java3.Data.Path, java3.Data.Arch, java3.Data.Vendor, java3.Data.Version)
 }
 func TestMemory(t *testing.T) {
 	var mm launcher.MainMethod

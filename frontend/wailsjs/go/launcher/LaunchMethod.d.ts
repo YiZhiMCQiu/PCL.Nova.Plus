@@ -4,16 +4,16 @@ import {launcher} from '../models';
 
 export function GetCurrentMinecraftDir():Promise<string>;
 
-export function GetJavaConfig():Promise<launcher.JavaConfigs>;
+export function GetJavaConfig():Promise<launcher.ExceptionHandler_NovaPlus_module_launcher_JavaConfigs_>;
 
-export function GetJavaInfo(arg1:string):Promise<launcher.JavaConfig>;
+export function GetJavaInfo(arg1:string):Promise<launcher.ExceptionHandler_NovaPlus_module_launcher_JavaConfig_>;
 
 export function GetMCAllVersion(arg1:string):Promise<Array<string>>;
 
-export function GetMCVersionConfig():Promise<launcher.MCConfigs>;
+export function GetMCVersionConfig():Promise<launcher.ExceptionHandler_NovaPlus_module_launcher_MCConfigs_>;
 
-export function LaunchGame():Promise<string>;
+export function LaunchGame():Promise<launcher.ExceptionHandler_string_>;
 
-export function SetJavaConfig(arg1:launcher.JavaConfigs):Promise<void>;
+export function SetJavaConfig(arg1:launcher.JavaConfigs):Promise<launcher.ExceptionHandler_interface____>;
 
-export function SetMCVersionConfig(arg1:launcher.MCConfigs):Promise<void>;
+export function SetMCVersionConfig(arg1:launcher.MCConfigs):Promise<launcher.ExceptionHandler_interface____>;

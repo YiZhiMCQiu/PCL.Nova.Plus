@@ -29,7 +29,34 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-
+      - name: Generate Secret File
+        run: |
+          if ("${{ runner.os }}" -eq "Linux") {
+            echo 'package main' > module/launcher/privacy.go
+            echo 'func ClientId() {' >> module/launcher/privacy.go
+            echo '    return "${{secrets.MS_KEY}}"'
+            echo '}' >> module/launcher/privacy.go
+            echo 'func XApiKey() {' >> module/launcher/privacy.go
+            echo '    return "${{secrets.CF_KEY}}"'
+            echo '}' >> module/launcher/privacy.go
+          } elseif ("${{ runner.os }}" -eq "macOS") {
+            echo 'package main' > module/launcher/privacy.go
+            echo 'func ClientId() {' >> module/launcher/privacy.go
+            echo '    return "${{secrets.MS_KEY}}"'
+            echo '}' >> module/launcher/privacy.go
+            echo 'func XApiKey() {' >> module/launcher/privacy.go
+            echo '    return "${{secrets.CF_KEY}}"'
+            echo '}' >> module/launcher/privacy.go
+          } else {
+            echo package main > module/launcher/privacy.go
+            echo func ClientId() { >> module/launcher/privacy.go
+            echo     return "${{secrets.MS_KEY}}"
+            echo } >> module/launcher/privacy.go
+            echo func XApiKey() { >> module/launcher/privacy.go
+            echo     return "${{secrets.CF_KEY}}"
+            echo } >> module/launcher/privacy.go
+          }
+        shell: pwsh
       - name: Build wails
         uses: dAppServer/wails-build-action@main
         id: build

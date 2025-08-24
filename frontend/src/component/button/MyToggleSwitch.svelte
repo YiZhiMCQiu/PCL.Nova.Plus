@@ -1,16 +1,21 @@
 <script lang="ts">
     import {dark_mode} from "../../store/changeBody";
+    import {createEventDispatcher} from "svelte";
 
     export let isSelect = false
     export let html_close_span = ""
     export let html_open_span = ""
     export let title = ""
     $: ({dark, back} = $dark_mode ? {dark: "#303030cf", back: "#707070cf"} : {dark: "#eeeeeecf", back: "#909090cf"})
-    export let click = null
+    const dispatch = createEventDispatcher()
+    function buttonClick() {
+        dispatch('click')
+    }
+    // export let click = null
 </script>
 <div title={title} class="switch"
      style="--dark-color: {dark}; --back-color: {isSelect ? 'skyblue' : back}; --left-value: {isSelect ? '28px' : '4px'}"
-     on:click={() => {click == null ? (() => {})() : click()}} on:keydown|preventDefault>
+     on:click={buttonClick} on:keydown|preventDefault>
     <button>{@html isSelect ? html_open_span : html_close_span}</button>
 </div>
 <style>

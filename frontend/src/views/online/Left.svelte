@@ -13,7 +13,7 @@
         out:slide={{ x: Number(width.replace("px", "")) }}
         on:outroend={after_leave}
 >
-    <MySidebarButton in_style="margin-top: 8px" isChecked={$current_online === "IPv6"} click={() => { current_online.set("IPv6") }}>
+    <MySidebarButton in_style="margin-top: 8px" isChecked={$current_online === "IPv6"} on:click={() => { current_online.set("IPv6") }}>
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

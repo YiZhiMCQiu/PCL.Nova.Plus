@@ -8,6 +8,26 @@ type config struct {
 	path string
 }
 
+type ExceptionHandler[T any] struct {
+	Code    int    `json:"code"`
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    T      `json:"data"`
+}
+
+func NewExceptionHandler[T any](code int, status bool, message string, data T) ExceptionHandler[T] {
+	return ExceptionHandler[T]{
+		Code:    code,
+		Status:  status,
+		Message: message,
+		Data:    data,
+	}
+}
+
+type ExportToFrontend struct {
+	Data string `json:"data"`
+}
+
 func NewConfig(path string) *config {
 	return &config{path: path}
 }

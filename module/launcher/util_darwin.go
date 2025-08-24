@@ -27,3 +27,7 @@ func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
 func CMD(name string, args ...string) *exec.Cmd {
 	return exec.Command(name, args...)
 }
+
+func openExp(fpath string) error {
+	return exec.Command("open", fpath).Start()
+}

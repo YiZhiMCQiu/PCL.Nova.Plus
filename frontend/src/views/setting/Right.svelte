@@ -5,6 +5,7 @@
     import Personalization from "./content/Personalization.svelte";
     import Other from "./content/Other.svelte";
     import {slide_up} from "../../store/functions";
+    import HomePage from "./content/HomePage.svelte";
     export let slide = null
     export let after_leave = null
     let isTransitioning = true
@@ -34,6 +35,8 @@
         <Personalization slide={slide_up} after_leave={control_leave} />
     {:else if $current_setting === "Other" && isTransitioning}
         <Other slide={slide_up} after_leave={control_leave} />
+    {:else if $current_setting === "HomePage" && isTransitioning}
+        <HomePage slide={slide_up} after_leave={control_leave} />
     {/if}
 </div>
 <style>

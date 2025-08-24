@@ -1,5 +1,5 @@
 <script lang="ts">
-    import MyNormalLabel from "../input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../input/MyNormalSpan.svelte";
     // 图片
     export let image = null
     // 悬停提示
@@ -8,7 +8,7 @@
     export let title = ""
     // 描述
     export let desc = ""
-    // 点击事件
+    // 点击事件（由于以下的部分 DOM 结构依赖于 click == null，因此此处不设计 dispatch！）
     export let click: (() => void | null) = null
     // 右侧icon按钮组【内部必须有（title、icon、click）三个字段，其中icon是一个必须有的svg标签的字符串】
     export let buttons = []
@@ -25,7 +25,7 @@
     <div class="info">
         <img src={image} alt="图片" style={image_style}>
         <div class="desc">
-            <p><MyNormalLabel style_in="font-size: 17px; cursor: pointer">{title}</MyNormalLabel></p>
+            <p><MyNormalSpan style_in="font-size: 17px; cursor: pointer">{title}</MyNormalSpan></p>
             <p style="font-size: 14px">{desc}</p>
         </div>
     </div>
@@ -37,7 +37,12 @@
                 }
             }} style="{button_style}">
                 <!-- 请记住，这个icon只能填入svg，并且千万不要加width和height俩参数！ -->
-                {@html button.icon}
+                <!--{@html button.icon}-->
+                {#if button.iconType === "img"}
+                    <img src={button.icon} alt="图片" style="border-radius: 50%; width: 30px; height: 30px">
+                {:else}
+                    {@html button.icon}
+                {/if}
             </button>
         {/each}
     </div>

@@ -15,7 +15,7 @@
 >
     <details class="grid ani1" open><summary>Minecraft 客户端</summary></details>
     <div>
-        <MySidebarButton isChecked={$current_download === "Auto-Install"} click={() => {current_download.set("Auto-Install")}}>
+        <MySidebarButton isChecked={$current_download === "Auto-Install"} on:click={() => {current_download.set("Auto-Install")}}>
             <svg
                     role="img"
                     viewBox="0 0 24 24"
@@ -33,7 +33,7 @@
             </svg>
             <span>自动安装</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_download === "Manual-Install"} click={() => {current_download.set("Manual-Install")}}>
+        <MySidebarButton isChecked={$current_download === "Manual-Install"} on:click={() => {current_download.set("Manual-Install")}}>
             <svg
                     viewBox="0 0 24 24"
                     role="img"
@@ -49,7 +49,7 @@
     </div>
     <details class="grid ani2" open><summary>附加内容</summary></details>
     <div>
-        <MySidebarButton isChecked={$current_download === "Extension-Mod"} click={() => {current_download.set("Extension-Mod")}}>
+        <MySidebarButton isChecked={$current_download === "Extension-Mod"} on:click={() => {current_download.set("Extension-Mod")}}>
             <svg
                     role="img"
                     viewBox="0 0 24 24"
@@ -62,7 +62,7 @@
             </svg>
             <span>Mod</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_download === "Extension-Modpack"} click={() => {current_download.set("Extension-Modpack")}}>
+        <MySidebarButton isChecked={$current_download === "Extension-Modpack"} on:click={() => {current_download.set("Extension-Modpack")}}>
             <svg
                     role="img"
                     viewBox="0 0 24 24"
@@ -78,7 +78,7 @@
             </svg>
             <span>整合包</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_download === "Extension-Datapack"} click={() => {current_download.set("Extension-Datapack")}}>
+        <MySidebarButton isChecked={$current_download === "Extension-Datapack"} on:click={() => {current_download.set("Extension-Datapack")}}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     role="img"
@@ -91,7 +91,7 @@
             </svg>
             <span>数据包</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_download === "Extension-Resourcepack"} click={() => {current_download.set("Extension-Resourcepack")}}>
+        <MySidebarButton isChecked={$current_download === "Extension-Resourcepack"} on:click={() => {current_download.set("Extension-Resourcepack")}}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -108,7 +108,7 @@
             </svg>
             <span>资源包</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_download === "Extension-Shaderpack"} click={() => {current_download.set("Extension-Shaderpack")}}>
+        <MySidebarButton isChecked={$current_download === "Extension-Shaderpack"} on:click={() => {current_download.set("Extension-Shaderpack")}}>
             <svg
                     role="img"
                     xmlns="http://www.w3.org/2000/svg"

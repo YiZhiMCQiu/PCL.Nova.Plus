@@ -1,8 +1,13 @@
 <script lang="ts">
+    import {createEventDispatcher} from "svelte";
+
     export let max = 100
     export let min = 0
     export let value = 0
-    export let onDragging: ((value: number) => void) | null = null
+    const dispatch = createEventDispatcher()
+    function buttonClick() {
+        dispatch('click')
+    }
     // 获取两个 DOM 结构，一个是 整个滑动条 的 DOM，一个是 滑块 的 DOM
     let progressDOM: (HTMLDivElement | null) = null
     let thumbDOM: (HTMLDivElement | null) = null
@@ -30,9 +35,9 @@
         mX = Math.max(0, Math.min(mX, aWidth))
         const step = aWidth / (max - min)
         value = min + Math.round(mX / step)
-        if(onDragging != null) {
-            onDragging(value)
-        }
+        dispatch('dragging', {
+            value: value
+        })
         updateBar()
     }
     // 当滑动条开始拖拽时的事件
@@ -44,9 +49,9 @@
         mX = Math.max(0, Math.min(mX, aWidth))
         const step = aWidth / (max - min)
         value = min + Math.round(mX / step)
-        if(onDragging != null) {
-            onDragging(value)
-        }
+        dispatch('dragging', {
+            value: value
+        })
         updateBar()
     }
     // 当鼠标抬起，不滑动了的事件

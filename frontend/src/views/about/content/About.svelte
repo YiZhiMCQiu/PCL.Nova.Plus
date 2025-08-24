@@ -2,7 +2,7 @@
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import {OpenCustomURL} from "../../../store/functions";
     import MyNormalButton from "../../../component/button/MyNormalButton.svelte";
-    import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../../../component/input/MyNormalSpan.svelte";
     // 导入图片
     import xphost from '../../../assets/images/Heads/xphost.jpg'
     import FireDragon0659 from '../../../assets/images/Heads/firedragon0659.jpg'
@@ -13,19 +13,10 @@
     import Hill233 from '../../../assets/images/Heads/hill233.jpg'
     import MyCardButton from "../../../component/button/MyCardButton.svelte";
     import {dark_mode} from "../../../store/changeBody";
+    import Afdian from '../../../assets/images/afdian.ico'
     export let slide = null
     export let after_leave = null
-    interface People{
-        avatar: string,
-        title: string,
-        desc: string,
-        buttons: {
-            title: string,
-            click: () => void
-            icon: string
-        }[]
-    }
-    const dev: People[] = [
+    const dev = [
         {
             avatar: xphost,
             title: "xphost008",
@@ -52,7 +43,8 @@
                     click: () => {
                         OpenCustomURL("https://afdian.com/a/xphost")
                     },
-                    icon: `<img src="/src/assets/images/afdian.ico" alt="爱发电" style="border-radius: 50%; width: 30px; height: 30px">`
+                    iconType: "img",
+                    icon: Afdian
                 }
             ]
         },
@@ -126,7 +118,7 @@
             ]
         },
     ]
-    const credit: People[] = [
+    const credit = [
         {
             avatar: LtCatt,
             title: "龙腾猫跃",
@@ -153,7 +145,8 @@
                     click: () => {
                         OpenCustomURL("https://afdian.com/a/LTCat")
                     },
-                    icon: `<img src="/src/assets/images/afdian.ico" alt="爱发电" style="border-radius: 50%; width: 30px; height: 30px">`
+                    iconType: "img",
+                    icon: Afdian
                 }
             ]
         },
@@ -226,6 +219,7 @@
                             be.push({
                                 title: b[i].title,
                                 click: b[i].click,
+                                iconType: b[i].iconType || "",
                                 icon: b[i].icon
                             })
                         }
@@ -251,6 +245,7 @@
                             be.push({
                                 title: b[i].title,
                                 click: b[i].click,
+                                iconType: b[i].iconType || "",
                                 icon: b[i].icon
                             })
                         }
@@ -264,27 +259,29 @@
     <MySelectCard title="协议" isExpand={true}>
         <div class="proc">
             <div style="margin: 0 20px">
-                <MyNormalLabel>PCL.Nova.Plus 开源项目及其官方衍生程序均遵循 GNU General Public License 3.0 (GPL v3) 协议开源。本项目主导组织为 T3 Project 以及 PCL Community，任何人都可以提 Pull Request！</MyNormalLabel><br><br>
-                <MyNormalButton style_in="width: 150px; height: 40px" click={() => OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus")}>查看源代码</MyNormalButton>
-                <MyNormalButton style_in="width: 150px; height: 40px; margin-left: 20px" click={() => OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus/blob/main/LICENSE")}>查看许可证</MyNormalButton>
+                <MyNormalSpan>PCL.Nova.Plus 开源项目及其官方衍生程序均遵循 GNU General Public License 3.0 (GPL v3) 协议开源。本项目主导组织为 T3 Project 以及 PCL Community，任何人都可以提 Pull Request！</MyNormalSpan><br><br>
+                <MyNormalButton style_in="width: 150px; height: 40px" on:click={() => OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus")}>查看源代码</MyNormalButton>
+                <MyNormalButton style_in="width: 150px; height: 40px; margin-left: 20px" on:click={() => OpenCustomURL("https://github.com/3TProject/PCL.Nova.Plus/blob/main/LICENSE")}>查看许可证</MyNormalButton>
             </div>
         </div>
     </MySelectCard>
     <MySelectCard title="许可与版权声明" isExpand={true}>
         <div class="proc">
             <div style="margin: 0 20px; width: calc(100% - 40px)">
-                <MyNormalLabel>PCL.Nova.Plus（游戏主程序）</MyNormalLabel><br>
+                <MyNormalSpan>PCL.Nova.Plus（游戏主程序）</MyNormalSpan><br>
                 <span class="gray">GNU-GPL v3</span>&nbsp;<span class="code">https://github.com/3TProject/PCL.Nova.Plus</span><br>
-                <MyNormalLabel>Wails（WebView程序）</MyNormalLabel><br>
+                <MyNormalSpan>Wails（WebView程序）</MyNormalSpan><br>
                 <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/wailsapp/wails</span><br>
-                <MyNormalLabel>Golang（后端语言）</MyNormalLabel><br>
+                <MyNormalSpan>Golang（后端语言）</MyNormalSpan><br>
                 <span class="gray">BSD 3</span>&nbsp;<span class="code">https://github.com/golang/go</span><br>
-                <MyNormalLabel>Svelte（前端架构）</MyNormalLabel><br>
+                <MyNormalSpan>Svelte（前端架构）</MyNormalSpan><br>
                 <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/sveltejs/svelte</span><br>
-                <MyNormalLabel>TypeScript（前端语言）</MyNormalLabel><br>
+                <MyNormalSpan>TypeScript（前端语言）</MyNormalSpan><br>
                 <span class="gray">Apache License 2.0</span>&nbsp;<span class="code">https://github.com/microsoft/TypeScript</span><br>
-                <MyNormalLabel>MMCLL（启动器类库）</MyNormalLabel><br>
+                <MyNormalSpan>MMCLL（启动器类库）</MyNormalSpan><br>
                 <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/xphost008/MMCLL</span><br>
+                <MyNormalSpan>skinview3d</MyNormalSpan><br>
+                <span class="gray">MIT</span>&nbsp;<span class="code">https://github.com/bs-community/skinview3d</span><br>
             </div>
         </div>
     </MySelectCard>
@@ -301,15 +298,6 @@
     }
     .gray {
         color: gray;
-        font-size: 14px;
-    }
-    .code {
-        box-shadow: 0 0 3px black;
-        background-color: lightgray;
-        border-radius: 4px;
-        color: black;
-        padding: 0 5px;
-        user-select: all;
         font-size: 14px;
     }
 </style>

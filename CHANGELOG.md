@@ -154,3 +154,31 @@
 1. fix(cmd): 稍微优化了一下执行终端的逻辑，现在开始，所有执行终端的输出，都将会静默执行，不会再显示终端的窗口了。（仅 Windows 的 cmd 的终端）
 2. fix(Java): 修复了 Java 在前端展示信息时，误把路径写成版本号的 bug（
 3. fix(IPv6): 稍微修复了一丢丢的 IPv6 获取逻辑（现在**应该**不会再导致窗口卡死了）
+
+**# 0.0.16
+
+### refactor:
+
+1. refactor(HomePage): 制作了主页功能！各位可以在【设置 -> 主页】里面，输出一个自定义主页的教程！你也可以联网更新自己的自定义主页网址~
+   - 自定义主页的教程与规范在[这里](./HomePageStandard.md)
+   - 目前还没有支持 HTML 主页（呜呜呜，也许下个版本支持了呢？）
+   - HTML 主页目前我还在纠结之中，是否应该支持，如果支持的话，会有什么安全隐患。。接下来就看用户反馈了吧~
+2. refactor(Mod): 新增 Modrinth 的 Mod 搜索界面喵，现在已经可以正常搜索了喵！~
+
+### exception:
+
+1. 在 Config.go 文件里新增了 ExceptionHandler 的类型，用于在反馈给前端时提交一些重要信息~
+
+### style:
+
+1. style(MessageBox): 调整了信息框的 `rotate`，现在应该比 `PCL2` 更可爱了~
+2. style(DontClick): 为【千万别点】新设计了两种，分别是单独将 `rotateX` 和 `rotateY` 转换成 `180deg`，仅此而已（
+3. style(MyNormalSpan): 将 `MyNormalLabel` 修改成了 `MyNormalSpan`，并且将内部元素也改成了 `span` 标签，现在应该更加合理了！
+4. style(Controls): 将几乎所有的控件的点击事件，全部设计成了 dispatch！现在应该可以在使用该控件位置的地方使用【on:事件名】来调用了！
+
+### fix:
+
+1. fix(afdian): 修复了爱发电图标失效的bug
+2. fix(IPv6): 彻底修复了 IPv6 检测~
+3. fix(MCVersion): MC 文件夹管理可能会导致一些问题
+4. fix(AccountSelect): 启动游戏时可能出**现的 Cannot convert account index to int 报错~

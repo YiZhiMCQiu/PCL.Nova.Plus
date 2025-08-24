@@ -3,7 +3,7 @@
     import {dark_mode} from '../../store/changeBody'
     import {quadInOut} from "svelte/easing";
     import MyTextInput from "../input/MyTextInput.svelte";
-    import MyNormalLabel from "../input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../input/MyNormalSpan.svelte";
     import MyNormalButton from "../button/MyNormalButton.svelte";
     $: bg = $dark_mode ? "#282828cf" : "#f0f8ffcf"
     function getColors(level: number) {
@@ -22,8 +22,8 @@
         i_resolve.set(null)
         m_resolve = ""
     }
-    function textInput(e: string) {
-        m_resolve = e
+    function textInput(e: CustomEvent) {
+        m_resolve = e.detail.value
     }
     function buttonClick(num: number) {
         if(num == 0){
@@ -45,7 +45,7 @@
             duration: 330,
             easing: quadInOut,
             css(t: number) {
-                const rotate = -20 * (1 - t);
+                const rotate = -10 * (1 - t);
                 if (t < 0.8) {
                     const progress = t / 0.8;
                     return `
@@ -68,13 +68,13 @@
     <div class="content-box-class" in:slide_anim out:slide_anim on:outroend={traLeave} style="--m-font-color: {font_color}; --bg-color: {bg}">
         <div id="content-title">{$i_title}</div>
         <div id="content">
-            <MyNormalLabel>{@html $i_content}</MyNormalLabel>
+            <MyNormalSpan>{@html $i_content}</MyNormalSpan>
         </div>
         <div id="input-box">
-            <MyTextInput placeholder={$i_placeholder} style_in="width: 100%; height: 30px" handleInput={textInput}/>
+            <MyTextInput placeholder={$i_placeholder} style_in="width: 100%; height: 30px" on:input={textInput}/>
         </div>
-        <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" click={() => {buttonClick(1)}}>确认</MyNormalButton>
-        <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" click={() => {buttonClick(0)}}>取消</MyNormalButton>
+        <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" on:click={() => {buttonClick(1)}}>确认</MyNormalButton>
+        <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" on:click={() => {buttonClick(0)}}>取消</MyNormalButton>
     </div>
 {/if}
 <style>

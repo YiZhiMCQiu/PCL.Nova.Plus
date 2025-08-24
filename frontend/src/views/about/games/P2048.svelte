@@ -1,5 +1,5 @@
 <script lang="ts">
-    import MyNormalLabel from "../../../component/input/MyNormalLabel.svelte";
+    import MyNormalSpan from "../../../component/input/MyNormalSpan.svelte";
 
     export let slide = null
     export let after_leave = null
@@ -10,7 +10,7 @@
         out:slide
         on:outroend={after_leave}
 >
-    <MyNormalLabel>NovaPlus暂不支持2048游戏，请去使用Nova 0.0.12版本~</MyNormalLabel>
+    <MyNormalSpan>NovaPlus暂不支持2048游戏，请去使用Nova 0.0.12版本~</MyNormalSpan>
 </div>
 <style>
     .component-treasure_box {

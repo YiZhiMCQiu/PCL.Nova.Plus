@@ -1,8 +1,12 @@
 body {
     margin: 0;
     padding: 0;
+}
+* {
     user-select: none;
     font-synthesis: none;
+    image-rendering: pixelated;
+    flex-shrink: 0;
 }
 @font-face {
     font-family: 'PCL';
@@ -11,14 +15,38 @@ body {
 .font-pcl {
     font-family: 'PCL';
 }
+.hint {
+    margin-top: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 8px 14px;
+    /*border-left: 3px solid rgb(216, 41, 41);*/
+    /*background-color: rgb(255, 221, 223);*/
+    /*color: rgb(216, 41, 41);*/
+}
+.red-hint {
+    border-left: 3px solid rgb(216, 41, 41);
+    background-color: rgb(255, 221, 223);
+    color: rgb(216, 41, 41);
+}
+.yellow-hint {
+    border-left: 3px solid rgb(245, 122, 0);
+    background-color: rgb(255, 235, 215);
+    color: rgb(245, 122, 0);
+}
+.blue-hint {
+    border-left: 3px solid rgb(17, 114, 212);
+    background-color: rgb(217, 236, 255);
+    color: rgb(17, 114, 212);
+}
 .version-all {
-    margin: 0 25px 10px 25px;
+    margin: 10px 25px 10px 25px;
     width: calc(100% - 50px);
     height: max-content;
 }
 .proc {
     height: max-content;
-    margin: 5px 20px 15px 20px;
+    margin: 10px 25px 10px 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,6 +54,15 @@ body {
 .cursor-pointer,
 details{
     cursor: pointer;
+}
+.code {
+    box-shadow: 0 0 3px black;
+    background-color: lightgray;
+    border-radius: 4px;
+    color: black;
+    padding: 0 5px;
+    user-select: all;
+    font-size: 14px;
 }
 .side-icon {
     vertical-align: middle;

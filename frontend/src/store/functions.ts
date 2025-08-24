@@ -1,5 +1,11 @@
 import {BrowserOpenURL} from "../../wailsjs/runtime";
 import {quadInOut} from "svelte/easing";
+import {GetConfigIniPath, ReadConfig} from "../../wailsjs/go/launcher/ReaderWriter";
+import {current_homepage, homepage_list, homepage_url, select_homepage} from "./changeBody";
+import {GetAllHomePage, ReadFile} from "../../wailsjs/go/launcher/MainMethod";
+import {OpenExplorer} from '../../wailsjs/go/launcher/ReaderWriter'
+import {HttpGet} from "../../wailsjs/go/launcher/Network";
+import {messagebox, MSG_ERROR, showHint} from "./messagebox";
 
 export function DarkAndThemeToConst(darkMode: boolean, themeMode: number): string {
     let co = [[
@@ -35,6 +41,7 @@ export function DarkAndThemeToConst(darkMode: boolean, themeMode: number): strin
     ]]
     return co[darkMode ? 0 : 1][themeMode - 1] ?? "linear-gradient(to left, rgb(16, 106, 196), rgb(18, 119, 221), rgb(16, 106, 196))"
 }
+
 export function DarkAndThemeToMain(darkMode: boolean, themeMode: number): string {
     let co = [[
         "linear-gradient(to left bottom, rgb(4, 22, 27), rgb(6, 17, 35))",
@@ -69,26 +76,28 @@ export function DarkAndThemeToMain(darkMode: boolean, themeMode: number): string
     ]]
     return co[darkMode ? 0 : 1][themeMode - 1] ?? "linear-gradient(to left bottom, rgb(150, 212, 235), rgb(179, 196, 241))"
 }
+
 function judgeVersion(left: string, right: string): boolean {
     let splitLeft = left.split(".")
     let splitRight = right.split(".")
-    for(let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
         let sLeft = parseInt(splitLeft[i]) || 0
         let sRight = parseInt(splitRight[i]) || 0
-        if(sLeft > sRight) {
+        if (sLeft > sRight) {
             return false
-        }else if(sLeft < sRight) {
+        } else if (sLeft < sRight) {
             return true
         }
     }
     return false
 }
+
 // 按照 Forge 版本进行排序（boo是指：当boo为true时，则调用arr[i].version，否则直接排序arr。）
 // 下列方法只适用于：arr要么是个里面包含对象的键值数组，要么直接就是个字符串数组
 export function SortForgeVersion(arr: any[], boo: boolean = false) {
-    for(let i = 0; i < arr.length; i++) {
-        for(let j = 0; j < arr.length - i - 1; j++) {
-            if(judgeVersion(boo ? arr[j].version : arr[j], boo ? arr[j + 1].version : arr[j + 1])) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr.length - i - 1; j++) {
+            if (judgeVersion(boo ? arr[j].version : arr[j], boo ? arr[j + 1].version : arr[j + 1])) {
                 let a = arr[j]
                 arr[j] = arr[j + 1]
                 arr[j + 1] = a
@@ -96,9 +105,11 @@ export function SortForgeVersion(arr: any[], boo: boolean = false) {
         }
     }
 }
+
 export function OpenCustomURL(url: string) {
     BrowserOpenURL(url)
 }
+
 export function copyToClipBoard(message: string) {
     let aux = document.createElement("input");
     aux.setAttribute("value", message);
@@ -107,6 +118,7 @@ export function copyToClipBoard(message: string) {
     document.execCommand("copy");
     document.body.removeChild(aux);
 }
+
 export function slide_up(node: HTMLElement) {
     return {
         duration: 200,
@@ -119,6 +131,7 @@ export function slide_up(node: HTMLElement) {
         }
     }
 }
+
 export function slide_left(node: HTMLElement, param: { x: number }) {
     const x = param.x || 144
     return {
@@ -132,6 +145,7 @@ export function slide_left(node: HTMLElement, param: { x: number }) {
         }
     }
 }
+
 export function slide_opacity(node: HTMLElement) {
     return {
         duration: 200,
@@ -139,5 +153,102 @@ export function slide_opacity(node: HTMLElement) {
         css: (t: number) => {
             return `opacity: ${t};`
         }
+    }
+}
+
+export function parseXmlToJson(xmlString: string): any[] {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+    // 处理解析错误
+    const parseError = xmlDoc.querySelector("parsererror");
+    if (parseError) {
+        throw new Error(parseError.textContent);
+    }
+
+    return convertNode(xmlDoc.documentElement);
+}
+
+function convertNode(node: Node): any[] {
+    const result: any[] = [];
+
+    // 只处理元素节点和文本节点
+    if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        const obj: any = {name: element.tagName};
+
+        // 处理属性
+        for (const attr of Array.from(element.attributes)) {
+            if (attr.name !== "name") { // 跳过 name 属性
+                obj[attr.name] = attr.value;
+            }
+        }
+
+        // 处理子节点
+        const children: any[] = [];
+        for (const childNode of Array.from(element.childNodes)) {
+            if (childNode.nodeType === Node.ELEMENT_NODE) {
+                children.push(...convertNode(childNode));
+            } else if (childNode.nodeType === Node.TEXT_NODE) {
+                const textContent = childNode.textContent?.trim();
+                if (textContent) {
+                    children.push({
+                        name: "text",
+                        content: textContent
+                    });
+                }
+            }
+        }
+
+        // 双标签必须有 children 字段
+        if (element.childNodes.length > 0) {
+            obj.children = children;
+        }
+
+        result.push(obj);
+    }
+
+    return result;
+}
+
+export async function getHomePage(): Promise<string> {
+    let ind = Number(await ReadConfig(await GetConfigIniPath(), "Misc", "SelectHomePage"))
+    if (ind && ind > 0 && ind <= 3) {
+        select_homepage.set(ind)
+        switch (ind) {
+            case 1:
+                //TODO: 预设主页
+                break
+            case 2:
+                let ld = await GetAllHomePage()
+                if(!ld.status) {
+                    await messagebox("错误的主页", "加载到错误的主页！错误信息：" + ld.message, MSG_ERROR)
+                    return
+                }
+                homepage_list.set([...ld.data])
+                let i = Number(await ReadConfig(await GetConfigIniPath(), "Misc", "HomePageValue"))
+                if (i >= 0 && i < ld.data.length) {
+                    current_homepage.set(i)
+                    showHint("主页已设置完毕喵~")
+                    return await ReadFile(ld.data[i].path);
+                }
+                break
+            case 3:
+                let up = await ReadConfig(await GetConfigIniPath(), "Misc", "HomePageURL")
+                homepage_url.set(up)
+                let hp = await HttpGet(up, "")
+                if (hp && hp != "") {
+                    showHint("主页已设置完毕喵~")
+                    return hp;
+                }
+                break
+        }
+    }
+    return "none"
+}
+
+export async function openExplorer(path: string) {
+    if (!(await OpenExplorer(path))){
+        await messagebox("无法打开 文件管理器", "请确保你的系统已经内置 文件管理器。如果你使用的 Linux 发行版与常见的不同，请尝试安装 xdg-open 以打开文件管理器~", MSG_ERROR)
     }
 }

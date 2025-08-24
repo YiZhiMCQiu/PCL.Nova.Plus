@@ -4,7 +4,11 @@ import {launcher} from '../models';
 
 export function GenerateBukkitUUID(arg1:string):Promise<string>;
 
-export function GetAllIPv6():Promise<Array<launcher.IPv6Struct>>;
+export function GenerateTutorialHomePage():Promise<void>;
+
+export function GetAllHomePage():Promise<launcher.ExceptionHandler___NovaPlus_module_launcher_HomePageStruct_>;
+
+export function GetAllIPv6():Promise<launcher.ExceptionHandler___NovaPlus_module_launcher_IPv6Struct_>;
 
 export function GetAvailableMemory():Promise<number>;
 
@@ -13,5 +17,7 @@ export function GetBackgroundImage(arg1:number):Promise<Array<string>>;
 export function GetJavaExecutableFileName():Promise<Array<string>>;
 
 export function GetTotalMemory():Promise<number>;
+
+export function ReadFile(arg1:string):Promise<string>;
 
 export function UUIDToAvatar(arg1:string):Promise<number>;

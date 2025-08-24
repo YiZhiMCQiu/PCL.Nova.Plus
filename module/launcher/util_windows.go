@@ -48,3 +48,6 @@ func CMD(name string, args ...string) *exec.Cmd {
 	}
 	return cmd
 }
+func openExp(fpath string) error {
+	return exec.Command("explorer", fpath).Start()
+}

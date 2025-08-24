@@ -1,13 +1,17 @@
 <script lang="ts">
     import {dark_mode} from "../../store/changeBody";
+    import {createEventDispatcher} from "svelte";
     export let isDisabled = false;
     export let style_in = ""
-    export let click = null;
+    const dispatch = createEventDispatcher()
+    function buttonClick() {
+        dispatch('click')
+    }
     export let title = ""
     $: light = $dark_mode ? "#f6f6f6cf" : "#0a0a0aaf"
     $: hov = $dark_mode ? "#213646cf" : "#c3e0fdcf"
 </script>
-<button title={title} on:click={() => {click == null ? (() => {})() : click()}} style="{style_in}; --hov-color: {hov}; --light-color: {light};" class="button-style cursor-pointer" disabled={isDisabled}>
+<button title={title} on:click={buttonClick} style="{style_in}; --hov-color: {hov}; --light-color: {light};" class="button-style cursor-pointer" disabled={isDisabled}>
     <slot />
 </button>
 <style>

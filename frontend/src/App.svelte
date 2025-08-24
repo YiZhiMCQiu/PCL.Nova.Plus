@@ -17,7 +17,13 @@
     }
   }
   $: ({dark1, dark2} = ConvertDarkToRGB($dark_mode, $theme_mode))
-  $: rotate = $dont_click == 1 ? '180deg' : '0'
+  function getRotate(dont: number) {
+    return {
+      rotateX: dont == 1 || dont == 3 ? '180deg' : '0',
+      rotateY: dont == 1 || dont == 2 ? '180deg' : '0'
+    }
+  }
+  $: ({rotateX, rotateY} = getRotate($dont_click))
   let backImage = ""
   onMount(async () => {
     let d = await ReadConfig(await GetConfigIniPath(), "Misc", "DarkMode")
@@ -34,15 +40,15 @@
   })
 </script>
 
-<div id="all" style="--rotate: {rotate}">
+<div id="all" style="--rotate-y: {rotateY}; --rotate-x: {rotateX}">
   <NavBar />
   <!--背景颜色，在下层-->
-  <main id="back" style="--dark-1: {dark1}; --dark-2: {dark2}">
+  <div id="back" style="--dark-1: {dark1}; --dark-2: {dark2}">
     <!--背景图片，在上层-->
-    <main id="main" style="--back-image: {backImage}">
+    <div id="main" style="--back-image: {backImage}">
       <Body />
-    </main>
-  </main>
+    </div>
+  </div>
   <MyMessageBox />
   <MyNormalHint />
   <MyInputBox />
@@ -56,14 +62,14 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    transform: rotate(var(--rotate));
+    transform: rotateY(var(--rotate-y)) rotateX(var(--rotate-x));
     transition: transform 5s linear;
   }
   #back {
     width: 100%;
     background: linear-gradient(to left bottom, var(--dark-1), var(--dark-2));
     height: calc(100% - 56px);
-    transition: all 10s;
+    transition: all 0.2s;
   }
   #main {
     position: relative;

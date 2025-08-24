@@ -20,17 +20,17 @@
 
     onMount(async () => {
         select_mc.set([])
-        try {
-            let v = await GetMCVersionConfig()
-            for(let i = 0; i < v.mc.length; i++) {
-                select_mc.set([...$select_mc, {
-                    path: v.mc[i].path,
-                    name: v.mc[i].name,
-                }])
-            }
-        }catch(error){
-            await messagebox("JSON 文件有误", "你擅自修改了 MCJson.json 文件，请立刻恢复原样！如果你不知道如何恢复原样，请尝试删除该文件后重试！", MSG_ERROR)
+        let v = await GetMCVersionConfig()
+        if(!v.status) {
+            await messagebox("JSON 文件有误", "你擅自修改了 MCJson.json 文件，请立刻恢复原样！如果你不知道如何恢复原样，请尝试删除该文件后重试！错误信息：" + v.message, MSG_ERROR)
             current_view.set("home")
+            return
+        }
+        for(let i = 0; i < v.data.mc.length; i++) {
+            select_mc.set([...$select_mc, {
+                path: v.data.mc[i].path,
+                name: v.data.mc[i].name,
+            }])
         }
         let m = await ReadConfig(await GetConfigIniPath(), "MC", "SelectMC")
         if (m == "" || parseInt(m) < 0){
@@ -45,13 +45,9 @@
     }
     async function openMCSelectFile() {
         let dirpath = await OpenDirectoryDialog("请选择 MC 根路径")
-        if(dirpath == ""){
-            return
-        }
+        if(dirpath == ""){ return }
         let dirname = await inputbox("输入显示名称", "输入该文件夹在左边栏列表中显示的名称。", 0, "请输入显示名称")
-        if(dirname == ""){
-            return
-        }
+        if(dirname == ""){ return }
         select_mc.set([...$select_mc, {
             path: dirpath,
             name: dirname,
@@ -68,18 +64,18 @@
 >
     <div class="grid">文件夹列表</div>
     <div class="file-list">
-        <MySidebarButton isChecked={$current_mc_index === 0} click={() => {setMCVersionConfig(0)}}>
+        <MySidebarButton isChecked={$current_mc_index === 0} on:click={() => {setMCVersionConfig(0)}}>
             <div style="margin-left: 10px;">当前文件夹</div>
         </MySidebarButton>
         {#each $select_mc as f, i}
-            <MySidebarButton isChecked={$current_mc_index === i + 1} click={() => {setMCVersionConfig(i + 1)}}>
+            <MySidebarButton isChecked={$current_mc_index === i + 1} on:click={() => {setMCVersionConfig(i + 1)}}>
                 <div style="margin-left: 10px;">{f.name}</div>
             </MySidebarButton>
         {/each}
     </div>
     <div class="grid" style="margin-top: 15px">添加或导入</div>
     <div class="list">
-        <MySidebarButton isChecked={false} click={() => {openMCSelectFile()}}>
+        <MySidebarButton isChecked={false} on:click={() => {openMCSelectFile()}}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -92,7 +88,7 @@
             </svg>
             <span>添加已有文件夹</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={false} click={() => {showHint("目前导入整合包暂时还没有做好😭，请敬请期待吧！")}}>
+        <MySidebarButton isChecked={false} on:click={() => {showHint("目前导入整合包暂时还没有做好😭，请敬请期待吧！")}}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

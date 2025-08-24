@@ -191,12 +191,10 @@
         border: 0;
     }
     .nav-button {
-        /*border: 0;*/
         background-color: transparent;
         color: white;
     }
     .active-button {
-        /*border: 1px solid lightgray;*/
         background-color: var(--dark-color);
         color: var(--light-color)
     }
@@ -206,8 +204,6 @@
     .nav-button:hover,
     .icon-control-button:hover {
         background-color: rgba(0, 0, 0, 0.2);
-        /*box-shadow: 0 1px 3px gray;*/
-        /*border: 1px solid lightgray;*/
     }
 
     .nav-button .nav-button-icon,

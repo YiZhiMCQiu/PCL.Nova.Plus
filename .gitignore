@@ -14,5 +14,4 @@ go.sum
 module/launcher/privacy.go
 my/
 .mixin.out/
-*.log
 logs/

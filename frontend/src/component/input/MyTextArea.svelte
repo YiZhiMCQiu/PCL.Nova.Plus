@@ -1,17 +1,17 @@
 <script lang="ts">
     import {dark_mode} from "../../store/changeBody";
+    import {createEventDispatcher} from "svelte";
     export let value = ""
     export let placeholder = ""
-    export let handleInput: ((e: string) => void | null) = null
+    const dispatch = createEventDispatcher()
+    // export let handleInput: ((e: string) => void | null) = null
     export let style_in = ""
     export let title = ""
     export let isReadonly = false
     function textAreaChange(e: Event) {
-        if (handleInput == null) {
-            return
-        }else{
-            handleInput((e.target as HTMLTextAreaElement).value)
-        }
+        dispatch('input', {
+            value: (e.target as HTMLTextAreaElement).value
+        })
     }
     $: ({light, dark} = $dark_mode ? {light: '#e6e6e6cf', dark: '#1a1a1acf'} : {light: '#1a1a1acf', dark: '#e6e6e6cf'})
 </script>

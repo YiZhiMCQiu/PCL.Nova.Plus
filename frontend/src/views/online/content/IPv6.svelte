@@ -31,15 +31,13 @@
             loading_text = "正在加载 IPv6"
             loading_state = false
             let meta = await GetAllIPv6()
-            if(meta.length <= 0) {
-                loading_text = "无法加载 IPv6，您可能目前暂未拥有 IPv6！\n如果你确保你本机拥有 IPv6，清尝试使用 sudo 或者管理员权限再次打开次界面！"
+            console.log(meta)
+            if(!meta.status || meta.data.length <= 0) {
+                loading_text = "无法加载 IPv6，您可能目前暂未拥有 IPv6！<br>如果你确保你本机拥有 IPv6，请尝试使用 sudo 或者管理员权限再次打开次界面！"
                 loading_state = true
                 return
             }
-            select_ipv6.update((value) => {
-                Object.assign(value, meta)
-                return value
-            })
+            select_ipv6.set(meta.data)
         }
     }
     onDestroy(unsubscribe_select_ipv6)
@@ -59,12 +57,10 @@
         <div in:slide_up out:slide_up on:outroend={control_leave}>
             <MySelectCard title="IPv6 检测">
                 <div class="version-all">
-                    <MyNormalButton style_in="width: 100px; height: 30px; margin-bottom: 10px" click={() => {
+                    <MyNormalButton style_in="width: 100px; height: 30px; margin-bottom: 10px" on:click={() => {
                         select_ipv6.set([])
                         reloadIPv6()
-                    }}>
-                        重新检测
-                    </MyNormalButton>
+                    }}>重新检测</MyNormalButton>
                     {#each $select_ipv6 as ipv6, i}
                         <MyCardButton
                                 image={IPv6Image}
@@ -80,7 +76,7 @@
     {:else if isTransitioning}
         <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;" in:slide_opacity out:slide_opacity
              on:outroend={control_leave}>
-            <MyLoadingPickaxe loading_text={loading_text} state={loading_state}/>
+            <MyLoadingPickaxe loading_text={loading_text} state={loading_state} style_in="width: 90%;"/>
         </div>
     {/if}
 </div>

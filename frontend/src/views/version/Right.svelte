@@ -13,7 +13,7 @@
     import {
         GetCurrentMinecraftDir,
         GetMCAllVersion,
-        GetMCVersionConfig
+        GetMCVersionConfig, SetMCVersionConfig
     } from "../../../wailsjs/go/launcher/LaunchMethod";
     import MySelectCard from "../../component/card/MySelectCard.svelte";
     import MyLoadingPickaxe from "../../component/card/MyLoadingPickaxe.svelte";
@@ -21,6 +21,10 @@
     import {current_view} from "../../store/changeBody";
     import MyNormalButton from "../../component/button/MyNormalButton.svelte";
     import {GetConfigIniPath, WriteConfig} from "../../../wailsjs/go/launcher/ReaderWriter";
+    import {MSG_WARNING, showHint} from "../../store/messagebox";
+    import {openExplorer} from "../../store/functions";
+    import {inputbox, messagebox} from "../../store/messagebox.js";
+    import {launcher} from "../../../wailsjs/go/models";
     let fpath = ""
     let isTransitioning = true
     let f = false
@@ -30,10 +34,14 @@
         let c_select_mc_length = []
         if($select_mc.length <= 0) {
             let v = await GetMCVersionConfig()
-            for(let i = 0; i < v.mc.length; i++) {
+            if(!v.status) {
+                showHint("解析 MC 版本路径时出现了点问题，错误信息：" + v.message)
+                return
+            }
+            for(let i = 0; i < v.data.mc.length; i++) {
                 c_select_mc_length.push({
-                    path: v.mc[i].path,
-                    name: v.mc[i].name,
+                    path: v.data.mc[i].path,
+                    name: v.data.mc[i].name,
                 })
             }
         } else {
@@ -83,6 +91,27 @@
     onMount(() => {
         selectMCVersion($current_mc_index)
     })
+    async function renameName() {
+        let ren = await inputbox("重命名名称", "请输入要重命名的名称~")
+        if(ren == "") return
+        select_mc.update(value => {
+            value[$current_mc_index - 1] = {path: fpath, name: ren}
+            return value
+        })
+        await SetMCVersionConfig(launcher.MCConfigs.createFrom({mc: $select_mc}))
+    }
+    async function removeName() {
+        if(await messagebox("是否确定移除", "你真的确定要移除这个版本文件夹吗？此时只是相对于 PCL2.Nova 移除了，但是文件资源管理器里面绝对还在！所以不用担心~", MSG_WARNING, ['yes', 'no']) == 1) {
+            return
+        }
+        select_mc.update(value => {
+            value.splice($current_mc_index - 1, 1)
+            return value
+        })
+        current_mc_index.set(0)
+        await WriteConfig(await GetConfigIniPath(), "MC", "SelectMC", $current_mc_index.toString())
+        await SetMCVersionConfig(launcher.MCConfigs.createFrom({mc: $select_mc}))
+    }
 </script>
 <div
         class="component-right"
@@ -95,14 +124,14 @@
             <div id="version-name">
                 <MySelectCard title="当前文件夹：{fpath}" isExpand={true} in_style="margin-bottom: 20px">
                     <div class="version-all">
-                        <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px" click={() => {}}>
+                        <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px" on:click={() => openExplorer(fpath)}>
                             打开文件夹
                         </MyNormalButton>
                         {#if $current_mc_index !== 0}
-                            <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px" click={() => {}}>
+                            <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px" on:click={renameName}>
                                 重命名文件夹
                             </MyNormalButton>
-                            <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px; border: 1px solid red; color: red;" click={() => {}}>
+                            <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px; border: 1px solid red; color: red;" on:click={removeName}>
                                 移除文件夹
                             </MyNormalButton>
                         {/if}

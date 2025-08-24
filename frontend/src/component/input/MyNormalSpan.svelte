@@ -4,6 +4,6 @@
     export let style_in = ""
     export let title = ""
 </script>
-<label class="font-pcl" title={title} style="font-size: 16px; color: {light}; stroke: {light}; {style_in};" >
+<span class="font-pcl" title={title} style="font-size: 16px; color: {light}; stroke: {light}; {style_in};" >
     <slot />
-</label>
+</span>

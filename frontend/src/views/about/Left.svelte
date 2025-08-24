@@ -12,7 +12,7 @@
     out:slide={{ x: Number(width.replace("px", "")) }}
     on:outroend={after_leave}
 >
-    <MySidebarButton isChecked={$current_about === "Help"} in_style="margin-top: 8px" click={() => {current_about.set("Help")}}>
+    <MySidebarButton isChecked={$current_about === "Help"} in_style="margin-top: 8px" on:click={() => {current_about.set("Help")}}>
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -28,7 +28,7 @@
         </svg>
         <span>帮助</span>
     </MySidebarButton>
-    <MySidebarButton isChecked={$current_about === "About"} click={() => {current_about.set("About")}}>
+    <MySidebarButton isChecked={$current_about === "About"} on:click={() => {current_about.set("About")}}>
         <svg
                 role="img"
                 xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +43,7 @@
         </svg>
         <span>关于与鸣谢</span>
     </MySidebarButton>
-    <MySidebarButton isChecked={$current_about === "Treasure-Box"} click={() => {current_about.set("Treasure-Box")}}>
+    <MySidebarButton isChecked={$current_about === "Treasure-Box"} on:click={() => {current_about.set("Treasure-Box")}}>
         <svg
                 role="img"
                 xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,7 @@
         </svg>
         <span>百宝箱</span>
     </MySidebarButton>
-    <MySidebarButton isChecked={$current_about === "Feedback"} click={() => {current_about.set("Feedback")}}>
+    <MySidebarButton isChecked={$current_about === "Feedback"} on:click={() => {current_about.set("Feedback")}}>
         <svg
                 role="img"
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +75,7 @@
         </svg>
         <span>反馈</span>
     </MySidebarButton>
-    <MySidebarButton isChecked={$current_about === "Discussion"} click={() => {current_about.set("Discussion")}}>
+    <MySidebarButton isChecked={$current_about === "Discussion"} on:click={() => {current_about.set("Discussion")}}>
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -95,7 +95,7 @@
     </MySidebarButton>
     <details class="grid"><summary>小游戏</summary></details>
     <div>
-        <MySidebarButton isChecked={$current_about === "Minesweeper"} click={() => {current_about.set("Minesweeper")}}>
+        <MySidebarButton isChecked={$current_about === "Minesweeper"} on:click={() => {current_about.set("Minesweeper")}}>
             <svg
                     role="img"
                     xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@
             </svg>
             <span>扫雷</span>
         </MySidebarButton>
-        <MySidebarButton isChecked={$current_about === "P2048"} click={() => {current_about.set("P2048")}}>
+        <MySidebarButton isChecked={$current_about === "P2048"} on:click={() => {current_about.set("P2048")}}>
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

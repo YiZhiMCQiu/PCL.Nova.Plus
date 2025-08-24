@@ -1,34 +1,41 @@
 <script lang="ts">
     import {dark_mode} from "../../store/changeBody.js";
-    import {onMount} from "svelte";
+    import {createEventDispatcher, onMount} from "svelte";
     $: ({light, dark, hov} = $dark_mode ? {light: '#f8f8f8cf', dark: '#151515cf', hov: '#151525cf'} : {light: '#151515cf', dark: '#f8f8f8cf', hov: '#e8e8f8cf'})
     export let in_style = ""
     export let title = ""
+    // 是否处在 Expand 状态
     export let isExpand = false
+    // 能否被 Expand，当此值为 false 时，isExpand 将无效（一直处于打开状态）
+    export let canExpand = false
+    // 手动指定 maxHeight
     export let maxHeight = 0
-    export let onComp: ((height: number, isExpand: boolean, title: string) => void | null) = null
-    let cardHeight = "43px"
-    let isExpandComp = !isExpand
-    let myCardRef: (HTMLElement | null) = null
-    function changeProps() {
-        if(!isExpand) return
+    const dispatch = createEventDispatcher()
+    function cardComp() {
+        if(!canExpand) return
         isExpandComp = !isExpandComp
         cardHeight = maxHeight == 0 ? (isExpandComp ? (myCardRef!.offsetHeight + 43) + 'px' : '43px') : (isExpandComp ? (maxHeight + 43) + "px" : "43px")
-        if(onComp != null) {
-            onComp(maxHeight != 0 ? maxHeight : myCardRef!.offsetHeight, isExpandComp, title)
-        }
+        dispatch('comp', {
+            height: maxHeight != 0 ? maxHeight : myCardRef!.offsetHeight,
+            isExpand: isExpandComp,
+            title: title
+        })
     }
+    // export let onComp: ((height: number, isExpand: boolean, title: string) => void | null) = null
+    let cardHeight = "43px"
+    let isExpandComp = canExpand ? !isExpand : true
+    let myCardRef: (HTMLElement | null) = null
     onMount(() => {
-        if(!isExpand) {
+        if((canExpand && !isExpand) || !canExpand) {
             cardHeight = maxHeight == 0 ? ((myCardRef!.offsetHeight + 43) + "px") : (maxHeight + 43) + "px"
         }
     })
 </script>
-<div class="card-container" style="{in_style}; --card-height: {title !== '' ? cardHeight : (parseInt(cardHeight.substring(0, cardHeight.length - 2)) - 43) + 'px'}; --dark-color: {dark}; --light-color: {light}; --hov-color: {hov}">
+<div class="card-container" style:height={title !== '' ? cardHeight : (parseInt(cardHeight.substring(0, cardHeight.length - 2)) - 43) + 'px'} style="{in_style}; --dark-color: {dark}; --light-color: {light}; --hov-color: {hov}">
     {#if title !== ''}
-        <div class="grid {isExpand ? 'cursor-pointer' : ''}"
+        <div class="grid {canExpand ? 'cursor-pointer' : ''}"
             data-isOpen={isExpandComp ? 'expand' : 'close'}
-            on:click={() => changeProps()} on:keydown|preventDefault
+            on:click={cardComp} on:keydown|preventDefault
         >
             {title}
             <svg
@@ -39,7 +46,7 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     fill="none" class="{isExpandComp ? 'card-icon-expand' : 'card-icon'}"
-                    style="{isExpand ? 'display: flow' : 'display: none'}">
+                    style="{canExpand ? 'display: flow' : 'display: none'}">
                 <polyline points="6 10 12 16 18 10"/>
             </svg>
         </div>
@@ -53,7 +60,6 @@
 <style>
     .card-container {
         flex-shrink: 0;
-        height: var(--card-height);
         border-radius: 6px;
         transition: all 0.2s;
         margin: 15px 22px 0 22px;

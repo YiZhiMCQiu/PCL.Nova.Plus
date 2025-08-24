@@ -31,79 +31,93 @@ type LaunchMethod struct {
 	Ctx context.Context
 }
 
-func (lm *LaunchMethod) GetMCVersionConfig() MCConfigs {
+func (lm *LaunchMethod) GetMCVersionConfig() ExceptionHandler[MCConfigs] {
+	exception := func(err error) ExceptionHandler[MCConfigs] {
+		return NewExceptionHandler(500, false, "File System Error: "+err.Error(), MCConfigs{Mc: []MCConfig{}})
+	}
 	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "MCJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
 	if content, _ := mmcll.GetFile(cur); content == "" {
 		err := mmcll.SetFile(cur, "{\n\t\"mc\": []\n}")
 		if err != nil {
-			panic(err)
+			return exception(err)
 		}
-		return MCConfigs{Mc: make([]MCConfig, 0)}
+		return NewExceptionHandler(201, true, "OK!", MCConfigs{Mc: []MCConfig{}})
 	} else {
 		var arr MCConfigs
 		err = json.Unmarshal([]byte(content), &arr)
 		if err != nil {
-			panic(err)
+			return exception(err)
 		}
-		return arr
+		return NewExceptionHandler(200, true, "OK!", arr)
 	}
 }
 
-func (lm *LaunchMethod) SetMCVersionConfig(mc MCConfigs) {
+func (lm *LaunchMethod) SetMCVersionConfig(mc MCConfigs) ExceptionHandler[any] {
+	exception := func(err error) ExceptionHandler[any] {
+		return NewExceptionHandler[any](500, false, "File System Error: "+err.Error(), nil)
+	}
 	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "MCJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
 	res, err := json.MarshalIndent(mc, "", "\t")
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
 	err = mmcll.SetFile(cur, string(res))
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
+	return NewExceptionHandler[any](201, true, "Created!", nil)
 }
 
-func (lm *LaunchMethod) GetJavaConfig() JavaConfigs {
+func (lm *LaunchMethod) GetJavaConfig() ExceptionHandler[JavaConfigs] {
+	exception := func(err error) ExceptionHandler[JavaConfigs] {
+		return NewExceptionHandler(500, false, "File System Error: "+err.Error(), JavaConfigs{Java: []JavaConfig{}})
+	}
 	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "JavaJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
-	if content, err := mmcll.GetFile(cur); err != nil {
+	if content, err := mmcll.GetFile(cur); content == "" {
 		err := mmcll.SetFile(cur, "{\n\t\"java\": []\n}")
 		if err != nil {
-			panic(err)
+			return exception(err)
 		}
-		return JavaConfigs{Java: make([]JavaConfig, 0)}
+		return NewExceptionHandler(201, true, "Created!", JavaConfigs{Java: []JavaConfig{}})
 	} else {
 		var arr JavaConfigs
 		err = json.Unmarshal([]byte(content), &arr)
 		if err != nil {
-			panic(err)
+			return exception(err)
 		}
-		return arr
+		return NewExceptionHandler(200, true, "OK!", arr)
 	}
 }
-func (lm *LaunchMethod) SetJavaConfig(java JavaConfigs) {
+func (lm *LaunchMethod) SetJavaConfig(java JavaConfigs) ExceptionHandler[any] {
+	exception := func(err error) ExceptionHandler[any] {
+		return NewExceptionHandler[any](500, false, "File System Error: "+err.Error(), nil)
+	}
 	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "JavaJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
 	res, err := json.MarshalIndent(java, "", "\t")
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
 	err = mmcll.SetFile(cur, string(res))
 	if err != nil {
-		panic(err)
+		return exception(err)
 	}
+	return NewExceptionHandler[any](201, true, "Created!", nil)
 }
 
 // GetMCAllVersion 从 versions 目录下，提取出所有的 MC 版本并返回给前端
@@ -136,16 +150,11 @@ func (lm *LaunchMethod) GetCurrentMinecraftDir() string {
 	return filepath.Join(GetCurrentExeDir(), ".minecraft")
 }
 
-func (lm *LaunchMethod) GetJavaInfo(path string) JavaConfig {
+func (lm *LaunchMethod) GetJavaInfo(path string) ExceptionHandler[JavaConfig] {
 	cmd := CMD(path, "-XshowSettings:properties", "-version")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return JavaConfig{
-			Path:    err.Error(),
-			Vendor:  "",
-			Version: "",
-			Arch:    "",
-		}
+		return NewExceptionHandler(500, false, "Command failed with: "+err.Error(), JavaConfig{})
 	}
 	outStr := string(out)
 	outStrSlice := strings.Split(outStr, "\n")
@@ -164,26 +173,32 @@ func (lm *LaunchMethod) GetJavaInfo(path string) JavaConfig {
 			}
 		}
 	}
-	return result
+	return NewExceptionHandler(200, true, "OK!", result)
 }
-func (lm *LaunchMethod) LaunchGame() string {
+func (lm *LaunchMethod) LaunchGame() ExceptionHandler[string] {
+	exception := func(message string, data string) ExceptionHandler[string] {
+		return NewExceptionHandler(400, false, message, data)
+	}
 	rw := ReaderWriter{
 		Ctx: lm.Ctx,
 	}
 	acc := AccountMethod{
 		Ctx: lm.Ctx,
 	}
-
 	configIniPath := rw.GetConfigIniPath()
-	accounts := acc.GetAccountConfig().Accounts
+	accountRaw := acc.GetAccountConfig()
+	if !accountRaw.Status {
+		return exception("JSON Parse Exception: "+accountRaw.Message, "Account JSON Is Error!")
+	}
+	accounts := accountRaw.Data.Accounts
 	accIndexStr := rw.ReadConfig(rw.GetOtherIniPath(), "Account", "SelectAccount")
 	accIndex, err := strconv.Atoi(accIndexStr)
 	if err != nil {
-		return "Cannot convert account index to int"
+		return exception("Convert Exception: "+err.Error(), "Cannot convert precon index to int")
 	}
 	account, ok := mmcll.SafeGet(accounts, accIndex)
 	if !ok {
-		return "Account array index out of range!"
+		return exception("Array Index Out Of Bounds", "Account array index out of bounds")
 	}
 	var accountStruct mmcll.LaunchAccount
 	if account.Name != "" && account.UUID != "" {
@@ -195,24 +210,28 @@ func (lm *LaunchMethod) LaunchGame() string {
 			}
 		}
 	} else {
-		return "Account Name or UUID is Empty!"
+		return exception("Cannot find any data!", "Account Name or UUID is Empty!")
 	}
-	javas := lm.GetJavaConfig().Java
+	javaRaw := lm.GetJavaConfig()
+	if !javaRaw.Status {
+		return exception("JSON Parse Exception: "+javaRaw.Message, "Account Name or UUID is Empty!")
+	}
+	javas := javaRaw.Data.Java
+	//javas := lm.GetJavaConfig().Java
 	javaIndexStr := rw.ReadConfig(configIniPath, "Java", "SelectJava")
 	javaIndex, err := strconv.Atoi(javaIndexStr)
 	if err != nil {
-		return "Cannot convert java index to int"
+		return exception("Convert Exception: "+err.Error(), "Cannot convert java index to int")
 	}
 	java, ok := mmcll.SafeGet(javas, javaIndex)
 	if !ok {
-		return "Java array index out of range!"
+		return exception("Array Index Out Of Bounds", "Java array index out of bounds")
 	}
 	javaPath := java.Path
-	roots := lm.GetMCVersionConfig().Mc
 	rootIndexStr := rw.ReadConfig(configIniPath, "MC", "SelectMC")
 	rootIndex, err := strconv.Atoi(rootIndexStr)
 	if err != nil {
-		return "Cannot convert root index to int"
+		return exception("Convert Exception: "+err.Error(), "Cannot convert root index to int")
 	}
 	var root MCConfig
 	if rootIndex == 0 {
@@ -220,9 +239,14 @@ func (lm *LaunchMethod) LaunchGame() string {
 			Path: lm.GetCurrentMinecraftDir(),
 		}
 	} else {
+		rootRaw := lm.GetMCVersionConfig()
+		if !rootRaw.Status {
+			return exception("JSON Parse Exception: "+rootRaw.Message, "MC Version Config JSON Is Error!")
+		}
+		roots := rootRaw.Data.Mc
 		root, ok = mmcll.SafeGet(roots, rootIndex-1)
 		if !ok {
-			return "Root array index out of range!"
+			return exception("Array Index Out Of Bounds", "Root array index out of bounds")
 		}
 	}
 	rootPath := root.Path
@@ -230,11 +254,11 @@ func (lm *LaunchMethod) LaunchGame() string {
 	verIndexStr := rw.ReadConfig(configIniPath, "MC", "SelectVer")
 	verIndex, err := strconv.Atoi(verIndexStr)
 	if err != nil {
-		return "Cannot convert root version to int"
+		return exception("Convert Exception: "+err.Error(), "Cannot convert root version index to int")
 	}
 	ver, ok := mmcll.SafeGet(vers, verIndex)
 	if !ok {
-		return "Version array index out of range!"
+		return exception("Array Index Out Of Bounds", "Version array index out of bounds")
 	}
 	isolation := rw.ReadConfig(configIniPath, "Document", "SelectIsolation") == "4"
 	gamePath := mmcll.If(isolation, ver, rootPath).(string)
@@ -272,25 +296,9 @@ func (lm *LaunchMethod) LaunchGame() string {
 		if e != nil {
 			panic(e)
 		}
-		//stdout, _ := cmd.StdoutPipe()
-		//e := cmd.Start()
-		//if e != nil {
-		//	panic(e)
-		//	return
-		//}
-		//scanner := bufio.NewScanner(stdout)
-		//for scanner.Scan() {
-		//	fmt.Println(scanner.Text())
-		//	runtime.EventsEmit(lm.Ctx, "game_log", scanner.Text())
-		//}
-		//e = cmd.Wait()
-		//if e != nil {
-		//	panic(e)
-		//	return
-		//}
 	})
 	if err != nil {
-		return "You have some error! please try to view it: " + err.Error()
+		return exception("Launch some Error occurred!", "You have some error! please try to view it: "+err.Error())
 	}
-	return ""
+	return NewExceptionHandler(200, true, "Ok!", "")
 }
