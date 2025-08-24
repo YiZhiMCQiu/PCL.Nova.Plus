@@ -32,10 +32,10 @@ jobs:
       - name: Generate Secret File
         run: |
           echo 'package main' >> module/launcher/privacy.go
-          echo 'func ClientId() {' >> module/launcher/privacy.go
+          echo 'func ClientId() string {' >> module/launcher/privacy.go
           echo '    return "${{secrets.MS_KEY}}"'
           echo '}' >> module/launcher/privacy.go
-          echo 'func XApiKey() {' >> module/launcher/privacy.go
+          echo 'func XApiKey() string {' >> module/launcher/privacy.go
           echo '    return "${{secrets.CF_KEY}}"'
           echo '}' >> module/launcher/privacy.go
         shell: pwsh

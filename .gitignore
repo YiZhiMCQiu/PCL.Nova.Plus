@@ -12,6 +12,6 @@ go.sum
 # In Future, This file will be replace!
 
 module/launcher/privacy.go
-my/
-.mixin.out/
-logs/
+my
+.mixin.out
+logs
