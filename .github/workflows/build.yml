@@ -33,10 +33,10 @@ jobs:
         run: |
           echo 'package launcher' >> module/launcher/privacy.go
           echo 'func ClientId() string {' >> module/launcher/privacy.go
-          echo '    return "${{secrets.MS_KEY}}"'
+          echo '    return "${{secrets.MS_KEY}}"' >> module/launcher/privacy.go
           echo '}' >> module/launcher/privacy.go
           echo 'func XApiKey() string {' >> module/launcher/privacy.go
-          echo '    return "${{secrets.CF_KEY}}" >> module/launcher/privacy.go'
+          echo '    return "${{secrets.CF_KEY}}"' >> module/launcher/privacy.go
           echo '}' >> module/launcher/privacy.go
         shell: pwsh
       - name: Build wails
