@@ -31,12 +31,12 @@ jobs:
           submodules: recursive
       - name: Generate Secret File
         run: |
-          echo 'package main' >> module/launcher/privacy.go
+          echo 'package launcher' >> module/launcher/privacy.go
           echo 'func ClientId() string {' >> module/launcher/privacy.go
           echo '    return "${{secrets.MS_KEY}}"'
           echo '}' >> module/launcher/privacy.go
           echo 'func XApiKey() string {' >> module/launcher/privacy.go
-          echo '    return "${{secrets.CF_KEY}}"'
+          echo '    return "${{secrets.CF_KEY}}" >> module/launcher/privacy.go'
           echo '}' >> module/launcher/privacy.go
         shell: pwsh
       - name: Build wails
