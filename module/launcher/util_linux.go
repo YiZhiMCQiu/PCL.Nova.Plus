@@ -37,24 +37,24 @@ func openExp(fpath string) error {
 	// 根据桌面环境选择相应的文件管理器
 	switch {
 	case strings.Contains(desktopEnv, "gnome"):
-		return exec.Command("nautilus", path).Start()
+		return exec.Command("nautilus", fpath).Start()
 	case strings.Contains(desktopEnv, "kde"):
-		return exec.Command("dolphin", path).Start()
+		return exec.Command("dolphin", fpath).Start()
 	case strings.Contains(desktopEnv, "xfce"):
-		return exec.Command("thunar", path).Start()
+		return exec.Command("thunar", fpath).Start()
 	case strings.Contains(desktopEnv, "mate"):
-		return exec.Command("caja", path).Start()
+		return exec.Command("caja", fpath).Start()
 	case strings.Contains(desktopEnv, "lxde"):
-		return exec.Command("pcmanfm", path).Start()
+		return exec.Command("pcmanfm", fpath).Start()
 	case strings.Contains(desktopEnv, "cinnamon"):
-		return exec.Command("nemo", path).Start()
+		return exec.Command("nemo", fpath).Start()
 	case strings.Contains(desktopEnv, "pantheon"):
-		return exec.Command("io.elementary.files", path).Start()
+		return exec.Command("io.elementary.files", fpath).Start()
 	case strings.Contains(desktopEnv, "budgie"):
-		return exec.Command("nautilus", path).Start()
+		return exec.Command("nautilus", fpath).Start()
 	default:
 		// 尝试使用xdg-open作为后备方案
-		if err := exec.Command("xdg-open", path).Start(); err != nil {
+		if err := exec.Command("xdg-open", fpath).Start(); err != nil {
 			return fmt.Errorf("无法识别桌面环境或缺少文件管理器: %s", desktopEnv)
 		}
 		return nil
