@@ -25,6 +25,7 @@
     import {openExplorer} from "../../store/functions";
     import {inputbox, messagebox} from "../../store/messagebox.js";
     import {launcher} from "../../../wailsjs/go/models";
+    import MyNormalSpan from "../../component/input/MyNormalSpan.svelte";
     let fpath = ""
     let isTransitioning = true
     let f = false
@@ -122,8 +123,9 @@
     {#if isTransitioning}
         <div id="transitioning" in:slide out:slide on:outroend={control_leave}>
             <div id="version-name">
-                <MySelectCard title="当前文件夹：{fpath}" isExpand={true} in_style="margin-bottom: 20px">
+                <MySelectCard title="当前文件夹" isExpand={true} in_style="margin-bottom: 20px">
                     <div class="version-all">
+                        <MyNormalSpan>{fpath}</MyNormalSpan><br>
                         <MyNormalButton style_in="width: 100px; height: 30px; margin-right: 10px" on:click={() => openExplorer(fpath)}>
                             打开文件夹
                         </MyNormalButton>

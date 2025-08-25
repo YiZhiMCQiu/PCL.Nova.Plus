@@ -123,19 +123,19 @@
         <div id="bottom">
             <MyNormalButton
                     style_in="height: 75px; width: calc(100% - 52px); border: 1px solid #216fbd; margin-top: 6px"
-                    isDisabled={!$current_account_page} click={launchGame}>
+                    isDisabled={!$current_account_page} on:click={launchGame}>
                 <span id="launch-title">启动游戏</span><br>
                 <span id="launch-version">{version_name}</span>
             </MyNormalButton>
             <div id="setting">
                 <MyNormalButton style_in="width: calc(50% - 4px); height: 40px;" isDisabled={!$current_account_page}
-                                click={() => {
+                                on:click={() => {
                     current_view.set("version")
                 }}>
                     选择核心
                 </MyNormalButton>
                 <MyNormalButton style_in="width: calc(50% - 4px); height: 40px;" isDisabled={!$current_account_page}
-                                click={() => {
+                                on:click={() => {
                     showHint("目前独立核心设置暂时还没有做好😭，请敬请期待吧！")
                 }}>
                     核心设置

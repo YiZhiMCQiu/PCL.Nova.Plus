@@ -24,7 +24,7 @@
     <div class="comp-desc">
         <div class="comp-header"><MyNormalSpan style_in="font-size: 16px; vertical-align: middle;">{mod_name} </MyNormalSpan><span class="comp-description">| {mod_id}</span></div>
         <div class="comp-center">
-            {#each libraries as lib}<span class="code">{lib}</span>{/each}
+            {#each libraries as lib}<span class="code" style="user-select: none;">{lib}</span>{/each}
             <span class="comp-description">{description}</span>
         </div>
         <div class="comp-footer">
