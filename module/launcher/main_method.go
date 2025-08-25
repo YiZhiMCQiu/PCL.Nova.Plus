@@ -97,18 +97,12 @@ func (rw *ReaderWriter) GetOtherIniPath() string {
 	}
 	res := filepath.Join(home, "Other.ini")
 	err = EnsureConfigFile(res)
-	if err != nil {
-		return ""
-	}
-	return res
+	return mmcll.If(err != nil, "", res).(string)
 }
 func (rw *ReaderWriter) GetConfigIniPath() string {
 	res := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "PCL2.Nova.ini")
 	err := EnsureConfigFile(res)
-	if err != nil {
-		return ""
-	}
-	return res
+	return mmcll.If(err != nil, "", res).(string)
 }
 func (rw *ReaderWriter) GetCurrentExeDir() string {
 	return GetCurrentExeDir()
@@ -118,10 +112,7 @@ func (rw *ReaderWriter) OpenDirectoryDialog(title string) string {
 		Title:                title,
 		CanCreateDirectories: true,
 	})
-	if err != nil {
-		return ""
-	}
-	return dialog
+	return mmcll.If(err != nil, "", dialog).(string)
 }
 func (rw *ReaderWriter) OpenFileDialog(title string, filter []string) string {
 	var fileFilter []runtime.FileFilter
@@ -131,15 +122,20 @@ func (rw *ReaderWriter) OpenFileDialog(title string, filter []string) string {
 			Pattern:     f,
 		})
 	}
-	dialog, err := runtime.OpenFileDialog(rw.Ctx, runtime.OpenDialogOptions{
-		Title:                title,
-		CanCreateDirectories: true,
-		Filters:              fileFilter,
-	})
-	if err != nil {
-		return ""
+	if len(filter) == 0 {
+		dialog, err := runtime.OpenFileDialog(rw.Ctx, runtime.OpenDialogOptions{
+			Title:                title,
+			CanCreateDirectories: true,
+		})
+		return mmcll.If(err != nil, "", dialog).(string)
+	} else {
+		dialog, err := runtime.OpenFileDialog(rw.Ctx, runtime.OpenDialogOptions{
+			Title:                title,
+			CanCreateDirectories: true,
+			Filters:              fileFilter,
+		})
+		return mmcll.If(err != nil, "", dialog).(string)
 	}
-	return dialog
 }
 func (rw *ReaderWriter) OpenExplorer(fpath string) bool {
 	err := openExp(fpath)
@@ -148,10 +144,7 @@ func (rw *ReaderWriter) OpenExplorer(fpath string) bool {
 
 func GetCurrentExeDir() string {
 	exePath, err := os.Executable()
-	if err != nil {
-		return ""
-	}
-	return filepath.Dir(exePath)
+	return mmcll.If(err != nil, "", filepath.Dir(exePath)).(string)
 }
 func GetHash(str string) uint64 {
 	result := uint64(5381)
@@ -315,7 +308,7 @@ func (mm *MainMethod) GetJavaExecutableFileName() []string {
 	if runtime2.GOOS == "windows" {
 		return []string{"java.exe", "javaw.exe"}
 	} else {
-		return []string{"java", "javaw"}
+		return []string{}
 	}
 }
 

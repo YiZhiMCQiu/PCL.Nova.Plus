@@ -155,7 +155,7 @@
 2. fix(Java): 修复了 Java 在前端展示信息时，误把路径写成版本号的 bug（
 3. fix(IPv6): 稍微修复了一丢丢的 IPv6 获取逻辑（现在**应该**不会再导致窗口卡死了）
 
-**# 0.0.16
+# 0.0.16
 
 ### refactor:
 
@@ -181,4 +181,12 @@
 1. fix(afdian): 修复了爱发电图标失效的bug
 2. fix(IPv6): 彻底修复了 IPv6 检测~
 3. fix(MCVersion): MC 文件夹管理可能会导致一些问题
-4. fix(AccountSelect): 启动游戏时可能出**现的 Cannot convert account index to int 报错~
+4. fix(AccountSelect): 启动游戏时可能出现的 Cannot convert account index to int 报错~
+
+# 0.0.16.1
+
+### fix
+
+1. fix(ModSearch): 修复了在搜索模组时不识别空格导致的意外错误
+2. fix(ModSearch): 修复了搜索无结果时，不会产生报错的bug（一直停留在加载界面）
+3. fix(JavaSearch): 修复了在类 Unix 系统上，无法找 Java 的问题（解决方案是，不设置 Java 的判断！）

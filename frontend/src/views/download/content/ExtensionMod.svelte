@@ -40,33 +40,14 @@
     async function onSearch() {
         loading_text = "正在搜索 Mod 中~"
         loading_state = false
-        // search_mod_cache.set([
-        //     {
-        //         image_url: '',
-        //         mod_name: "Fabric API",
-        //         mod_id: "114514",
-        //         libraries: ["123", "456"],
-        //         description: "Hello World!!!",
-        //         mod_type: "Fabric",
-        //         download_count: "9182万",
-        //         update_date: "2025年7月8日",
-        //         mod_source: "Modrinth"
-        //     },
-        //     {
-        //         image_url: '',
-        //         mod_name: "Fabric API",
-        //         mod_id: "114514",
-        //         libraries: ["123", "456"],
-        //         description: "Hello World!!!222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
-        //         mod_type: "Fabric",
-        //         download_count: "9182万",
-        //         update_date: "2025年7月8日",
-        //         mod_source: "Modrinth"
-        //     }
-        // ])
-        let cg = await HttpGet(ModrinthSearchURL + `&query=${searchText}`, "")
+        let cg = await HttpGet(ModrinthSearchURL + `&query=${encodeURIComponent(searchText)}`, "")
         if(cg != "") {
             let json = JSON.parse(cg).hits
+            if(json.length <= 0) {
+                loading_text = "未能找到你所需要的 Mod！"
+                loading_state = true
+                return
+            }
             for(let i = 0; i < json.length; i++) {
                 search_mod_cache.update(value => {
                     value.push({

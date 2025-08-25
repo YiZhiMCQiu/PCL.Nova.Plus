@@ -85,7 +85,7 @@ func (lm *LaunchMethod) GetJavaConfig() ExceptionHandler[JavaConfigs] {
 	if err != nil {
 		return exception(err)
 	}
-	if content, err := mmcll.GetFile(cur); content == "" {
+	if content, _ := mmcll.GetFile(cur); content == "" {
 		err := mmcll.SetFile(cur, "{\n\t\"java\": []\n}")
 		if err != nil {
 			return exception(err)
