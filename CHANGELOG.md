@@ -194,9 +194,10 @@
 
 # 0.0.16.2
 
-### feature:
+### feat:
 
-1. feature(IsCheckLibraries): 新增了 是否校验 Libraries 的按钮！当打勾时，将会校验 Libraries 中的 sha1 是否匹配。如果匹配，则添加，反之则跳过（
+1. feat(IsCheckLibraries): 新增了 是否校验 Libraries 的按钮！当打勾时，将会校验 Libraries 中的 sha1 是否匹配。如果匹配，则添加，反之则跳过（
    - 如果不勾选的话，则不会校验 libraries 的 sha1。。
    - 在某些不需要校验 sha1 的情况下（例如你手动为某个 MC Libraries 打了个 patcher 补丁时），这非常有用！
    - 默认勾选。。可以在设置里手动关闭。
+2. feat(MyCheckButton): 更新了一个复选框组件！总算是更新了（不容易啊。。
