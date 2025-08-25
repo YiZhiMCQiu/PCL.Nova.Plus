@@ -64,7 +64,7 @@ func (account *AccountMethod) GetAccountConfig() ExceptionHandler[AccountList] {
 	}
 	cur := filepath.Join(home, "AccountJSON.json")
 	if content, _ := mmcll.GetFile(cur); content == "" {
-		err := mmcll.SetFile(cur, "{\n\t\"mc\": []\n}")
+		err := mmcll.SetFile(cur, "{\n\t\"accounts\": []\n}")
 		if err != nil {
 			return exception(err)
 		}

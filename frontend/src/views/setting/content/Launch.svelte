@@ -23,6 +23,7 @@
     import {GetAvailableMemory} from "../../../../wailsjs/go/launcher/MainMethod.js";
     import {GetJavaExecutableFileName, GetTotalMemory} from "../../../../wailsjs/go/launcher/MainMethod";
     import {current_setting, current_view} from "../../../store/changeBody";
+    import MyCheckButton from "../../../component/button/MyCheckButton.svelte";
 
     export let slide = null
     export let after_leave = null
@@ -50,6 +51,7 @@
     let currentNum = 0
     let isIsolation = true
     let customInfo = ""
+    let isCheckLibraries = true
     let winWidth = 854
     let winHeight = 480
     let additionalJVM = ""
@@ -68,6 +70,13 @@
         }
         additionalJVM = await ReadConfig(await GetConfigIniPath(), "Document", "AdditionalJVM")
         additionalGame = await ReadConfig(await GetConfigIniPath(), "Document", "AdditionalGame")
+        let icl = await ReadConfig(await GetConfigIniPath(), "Document", "IsCheckLibraries")
+        if(icl == "") {
+            isCheckLibraries = true
+            await WriteConfig(await GetConfigIniPath(), "Document", "IsCheckLibraries", "1")
+        }else{
+            isCheckLibraries = icl == '1'
+        }
     }
     async function reloadMemory() {
         if (totalMemory == 0) {
@@ -232,6 +241,10 @@
             await WriteConfig(await GetConfigIniPath(), "Document", "AdditionalJVM", additionalGame)
         }
     }
+    async function changeIsCheckLibraries() {
+        isCheckLibraries = !isCheckLibraries
+        await WriteConfig(await GetConfigIniPath(), "Document", "IsCheckLibraries", isCheckLibraries ? '1' : '0')
+    }
 </script>
 <div
         class="component-launch"
@@ -364,6 +377,9 @@
                                      title="文本框中的内容将会被直接拼合在启动参数的末尾。&#13;例如，输入 --demo 则会以试玩模式启动游戏。"
                                      placeholder="请输入额外游戏参数" value={additionalGame} on:blur={(e) => handleAdditionalInput(e.detail.value, 2)}/>
                     </div>
+                    <div class="normal-setting">
+                        <MyCheckButton isChecked={isCheckLibraries} on:click={changeIsCheckLibraries} title="如果这个复选框打开，则默认会校验 Libraries，反之则不会校验（">是否校验 Libraries</MyCheckButton>
+                    </div>
                 </div>
             </MySelectCard>
         </div>
@@ -450,5 +466,9 @@
         background-color: rgba(0, 0, 0, 0.2);
         padding: 0 5px;
         border-radius: 4px;
+    }
+    .normal-setting {
+        width: 100%;
+        height: 40px;
     }
 </style>

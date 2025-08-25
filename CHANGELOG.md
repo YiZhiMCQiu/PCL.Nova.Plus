@@ -185,9 +185,18 @@
 
 # 0.0.16.1
 
-### fix
+### fix:
 
 1. fix(ModSearch): 修复了在搜索模组时不识别空格导致的意外错误
 2. fix(ModSearch): 修复了搜索无结果时，不会产生报错的bug（一直停留在加载界面）
 3. fix(JavaSearch): 修复了在类 Unix 系统上，无法找 Java 的问题（解决方案是，不设置 Java 的判断！）
 4. fix(VersionPath): 由于在0.0.15.2-0.0.16的过程中出现了毁灭性更改，因此启动游戏、选择核心部分写炸了（按钮无法跳转），现已修复！
+
+# 0.0.16.2
+
+### feature:
+
+1. feature(IsCheckLibraries): 新增了 是否校验 Libraries 的按钮！当打勾时，将会校验 Libraries 中的 sha1 是否匹配。如果匹配，则添加，反之则跳过（
+   - 如果不勾选的话，则不会校验 libraries 的 sha1。。
+   - 在某些不需要校验 sha1 的情况下（例如你手动为某个 MC Libraries 打了个 patcher 补丁时），这非常有用！
+   - 默认勾选。。可以在设置里手动关闭。

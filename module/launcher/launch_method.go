@@ -281,6 +281,10 @@ func (lm *LaunchMethod) LaunchGame() ExceptionHandler[string] {
 	} else {
 		option.SetCustomInfo("PCL.Nova.Plus")
 	}
+	isCheckLibraries := rw.ReadConfig(configIniPath, "Document", "IsCheckLibraries")
+	if isCheckLibraries == "1" {
+		option.SetIsCheckLibraries(true)
+	}
 	additionalJVM := rw.ReadConfig(configIniPath, "Version", "AdditionalJVM")
 	if additionalJVM != "" {
 		option.SetAdditionalJvm(additionalJVM)
