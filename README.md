@@ -31,6 +31,15 @@
    4. 部署比`BakaXL 4`容易
    5. 注释比`BakaXL 4`全面
 
+## 本软件支持的系统为：
+
+1. Windows: 10/11 AMD64/ARM64
+2. macOS: 10.15+ AMD64 for development, macOS 10.13+ for release
+3. macOS 11.0+ ARM64
+4. Linux AMD64/ARM64
+
+- 如果上述未能体现出符合您的架构，请参见[wails官网](https://wails.io/docs/gettingstarted/installation/)，只需要面对对应的架构去 `Release` 界面下载即可！
+
 ## 本软件已正式支持自定义主页！
 
 - 各位可以查阅一下自定义主页的[规范与教程](./HomePageStandard.md)
