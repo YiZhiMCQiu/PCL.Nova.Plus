@@ -92,7 +92,6 @@
     }
     onMount(async () => {
         await loadingHomePage()
-        console.log($homepage_list)
         if($select_homepage < 0) {
             let index = Number(await ReadConfig(await GetConfigIniPath(), "Misc", "SelectHomePage"))
             select_homepage.set(Number(index >= 0 ? index : -1))

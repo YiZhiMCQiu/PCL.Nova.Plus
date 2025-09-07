@@ -9,9 +9,14 @@
     function buttonClick() {
         dispatch('click')
     }
-    $: light = $dark_mode ? "#e6e6e6cf" : "#0a0a0aaf"
-    $: hov = $dark_mode ? "#f6f6f6cf" : "#1a1a1acf"
-    $: act = $dark_mode ? "#f0f0f0cf" : "#101010cf"
+    function getColors(dark: boolean) {
+        return {
+            light: dark ? '#e6e6e6cf' : '#0a0a0aaf',
+            hov: dark ? '#f6f6f6cf' : '#1a1a1acf',
+            act: dark ? '#f0f0f0cf' : '#101010cf'
+        }
+    }
+    $: ({light, hov, act} = getColors($dark_mode))
     let tc: (HTMLSpanElement | null) = null
     let rawStyle = `font-size: 16px; color: ${light}; stroke: ${light}; transition: all 0.2s;`
     let hovStyle = `font-size: 16px; color: ${hov}; stroke: ${hov}; transition: all 0.2s; cursor: pointer;`

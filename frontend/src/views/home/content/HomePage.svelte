@@ -17,7 +17,7 @@
     import RedstoneBlock from '../../../assets/images/Blocks/RedstoneBlock.png'
     import RedstoneLampOn from '../../../assets/images/Blocks/RedstoneLampOn.png'
     import RedstoneLampOff from '../../../assets/images/Blocks/RedstoneLampOff.png'
-    import {homepage_cache} from "../../../store/changeBody.js";
+    import {homepage_cache, homepage_value} from "../../../store/changeBody.js";
     import {messagebox, showHint} from "../../../store/messagebox.js";
     import {OpenCustomURL} from "../../../store/functions";
     interface controlStruct {
@@ -25,7 +25,7 @@
         name?: string,
         title?: string,
         style?: string,
-        children?: Array<object>,
+        children?: Array<any>,
         isExpand?: string,
         canExpand?: string,
         content?: string,
@@ -36,14 +36,16 @@
         alt?: string,
         path?: string,
         color?: string,
-        event?: string
+        event?: string,
+        id?: string,
     }
     export let control: controlStruct = {}
     let exePath = ""
     onMount(async () => {
         exePath = await GetCurrentExeDir()
     })
-    async function onButtonClick(ev) {
+    async function onButtonClick(ev: string) {
+        if(ev == undefined || ev == '') return
         let event_split = ev.split("|")
         let name = event_split[0]
         if(name === "messagebox") {
@@ -55,9 +57,24 @@
             homepage_cache.set("")
         }
     }
+    function addValue(id: string, children: Array<any>): string {
+        if(children.length != 1 || children[0].name != 'text') return ''
+        homepage_value.update((value) => {
+            value[id] = children[0].content
+            return value
+        })
+        return ''
+    }
+    function replaceValue(raw: string): string {
+        if(raw == undefined || raw == '') return ''
+        Object.entries($homepage_value).forEach((k) => {
+            raw = raw.replaceAll(`\${${k[0]}}`, k[1].toString())
+        })
+        return raw
+    }
 </script>
 {#if control.name === "MySpan"}
-    <MyNormalSpan title={control.title} style_in={control.style}>
+    <MyNormalSpan title={control.title} style_in={replaceValue(control.style)}>
         {#if control.children}
             {#each control.children as child}
                 <svelte:self control={child} />
@@ -75,9 +92,9 @@
         </div>
     </MySelectCard>
 {:else if control.name === "text"}
-    {control.content ? control.content.replaceAll("{path}", exePath) : ''}
+    {control.content ? replaceValue(control.content.replaceAll("{path}", exePath)) : ''}
 {:else if control.name === "MyDiv"}
-    <div title={control.title} style="margin-top: 5px; {control.style}">
+    <div title={control.title} style="margin-top: 5px; {replaceValue(control.style)}">
         {#if control.children}
             {#each control.children as child}
                 <svelte:self control={child} />
@@ -86,7 +103,7 @@
     </div>
 {:else if control.name === "MyButton"}
     {#if control.type === "label"}
-        <MyTextButton title={control.title} hover_style_in={control['hov-style']} style_in={control.style} on:click={() => {onButtonClick(control.event)}}>
+        <MyTextButton title={control.title} hover_style_in={replaceValue(control['hov-style'])} active_style_in={replaceValue(control['active-style'])} style_in={replaceValue(control.style)} on:click={() => {onButtonClick(control.event)}}>
             {#if control.children}
                 {#each control.children as child}
                     <svelte:self control={child} />
@@ -120,6 +137,8 @@
             control.src === "Egg" ? Egg :
             control.src === "Fabric" ? Fabric :
             control.src === "NeoForge" ? NeoForge : control.src} alt={control.alt} style={control.style} />
+{:else if control.name === "MyValue"}
+    {addValue(control.id ? control.id : '', control.children)}
 {/if}
 <style>
 

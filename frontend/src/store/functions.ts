@@ -252,3 +252,16 @@ export async function openExplorer(path: string) {
         await messagebox("无法打开 文件管理器", "请确保你的系统已经内置 文件管理器。如果你使用的 Linux 发行版与常见的不同，请尝试安装 xdg-open 以打开文件管理器~", MSG_ERROR)
     }
 }
+
+export function syncDo<T>(p: Promise<T>): T {
+    let res: T
+    p.then((r) => res = r)
+    while(!res){}
+    return res
+}
+
+export async function sleep(time: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time)
+    })
+}

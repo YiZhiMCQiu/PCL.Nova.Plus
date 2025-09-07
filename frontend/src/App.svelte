@@ -28,6 +28,8 @@
   onMount(async () => {
     let d = await ReadConfig(await GetConfigIniPath(), "Misc", "DarkMode")
     dark_mode.set(d == "1" ? true : d == "0" ? false : window.matchMedia("(prefers-color-scheme: light)").matches)
+    let t = Number(await ReadConfig(await GetConfigIniPath(), "Misc", "ThemeMode"))
+    theme_mode.set(Number.isNaN(t) || t < 1 || t > 14 ? 1 : t)
     let back = await GetBackgroundImage(-1)
     if (back.length != 0) {
       backImage = `url('data:image/${back[1]};base64,${back[0]}')`

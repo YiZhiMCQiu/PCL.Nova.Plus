@@ -68,3 +68,4 @@ export const homepage_url = writable("")
 export const homepage_list = writable([])
 
 export const homepage_cache = writable("")
+export const homepage_value = writable({})

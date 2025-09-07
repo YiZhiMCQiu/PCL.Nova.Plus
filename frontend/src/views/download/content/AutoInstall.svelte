@@ -3,7 +3,7 @@
     import MySelectCard from "../../../component/card/MySelectCard.svelte";
     import {HttpGet} from "../../../../wailsjs/go/launcher/Network";
     import MyLoadingPickaxe from "../../../component/card/MyLoadingPickaxe.svelte";
-    import {slide_up, slide_opacity} from "../../../store/functions";
+    import {slide_opacity, slide_up} from "../../../store/functions";
     import {
         latest_release,
         latest_snapshot,
@@ -18,6 +18,7 @@
     import CommandBlock from '../../../assets/images/Blocks/CommandBlock.png'
     import CobbleStone from '../../../assets/images/Blocks/CobbleStone.png'
     import MyCardButton from "../../../component/button/MyCardButton.svelte";
+
     export let slide = null
     export let after_leave = null
     let loading_text = ""
@@ -56,7 +57,7 @@
             }
             let json = JSON.parse(meta)
             let ver = json.versions!
-            for(let i = 0; i < ver.length; i++) {
+            for (let i = 0; i < ver.length; i++) {
                 let obj = ver[i]
                 if ((obj.id!) == json.latest!.release!) latest_release.set(obj)
                 if ((obj.id!) == json.latest!.snapshot!) latest_snapshot.set(obj)
@@ -73,9 +74,11 @@
         temp_list[3].height = $mc_list_old_alpha.length * 50 + 10
     })
     let isTransitioning = true
+
     function control_leave() {
         isTransitioning = true
     }
+
     let f = false
     const unsubscribe_mc_list_ok = mc_list_ok.subscribe((value) => {
         if (!f) {
@@ -89,22 +92,25 @@
     // 以下均是来自 回到顶部 按钮的函数
     let scrollStep = 10
     let scrollTop = 0
+
     function onDivScroll(e: Event) {
         let target = e.target as HTMLElement
         scrollTop = target.scrollTop
     }
+
     function onTopDiv() {
         let target = document.getElementsByClassName("component-auto_install")[0] as HTMLElement
-        let s = setInterval(function() {
+        let s = setInterval(function () {
             target.scrollTop -= scrollStep
             scrollTop -= scrollStep
-            if(scrollTop <= scrollStep) {
+            if (scrollTop <= scrollStep) {
                 scrollTop = 0
                 target.scrollTop = 0
                 clearInterval(s)
             }
         }, 10)
     }
+
     function slide_button_opacity(node: HTMLElement) {
         return {
             duration: 200,
@@ -116,16 +122,17 @@
             }
         }
     }
+
     function onComp(event: CustomEvent) {
         let {height, isExpand, title} = event.detail
         scrollStep += (isExpand ? height : -height) * 0.05
-        if(title == "正式版") {
+        if (title == "正式版") {
             temp_list[0].list = isExpand ? $mc_list_release : []
-        }else if(title == "快照版") {
+        } else if (title == "快照版") {
             temp_list[1].list = isExpand ? $mc_list_snapshot : []
-        }else if(title == "远古 Beta 版") {
+        } else if (title == "远古 Beta 版") {
             temp_list[2].list = isExpand ? $mc_list_old_beta : []
-        }else if(title == "远古 Alpha 版") {
+        } else if (title == "远古 Alpha 版") {
             temp_list[3].list = isExpand ? $mc_list_old_alpha : []
         }
     }
@@ -243,15 +250,17 @@
                 </div>
             </MySelectCard>
             {#each temp_list as temp}
-                <MySelectCard title={temp.version === 0 ? '正式版' : temp.version === 1 ? '快照版' : temp.version === 2 ? '远古 Beta 版' : temp.version === 3 ? '远古 Alpha 版' : ''} on:comp={onComp} maxHeight={temp.height} isExpand={true} canExpand={true}>
+                <MySelectCard
+                        title={temp.version === 0 ? '正式版' : temp.version === 1 ? '快照版' : temp.version === 2 ? '远古 Beta 版' : temp.version === 3 ? '远古 Alpha 版' : ''}
+                        on:comp={onComp} maxHeight={temp.height} isExpand={true} canExpand={true}>
                     <div class="version-all">
-                         {#each temp.list as list}
-                             <MyCardButton
-                                     image={temp.version === 0 ? Grass : temp.version === 1 ? CommandBlock : temp.version === 2 ? CobbleStone : temp.version === 3 ? CobbleStone : ''}
-                                     title={list["id"]}
-                                     desc="{list['releaseTime'].substring(0, list['releaseTime'].length - 9).replaceAll('T', ' ').replaceAll('-', '/')}"
-                                     click={() => {}}
-                                     buttons={[
+                        {#each temp.list as list}
+                            <MyCardButton
+                                    image={temp.version === 0 ? Grass : temp.version === 1 ? CommandBlock : temp.version === 2 ? CobbleStone : temp.version === 3 ? CobbleStone : ''}
+                                    title={list["id"]}
+                                    desc="{list['releaseTime'].substring(0, list['releaseTime'].length - 9).replaceAll('T', ' ').replaceAll('-', '/')}"
+                                    click={() => {}}
+                                    buttons={[
                                      {
                                          title: "下载服务端",
                                          icon: `
@@ -290,8 +299,8 @@
                                          click: () => {}
                                      }
                                  ]}
-                             />
-                         {/each}
+                            />
+                        {/each}
                     </div>
                 </MySelectCard>
             {/each}
@@ -304,7 +313,7 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="3">
-                    <path d="M5 3l15 0M12 21l0 -13.5M12 7l7 7M12 7l-7 7" />
+                    <path d="M5 3l15 0M12 21l0 -13.5M12 7l7 7M12 7l-7 7"/>
                 </svg>
             </button>
         {/if}
@@ -322,15 +331,18 @@
         border: 0;
         transition: all 0.2s;
     }
+
     #topButton:hover {
         background-color: #0077ffcf;
     }
+
     #topButton svg {
         stroke: white;
         width: 25px;
         height: 25px;
         vertical-align: middle;
     }
+
     .component-auto_install {
         position: absolute;
         top: 0;
@@ -339,10 +351,12 @@
         height: 100%;
         overflow-y: auto;
     }
+
     .component-auto_install > div {
         width: 100%;
         height: 100%;
     }
+
     .component-auto_install > div:last-child {
         height: calc(100% - 20px);
     }

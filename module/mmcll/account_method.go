@@ -306,6 +306,6 @@ func (account *AccountLogin) LoginMicrosoft(deviceCode string) (*AccountResult, 
 		}
 	}
 }
-func (account *AccountLogin) RefreshMicrosoft() {
-
+func (account *AccountLogin) RefreshMicrosoft(refreshToken string) (*AccountResult, error) {
+	return nil, NewMMCLLError(-1001, "Not Implemented")
 }

@@ -33,7 +33,7 @@
     onMount(async () => {
         let config = await GetAccountConfig()
         select_account.update((account) => {
-            Object.assign(account, config.accounts)
+            Object.assign(account, config.data.accounts)
             return account
         })
         let index = await ReadConfig(await GetOtherIniPath(), "Account", "SelectAccount")

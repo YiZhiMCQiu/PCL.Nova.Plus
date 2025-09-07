@@ -40,7 +40,7 @@ body {
     color: rgb(17, 114, 212);
 }
 .version-all {
-    margin: 10px 25px 10px 25px;
+    margin: 10px 20px 10px 20px;
     width: calc(100% - 50px);
     height: max-content;
 }

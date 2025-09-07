@@ -552,5 +552,15 @@ func (mm *MainMethod) GenerateTutorialHomePage() {
     <MyDiv>举个例子~</MyDiv>
     <MyButton width="100px" height="50px" event="messagebox|这是标题|这是警告框的内容|1">触发警告信息框~</MyButton>
     <MyButton width="100px" height="50px" event="openurl|https://github.com/xphost008">打开作者的github~</MyButton>
+</MyCard>
+<MyValue id="key">这是一个变量，key为【key】，value为这串文本</MyValue>
+<MyValue id="mydivstyle">background-color: red;</MyValue>
+<MyValue id="myspanstyle">font-size: 50px;</MyValue>
+<MyCard title="变量详解" isExpand="True" canExpand="True">
+    <MyDiv>这是一个变量：${key}</MyDiv>
+    <MyDiv style="${mydivstyle}">你也可以定义 MyDiv 和 <MySpan style="${myspanstyle}">MySpan</MySpan> 的 style 作为变量。</MyDiv>
+    <MyDiv>MyValue 标签的适用范围：【文本、MyDiv的style、MySpan的style】，很抱歉，没有其余的功能了……</MyDiv>
+    <MyDiv>style 的样式作为 Value 值时，不仅可以设置变量，还可以加一点自己的值，比如说<MySpan style="${myspanstyle}; color: red;">50px，但是红色</MySpan></MyDiv>
+    <MyDiv>这边建议的是：将 MyValue 设置在整个主页的最顶端。这样相当于是全局引入了~整个主页都可以使用 Value 变量~<MyDiv style="margin-top: 0;"></MyDiv>因为主页的加载过程是主要的从上往下执行💦</MyDiv>
 </MyCard>`)
 }
