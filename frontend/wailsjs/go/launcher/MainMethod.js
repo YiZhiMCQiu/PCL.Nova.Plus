@@ -18,6 +18,10 @@ export function GetAllIPv6() {
   return window['go']['launcher']['MainMethod']['GetAllIPv6']();
 }
 
+export function GetArgsDir() {
+  return window['go']['launcher']['MainMethod']['GetArgsDir']();
+}
+
 export function GetAvailableMemory() {
   return window['go']['launcher']['MainMethod']['GetAvailableMemory']();
 }
@@ -34,10 +38,22 @@ export function GetTotalMemory() {
   return window['go']['launcher']['MainMethod']['GetTotalMemory']();
 }
 
+export function Log(arg1, arg2) {
+  return window['go']['launcher']['MainMethod']['Log'](arg1, arg2);
+}
+
+export function Operation() {
+  return window['go']['launcher']['MainMethod']['Operation']();
+}
+
 export function ReadFile(arg1) {
   return window['go']['launcher']['MainMethod']['ReadFile'](arg1);
 }
 
 export function UUIDToAvatar(arg1) {
   return window['go']['launcher']['MainMethod']['UUIDToAvatar'](arg1);
+}
+
+export function Version() {
+  return window['go']['launcher']['MainMethod']['Version']();
 }

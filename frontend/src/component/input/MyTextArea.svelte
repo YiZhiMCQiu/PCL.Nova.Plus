@@ -1,21 +1,33 @@
 <script lang="ts">
-    import {dark_mode} from "../../store/changeBody";
-    import {createEventDispatcher} from "svelte";
-    export let value = ""
-    export let placeholder = ""
-    const dispatch = createEventDispatcher()
+    import { dark_mode } from "../../store/changeBody";
+    import { createEventDispatcher } from "svelte";
+    export let value = "";
+    export let placeholder = "";
+    const dispatch = createEventDispatcher();
     // export let handleInput: ((e: string) => void | null) = null
-    export let style_in = ""
-    export let title = ""
-    export let isReadonly = false
+    export let style_in = "";
+    export let title = "";
+    export let readonly = false;
     function textAreaChange(e: Event) {
-        dispatch('input', {
-            value: (e.target as HTMLTextAreaElement).value
-        })
+        dispatch("input", {
+            value: (e.target as HTMLTextAreaElement).value,
+        });
     }
-    $: ({light, dark} = $dark_mode ? {light: '#e6e6e6cf', dark: '#1a1a1acf'} : {light: '#1a1a1acf', dark: '#e6e6e6cf'})
+    $: ({ light, dark } = $dark_mode
+        ? { light: "#e6e6e6cf", dark: "#1a1a1acf" }
+        : { light: "#1a1a1acf", dark: "#e6e6e6cf" });
 </script>
-<textarea readonly={isReadonly} class="text-input font-pcl" title={title} style="{style_in}; --light-color: {light}; --dark-color: {dark};" bind:value={value} placeholder={placeholder} on:change={textAreaChange}/>
+
+<textarea
+    {readonly}
+    class="text-input font-pcl"
+    {title}
+    style="{style_in}; --light-color: {light}; --dark-color: {dark};"
+    bind:value
+    {placeholder}
+    on:change={textAreaChange}
+/>
+
 <style>
     .text-input {
         border: 1px solid var(--light-color);

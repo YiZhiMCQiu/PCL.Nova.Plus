@@ -2,13 +2,19 @@ package launcher
 
 import (
 	"NovaPlus/module/mmcll"
+	"bufio"
 	"context"
 	"encoding/json"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	runtime2 "runtime"
 	"strconv"
 	"strings"
+	"sync"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type MCConfig struct {
@@ -35,7 +41,7 @@ func (lm *LaunchMethod) GetMCVersionConfig() ExceptionHandler[MCConfigs] {
 	exception := func(err error) ExceptionHandler[MCConfigs] {
 		return NewExceptionHandler(500, false, "File System Error: "+err.Error(), MCConfigs{Mc: []MCConfig{}})
 	}
-	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "MCJson.json")
+	cur := filepath.Join(GetCurrentDir(), "PCL.Nova", "config", "MCJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
 		return exception(err)
@@ -60,7 +66,7 @@ func (lm *LaunchMethod) SetMCVersionConfig(mc MCConfigs) ExceptionHandler[any] {
 	exception := func(err error) ExceptionHandler[any] {
 		return NewExceptionHandler[any](500, false, "File System Error: "+err.Error(), nil)
 	}
-	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "MCJson.json")
+	cur := filepath.Join(GetCurrentDir(), "PCL.Nova", "config", "MCJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
 		return exception(err)
@@ -80,7 +86,7 @@ func (lm *LaunchMethod) GetJavaConfig() ExceptionHandler[JavaConfigs] {
 	exception := func(err error) ExceptionHandler[JavaConfigs] {
 		return NewExceptionHandler(500, false, "File System Error: "+err.Error(), JavaConfigs{Java: []JavaConfig{}})
 	}
-	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "JavaJson.json")
+	cur := filepath.Join(GetCurrentDir(), "PCL.Nova", "config", "JavaJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
 		return exception(err)
@@ -104,7 +110,7 @@ func (lm *LaunchMethod) SetJavaConfig(java JavaConfigs) ExceptionHandler[any] {
 	exception := func(err error) ExceptionHandler[any] {
 		return NewExceptionHandler[any](500, false, "File System Error: "+err.Error(), nil)
 	}
-	cur := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "JavaJson.json")
+	cur := filepath.Join(GetCurrentDir(), "PCL.Nova", "config", "JavaJson.json")
 	err := EnsureConfigFile(cur)
 	if err != nil {
 		return exception(err)
@@ -147,7 +153,7 @@ func (lm *LaunchMethod) GetMCAllVersion(rootPath string) []string {
 }
 
 func (lm *LaunchMethod) GetCurrentMinecraftDir() string {
-	return filepath.Join(GetCurrentExeDir(), ".minecraft")
+	return filepath.Join(GetCurrentDir(), ".minecraft")
 }
 
 func (lm *LaunchMethod) GetJavaInfo(path string) ExceptionHandler[JavaConfig] {
@@ -164,18 +170,19 @@ func (lm *LaunchMethod) GetJavaInfo(path string) ExceptionHandler[JavaConfig] {
 		lc := strings.Split(line, "=")
 		if len(lc) == 2 {
 			lc0 := strings.Trim(lc[0], " \n\r")
-			if lc0 == "java.vendor" {
+			switch lc0 {
+			case "java.vendor":
 				result.Vendor = strings.Trim(lc[1], " \n\r")
-			} else if lc0 == "java.version" {
+			case "java.version":
 				result.Version = strings.Trim(lc[1], " \n\r")
-			} else if lc0 == "os.arch" {
+			case "os.arch":
 				result.Arch = strings.Trim(lc[1], " \n\r")
 			}
 		}
 	}
 	return NewExceptionHandler(200, true, "OK!", result)
 }
-func (lm *LaunchMethod) LaunchGame() ExceptionHandler[string] {
+func (lm *LaunchMethod) LaunchGame(exportArguments bool, showAccessToken bool) ExceptionHandler[string] {
 	exception := func(message string, data string) ExceptionHandler[string] {
 		return NewExceptionHandler(400, false, message, data)
 	}
@@ -201,14 +208,76 @@ func (lm *LaunchMethod) LaunchGame() ExceptionHandler[string] {
 		return exception("Array Index Out Of Bounds", "Account array index out of bounds")
 	}
 	var accountStruct mmcll.LaunchAccount
-	if account.Name != "" && account.UUID != "" {
-		accountStruct = mmcll.NewLaunchAccountOffline(account.Name, account.UUID)
-		if account.AccessToken != nil && *account.AccessToken != "" {
-			accountStruct = mmcll.NewLaunchAccountMicrosoft(account.Name, account.UUID, *account.AccessToken)
-			if account.Server != nil && *account.Server != "" && account.BaseCode != nil && *account.BaseCode != "" {
-				accountStruct = mmcll.NewLaunchAccountThirdParty(account.Name, account.UUID, *account.AccessToken, *account.BaseCode, *account.Server)
+	if account.Server != nil && *account.Server != "" {
+		fmt.Println("aaa")
+		home, err := GetOtherDir()
+		if err != nil {
+			return exception("Get Home Dir Exception: "+err.Error(), "Cannot get Home directory")
+		}
+		authlib_path := filepath.Join(home, mmcll.If(runtime2.GOOS == "windows", "PCL.Nova", ".PCL.Nova").(string), "Authlib-Injector.jar")
+		av := rw.ReadConfig(rw.GetOtherIniPath(), "Account", "AuthLibInjectorVersion")
+		sr := rw.ReadConfig(rw.GetConfigIniPath(), "Version", "SelectDownloadSource")
+		pi, err := strconv.Atoi(sr)
+		if err != nil || pi < 1 || pi > 3 {
+			pi = 1
+		}
+		if pi == 3 {
+			//TODO: 智能切换下载源~
+			pi = 2
+		}
+		url := mmcll.NewUrlMethod(AuthlibDownloadLink[pi-1])
+		gt, err := url.GetDefault()
+		if err != nil {
+			return exception("HTTP Get Exception: "+err.Error(), "Cannot get default AuthlibInjector version")
+		}
+		var gn map[string]any
+		if err := json.Unmarshal(gt, &gn); err != nil {
+			return exception("JSON Parse Exception: "+err.Error(), "Cannot parse AuthlibInjector version")
+		}
+		rav := mmcll.Safe(gn, "", "version").(string)
+		downloadAuthlibInjector := func() error {
+			bt := rw.ReadConfig(rw.GetConfigIniPath(), "Version", "ThreadBiggest")
+			btn, err := strconv.Atoi(bt)
+			if err != nil || btn < 1 || btn > 256 {
+				btn = 64
+			}
+			u := mmcll.Safe(gn, "", "download_url").(string)
+			if u == "" {
+				return fmt.Errorf("cannot find download url in metadata json")
+			}
+			proxyType := rw.ReadConfig(rw.GetConfigIniPath(), "Download", "ProxyType")
+			proxyUrl := rw.ReadConfig(rw.GetConfigIniPath(), "Download", "ProxyUrl")
+			proxyPort := rw.ReadConfig(rw.GetConfigIniPath(), "Download", "ProxyPort")
+			proxyUsername := rw.ReadConfig(rw.GetConfigIniPath(), "Download", "ProxyUsername")
+			proxyPassword := rw.ReadConfig(rw.GetConfigIniPath(), "Download", "ProxyPassword")
+			isSocks := proxyType == "3"
+			isHttps := proxyType == "2"
+			mm := mmcll.NewDownloadSingleWithProxy(u, authlib_path, btn, 0, mmcll.NewProxy(proxyUrl, proxyPort, proxyUsername, proxyPassword, isHttps, isSocks))
+			mm.StartDownload(func(url string, retryCount int, msg string, code int, total int64, current int64) {
+				fmt.Println(url, retryCount, msg, code, total, current)
+			})
+			rw.WriteConfig(rw.GetOtherIniPath(), "Account", "AuthLibInjectorVersion", rav)
+			return nil
+		}
+		if rav != av {
+			if err := downloadAuthlibInjector(); err != nil {
+				return exception("Cannot Download AuthlibInjector! Error: "+err.Error(), "Cannot Download AuthlibInjector!")
 			}
 		}
+		sha256, err := GetFileSHA256(authlib_path)
+		if err != nil {
+			return exception("Get AuthlibInjector SHA256 Exception: "+err.Error(), "Cannot get AuthlibInjector SHA256")
+		}
+		if mmcll.Safe(gn, "", "checksums", "sha256") != sha256 {
+			if err := downloadAuthlibInjector(); err != nil {
+				return exception("Cannot Download AuthlibInjector! Error: "+err.Error(), "Cannot Download AuthlibInjector!")
+			}
+		}
+		accountStruct = mmcll.NewLaunchAccountThirdParty(account.Name, account.UUID, *account.AccessToken, "", *account.Server, authlib_path)
+	} else if account.AccessToken != nil && *account.AccessToken != "" {
+		accountStruct = mmcll.NewLaunchAccountMicrosoft(account.Name, account.UUID, *account.AccessToken)
+	} else if account.Name != "" && account.UUID != "" {
+		accountStruct = mmcll.NewLaunchAccountOffline(account.Name, account.UUID)
 	} else {
 		return exception("Cannot find any data!", "Account Name or UUID is Empty!")
 	}
@@ -293,12 +362,74 @@ func (lm *LaunchMethod) LaunchGame() ExceptionHandler[string] {
 	if additionalGame != "" {
 		option.SetAdditionalGame(additionalGame)
 	}
-	err = mmcll.LaunchGame(*option, true, func(back []string) {
+	err = mmcll.LaunchGame(*option, false, func(back []string) {
 		runtime.EventsEmit(lm.Ctx, "launch_success")
-		cmd := CMD(back[0], back[1:]...)
-		e := cmd.Run()
-		if e != nil {
-			panic(e)
+		if exportArguments {
+			if showAccessToken {
+				if e := mmcll.SetFile(filepath.Join(GetCurrentDir(),
+					"PCL.Nova",
+					"args",
+					mmcll.If(runtime2.GOOS == "windows",
+						"launch.bat",
+						"launch.sh").(string)),
+					"\""+strings.Join(back, "\" \"")+"\""); e != nil {
+					panic(e)
+				}
+			} else {
+				args := "\"" + strings.Join(back, "\" \"") + "\""
+				l1 := args[strings.Index(args, "\"--accessToken\"")+16:]
+				l2 := strings.ReplaceAll(args, l1, "")
+				l3 := l1[strings.Index(l1, " "):]
+				params := l2 + "\"********************************\"" + l3
+				if e := mmcll.SetFile(filepath.Join(GetCurrentDir(),
+					"PCL.Nova",
+					"args",
+					mmcll.If(runtime2.GOOS == "windows",
+						"launch.bat",
+						"launch.sh").(string)),
+					params); e != nil {
+					panic(e)
+				}
+			}
+		} else {
+			getOutput := func(reader *bufio.Reader) {
+				for {
+					str, err := reader.ReadString('\n')
+					if err != nil {
+						if err == io.EOF {
+							break
+						}
+						panic(err)
+					}
+					runtime.EventsEmit(lm.Ctx, "launch_log", str)
+				}
+			}
+			cmd := CMD(back[0], back[1:]...)
+			var wg sync.WaitGroup
+			wg.Add(2)
+			stdout, err := cmd.StdoutPipe()
+			if err != nil {
+				panic(err)
+			}
+			readout := bufio.NewReader(stdout)
+			stderr, err := cmd.StderrPipe()
+			if err != nil {
+				panic(err)
+			}
+			readerr := bufio.NewReader(stderr)
+			go func() {
+				defer wg.Done()
+				getOutput(readout)
+			}()
+			go func() {
+				defer wg.Done()
+				getOutput(readerr)
+			}()
+			e := cmd.Start()
+			if e != nil {
+				panic(e)
+			}
+			wg.Wait()
 		}
 	})
 	if err != nil {

@@ -1,44 +1,61 @@
 <script lang="ts">
-    import {i_content, i_level, i_resolve, i_show_all, i_title, i_placeholder} from '../../store/messagebox'
-    import {dark_mode} from '../../store/changeBody'
-    import {quadInOut} from "svelte/easing";
+    import {
+        i_content,
+        i_level,
+        i_resolve,
+        i_show_all,
+        i_title,
+        i_placeholder,
+    } from "../../store/messagebox";
+    import { dark_mode } from "../../store/changeBody";
+    import { quadInOut } from "svelte/easing";
     import MyTextInput from "../input/MyTextInput.svelte";
     import MyNormalSpan from "../input/MyNormalSpan.svelte";
     import MyNormalButton from "../button/MyNormalButton.svelte";
-    $: bg = $dark_mode ? "#282828cf" : "#f0f8ffcf"
+    $: bg = $dark_mode ? "#282828cf" : "#f0f8ffcf";
     function getColors(level: number) {
         return {
-            font_color: level == 0 ? "#3142b7cf" : level == 1 ? "#c7ad2acf" : "#ff4c4ccf",
-            back_color: level == 0 ? '#0000005f' : level == 1 ? '#4f4f005f' : '#4f00005f',
-        }
+            font_color:
+                level == 0
+                    ? "#3142b7cf"
+                    : level == 1
+                      ? "#c7ad2acf"
+                      : "#ff4c4ccf",
+            back_color:
+                level == 0
+                    ? "#0000005f"
+                    : level == 1
+                      ? "#4f4f005f"
+                      : "#4f00005f",
+        };
     }
-    $: ({font_color, back_color} = getColors($i_level))
-    let m_resolve = ""
+    $: ({ font_color, back_color } = getColors($i_level));
+    let m_resolve = "";
     function traLeave() {
-        i_title.set("")
-        i_content.set("")
-        i_level.set(0)
-        $i_resolve!(m_resolve)
-        i_resolve.set(null)
-        m_resolve = ""
+        i_title.set("");
+        i_content.set("");
+        i_level.set(0);
+        $i_resolve!(m_resolve);
+        i_resolve.set(null);
+        m_resolve = "";
     }
     function textInput(e: CustomEvent) {
-        m_resolve = e.detail.value
+        m_resolve = e.detail.value;
     }
     function buttonClick(num: number) {
-        if(num == 0){
-            m_resolve = ""
+        if (num == 0) {
+            m_resolve = "";
         }
-        i_show_all.set(false)
+        i_show_all.set(false);
     }
     function back_anim(node: HTMLElement) {
         return {
             duration: 330,
             easing: quadInOut,
             css(t: number) {
-                return `opacity: ${t}`
-            }
-        }
+                return `opacity: ${t}`;
+            },
+        };
     }
     function slide_anim(node: HTMLElement) {
         return {
@@ -59,24 +76,52 @@
             transform: translate(-50%, -50%) scale(${1.1 - 0.1 * progress}) rotate(${rotate}deg);
           `;
                 }
-            }
-        }
+            },
+        };
     }
 </script>
+
 {#if $i_show_all}
-    <div id="back" class={i_show_all ? 'back-class' : 'back-class-hide'} in:back_anim out:back_anim style="--m-back-color: {back_color};"></div>
-    <div class="content-box-class" in:slide_anim out:slide_anim on:outroend={traLeave} style="--m-font-color: {font_color}; --bg-color: {bg}">
+    <div
+        id="back"
+        class={i_show_all ? "back-class" : "back-class-hide"}
+        in:back_anim
+        out:back_anim
+        style="--m-back-color: {back_color};"
+    ></div>
+    <div
+        class="content-box-class"
+        in:slide_anim
+        out:slide_anim
+        on:outroend={traLeave}
+        style="--m-font-color: {font_color}; --bg-color: {bg}"
+    >
         <div id="content-title">{$i_title}</div>
         <div id="content">
             <MyNormalSpan>{@html $i_content}</MyNormalSpan>
         </div>
         <div id="input-box">
-            <MyTextInput placeholder={$i_placeholder} style_in="width: 100%; height: 30px" on:input={textInput}/>
+            <MyTextInput
+                placeholder={$i_placeholder}
+                style_in="width: 100%; height: 30px"
+                on:input={textInput}
+            />
         </div>
-        <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" on:click={() => {buttonClick(1)}}>确认</MyNormalButton>
-        <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" on:click={() => {buttonClick(0)}}>取消</MyNormalButton>
+        <MyNormalButton
+            style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;"
+            on:click={() => {
+                buttonClick(1);
+            }}>确认</MyNormalButton
+        >
+        <MyNormalButton
+            style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;"
+            on:click={() => {
+                buttonClick(0);
+            }}>取消</MyNormalButton
+        >
     </div>
 {/if}
+
 <style>
     #content-title {
         margin: 10px;
@@ -105,11 +150,13 @@
     .back-class {
         background-color: var(--m-back-color);
         backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
         transition: all 0.33s;
     }
 
     .back-class-hide {
         backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0);
         background-color: rgba(0, 0, 0, 0);
         transition: all 0.33s;
     }

@@ -22,8 +22,8 @@ export function GetMCVersionConfig() {
   return window['go']['launcher']['LaunchMethod']['GetMCVersionConfig']();
 }
 
-export function LaunchGame() {
-  return window['go']['launcher']['LaunchMethod']['LaunchGame']();
+export function LaunchGame(arg1, arg2) {
+  return window['go']['launcher']['LaunchMethod']['LaunchGame'](arg1, arg2);
 }
 
 export function SetJavaConfig(arg1) {

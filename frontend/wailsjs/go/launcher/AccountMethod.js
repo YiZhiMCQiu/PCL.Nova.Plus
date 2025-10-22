@@ -10,8 +10,24 @@ export function GetAccountConfig() {
   return window['go']['launcher']['AccountMethod']['GetAccountConfig']();
 }
 
+export function GetThirdAPAccessToken(arg1, arg2, arg3) {
+  return window['go']['launcher']['AccountMethod']['GetThirdAPAccessToken'](arg1, arg2, arg3);
+}
+
+export function GetThirdHeadSkin(arg1, arg2) {
+  return window['go']['launcher']['AccountMethod']['GetThirdHeadSkin'](arg1, arg2);
+}
+
+export function GetThirdOAuthAccessToken(arg1, arg2) {
+  return window['go']['launcher']['AccountMethod']['GetThirdOAuthAccessToken'](arg1, arg2);
+}
+
 export function GetUserCode() {
   return window['go']['launcher']['AccountMethod']['GetUserCode']();
+}
+
+export function GetUserCodeThirdOAuth(arg1) {
+  return window['go']['launcher']['AccountMethod']['GetUserCodeThirdOAuth'](arg1);
 }
 
 export function GetUserHeadSkin(arg1) {

@@ -1,25 +1,31 @@
 <script lang="ts">
-    import {current_view, dark_mode} from "../store/changeBody";
-    import HomeLeft from './home/Left.svelte'
-    import DownloadLeft from './download/Left.svelte'
-    import OnlineLeft from './online/Left.svelte'
-    import SettingLeft from './setting/Left.svelte'
-    import AboutLeft from './about/Left.svelte'
-    import VersionLeft from './version/Left.svelte'
-    import EditAccountLeft from './editAccount/Left.svelte'
-    import HomeRight from './home/Right.svelte'
-    import DownloadRight from './download/Right.svelte'
-    import OnlineRight from './online/Right.svelte'
-    import SettingRight from './setting/Right.svelte'
-    import AboutRight from './about/Right.svelte'
-    import VersionRight from './version/Right.svelte'
-    import EditAccountRight from './editAccount/Right.svelte'
-    import {onDestroy} from "svelte";
-    import {slide_left, slide_up} from "../store/functions";
+    import { current_view, dark_mode } from "../store/changeBody";
+    import HomeLeft from "./home/Left.svelte";
+    import DownloadLeft from "./download/Left.svelte";
+    import OnlineLeft from "./online/Left.svelte";
+    import SettingLeft from "./setting/Left.svelte";
+    import AboutLeft from "./about/Left.svelte";
+    import VersionLeft from "./version/Left.svelte";
+    import EditAccountLeft from "./editAccount/Left.svelte";
+    import HomeRight from "./home/Right.svelte";
+    import DownloadRight from "./download/Right.svelte";
+    import OnlineRight from "./online/Right.svelte";
+    import SettingRight from "./setting/Right.svelte";
+    import AboutRight from "./about/Right.svelte";
+    import VersionRight from "./version/Right.svelte";
+    import EditAccountRight from "./editAccount/Right.svelte";
+    import DownloadFileLeft from "./downloadFile/Left.svelte";
+    import DownloadFileRight from "./downloadFile/Right.svelte";
+    import InstanceLeft from "./instance/Left.svelte";
+    import InstanceRight from "./instance/Right.svelte";
+    import LogViewLeft from "./logView/Left.svelte";
+    import LogViewRight from "./logView/Right.svelte";
+    import { onDestroy } from "svelte";
+    import { slide_left, slide_up } from "../store/functions";
 
-    let left_width = "370px"
-    let right_left = "370px"
-    $: dark = $dark_mode ? "rgba(32, 32, 32, 0.6)" : "rgba(255, 255, 255, 0.8)"
+    let left_width = "370px";
+    let right_left = "370px";
+    $: dark = $dark_mode ? "rgba(32, 32, 32, 0.6)" : "rgba(255, 255, 255, 0.8)";
 
     // 用了点奇妙的小魔法解决了一点奇妙的小问题（（
     // 能跑就行，别动以下部分了（除非你非常确保你的逻辑比我的清晰并且比我的更加简便。
@@ -28,59 +34,136 @@
     // 1. home/Left.svelte
     // 2. 其余view组件/Right.svelte
     // 】
-    let isTransitioning = true
-    let f = false
+    let isTransitioning = true;
+    let f = false;
     const unsubscribe_current_view = current_view.subscribe((value) => {
-        left_width = value === "home" || value === 'editAccount' ? "370px" : value === "setting" ? '110px' : value === 'version' ? '211px' : '144px'
+        left_width =
+            value === "home" || value === "editAccount"
+                ? "370px"
+                : value === "setting"
+                  ? "110px"
+                  : value === "version" || value === "downloadFile"
+                    ? "211px"
+                    : value === "log"
+                      ? "0px"
+                      : "144px";
         if (!f) {
-            f = true
+            f = true;
             isTransitioning = true;
-        }else{
-            isTransitioning = !isTransitioning
+        } else {
+            isTransitioning = !isTransitioning;
         }
-    })
+    });
     function control_leave() {
-        right_left = $current_view === "home" || $current_view === 'editAccount' ? "370px" : $current_view === "setting" ? "110px" : $current_view === 'version' ? '211px' : "144px"
-        isTransitioning = true
+        right_left =
+            $current_view === "home" || $current_view === "editAccount"
+                ? "370px"
+                : $current_view === "setting"
+                  ? "110px"
+                  : $current_view === "version" ||
+                      $current_view === "downloadFile"
+                    ? "211px"
+                    : $current_view === "log"
+                      ? "0px"
+                      : "144px";
+        isTransitioning = true;
     }
-    onDestroy(unsubscribe_current_view)
+    onDestroy(unsubscribe_current_view);
 </script>
+
 <div>
     <div id="left" style:width={left_width} style:background-color={dark}>
         {#if $current_view === "home" && isTransitioning}
-            <HomeLeft width={left_width} slide={slide_left} after_leave={control_leave} />
+            <HomeLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {:else if $current_view === "download" && isTransitioning}
-            <DownloadLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+            <DownloadLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {:else if $current_view === "online" && isTransitioning}
-            <OnlineLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+            <OnlineLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {:else if $current_view === "setting" && isTransitioning}
-            <SettingLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+            <SettingLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {:else if $current_view === "about" && isTransitioning}
-            <AboutLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+            <AboutLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {:else if $current_view === "version" && isTransitioning}
-            <VersionLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+            <VersionLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {:else if $current_view === "editAccount" && isTransitioning}
-            <EditAccountLeft width={left_width} slide={slide_left} after_leave={control_leave}/>
+            <EditAccountLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
+        {:else if $current_view === "downloadFile" && isTransitioning}
+            <DownloadFileLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
+        {:else if $current_view === "instance" && isTransitioning}
+            <InstanceLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
+        {:else if $current_view === "log" && isTransitioning}
+            <LogViewLeft
+                width={left_width}
+                slide={slide_left}
+                after_leave={control_leave}
+            />
         {/if}
     </div>
-    <div id="right" style:left={right_left} style:width="calc(100% - {right_left})">
+    <div
+        id="right"
+        style:left={right_left}
+        style:width="calc(100% - {right_left})"
+    >
         {#if $current_view === "home" && isTransitioning}
-            <HomeRight after_leave={control_leave} slide={slide_up}/>
+            <HomeRight after_leave={control_leave} slide={slide_up} />
         {:else if $current_view === "download" && isTransitioning}
-            <DownloadRight after_leave={control_leave} slide={slide_up}/>
+            <DownloadRight after_leave={control_leave} slide={slide_up} />
         {:else if $current_view === "online" && isTransitioning}
-            <OnlineRight after_leave={control_leave} slide={slide_up}/>
+            <OnlineRight after_leave={control_leave} slide={slide_up} />
         {:else if $current_view === "setting" && isTransitioning}
-            <SettingRight after_leave={control_leave} slide={slide_up}/>
+            <SettingRight after_leave={control_leave} slide={slide_up} />
         {:else if $current_view === "about" && isTransitioning}
-            <AboutRight after_leave={control_leave} slide={slide_up}/>
+            <AboutRight after_leave={control_leave} slide={slide_up} />
         {:else if $current_view === "version" && isTransitioning}
-            <VersionRight after_leave={control_leave} slide={slide_up}/>
+            <VersionRight after_leave={control_leave} slide={slide_up} />
         {:else if $current_view === "editAccount" && isTransitioning}
-            <EditAccountRight after_leave={control_leave} slide={slide_up}/>
+            <EditAccountRight after_leave={control_leave} slide={slide_up} />
+        {:else if $current_view === "downloadFile" && isTransitioning}
+            <DownloadFileRight after_leave={control_leave} slide={slide_up} />
+        {:else if $current_view === "instance" && isTransitioning}
+            <InstanceRight after_leave={control_leave} slide={slide_up} />
+        {:else if $current_view === "log" && isTransitioning}
+            <LogViewRight after_leave={control_leave} slide={slide_up} />
         {/if}
     </div>
 </div>
+
 <style>
     #left {
         position: absolute;

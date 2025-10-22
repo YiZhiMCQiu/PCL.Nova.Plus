@@ -1,38 +1,55 @@
 <script lang="ts">
-    import {b_button, b_content, b_level, b_resolve, b_show_all, b_title} from '../../store/messagebox'
-    import {dark_mode} from '../../store/changeBody'
-    import {quadInOut} from "svelte/easing";
+    import {
+        b_button,
+        b_content,
+        b_level,
+        b_resolve,
+        b_show_all,
+        b_title,
+    } from "../../store/messagebox";
+    import { dark_mode } from "../../store/changeBody";
+    import { quadInOut } from "svelte/easing";
     import MyNormalButton from "../button/MyNormalButton.svelte";
     import MyNormalSpan from "../input/MyNormalSpan.svelte";
-    $: bg = $dark_mode ? "#282828cf" : "#f0f8ffcf"
+    $: bg = $dark_mode ? "#282828cf" : "#f0f8ffcf";
     function getColors(level: number) {
         return {
-            font_color: level == 0 ? "#3142b7cf" : level == 1 ? "#c7ad2acf" : "#ff4c4ccf",
-            back_color: level == 0 ? '#0000005f' : level == 1 ? '#4f4f005f' : '#4f00005f',
-        }
+            font_color:
+                level == 0
+                    ? "#3142b7cf"
+                    : level == 1
+                      ? "#c7ad2acf"
+                      : "#ff4c4ccf",
+            back_color:
+                level == 0
+                    ? "#0000005f"
+                    : level == 1
+                      ? "#4f4f005f"
+                      : "#4f00005f",
+        };
     }
-    $: ({font_color, back_color} = getColors($b_level))
-    let m_resolve = 0
+    $: ({ font_color, back_color } = getColors($b_level));
+    let m_resolve = 0;
     function traLeave() {
-        b_title.set("")
-        b_content.set("")
-        b_level.set(0)
-        b_button.set(["ok"])
-        $b_resolve!(m_resolve)
-        b_resolve.set(null)
+        b_title.set("");
+        b_content.set("");
+        b_level.set(0);
+        b_button.set(["ok"]);
+        $b_resolve!(m_resolve);
+        b_resolve.set(null);
     }
     function buttonClick(index: number) {
-        m_resolve = index
-        b_show_all.set(false)
+        m_resolve = index;
+        b_show_all.set(false);
     }
     function back_anim(node: HTMLElement) {
         return {
             duration: 330,
             easing: quadInOut,
             css(t: number) {
-                return `opacity: ${t}`
-            }
-        }
+                return `opacity: ${t}`;
+            },
+        };
     }
     function slide_anim(node: HTMLElement) {
         return {
@@ -53,24 +70,51 @@
             transform: translate(-50%, -50%) scale(${1.1 - 0.1 * progress}) rotate(${rotate}deg);
           `;
                 }
-            }
-        }
+            },
+        };
     }
 </script>
+
 {#if $b_show_all}
-    <div id="back" class={b_show_all ? 'back-class' : 'back-class-hide'} in:back_anim out:back_anim style="--m-back-color: {back_color};"></div>
-    <div class="content-box-class" in:slide_anim out:slide_anim on:outroend={traLeave} style="--m-font-color: {font_color}; --bg-color: {bg}">
+    <div
+        id="back"
+        class={b_show_all ? "back-class" : "back-class-hide"}
+        in:back_anim
+        out:back_anim
+        style="--m-back-color: {back_color};"
+    ></div>
+    <div
+        class="content-box-class"
+        in:slide_anim
+        out:slide_anim
+        on:outroend={traLeave}
+        style="--m-font-color: {font_color}; --bg-color: {bg}"
+    >
         <div id="content-title">{$b_title}</div>
         <div id="content">
             <MyNormalSpan>{@html $b_content}</MyNormalSpan>
         </div>
         {#each $b_button as b, i}
-            <MyNormalButton style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;" on:click={() => {buttonClick(i)}}>
-                { b === "ok" ? "确认" : b === "cancel" ? "取消" : b === "yes" ? "是" : b === "no" ? "否" : b }
+            <MyNormalButton
+                style_in="width: max-content; min-width: 50px; height: 30px; margin: 10px; float: right; font-weight: bold;"
+                on:click={() => {
+                    buttonClick(i);
+                }}
+            >
+                {b === "ok"
+                    ? "确认"
+                    : b === "cancel"
+                      ? "取消"
+                      : b === "yes"
+                        ? "是"
+                        : b === "no"
+                          ? "否"
+                          : b}
             </MyNormalButton>
         {/each}
     </div>
 {/if}
+
 <style>
     #content-title {
         margin: 10px;
@@ -98,11 +142,13 @@
     .back-class {
         background-color: var(--m-back-color);
         backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
         transition: all 0.33s;
     }
 
     .back-class-hide {
         backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0);
         background-color: rgba(0, 0, 0, 0);
         transition: all 0.33s;
     }

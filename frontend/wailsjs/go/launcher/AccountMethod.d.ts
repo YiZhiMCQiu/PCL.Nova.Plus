@@ -6,7 +6,15 @@ export function GetAccessToken(arg1:string):Promise<launcher.ExceptionHandler_No
 
 export function GetAccountConfig():Promise<launcher.ExceptionHandler_NovaPlus_module_launcher_AccountList_>;
 
+export function GetThirdAPAccessToken(arg1:string,arg2:string,arg3:string):Promise<launcher.ExceptionHandler___NovaPlus_module_launcher_AccountType_>;
+
+export function GetThirdHeadSkin(arg1:string,arg2:string):Promise<launcher.ExceptionHandler_string_>;
+
+export function GetThirdOAuthAccessToken(arg1:string,arg2:string):Promise<launcher.ExceptionHandler_NovaPlus_module_launcher_AccountType_>;
+
 export function GetUserCode():Promise<launcher.ExceptionHandler___string_>;
+
+export function GetUserCodeThirdOAuth(arg1:string):Promise<launcher.ExceptionHandler___string_>;
 
 export function GetUserHeadSkin(arg1:string):Promise<launcher.ExceptionHandler_string_>;
 

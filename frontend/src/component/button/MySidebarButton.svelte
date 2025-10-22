@@ -1,21 +1,29 @@
 <script lang="ts">
-    import {dark_mode} from "../../store/changeBody";
-    import {createEventDispatcher} from "svelte";
-    export let isChecked = false
-    export let in_style = ""
-    const dispatch = createEventDispatcher()
+    import { dark_mode } from "../../store/changeBody";
+    import { createEventDispatcher } from "svelte";
+    export let isChecked = false;
+    export let in_style = "";
+    const dispatch = createEventDispatcher();
     function buttonClick() {
-        dispatch('click')
+        dispatch("click");
     }
-    $: light = $dark_mode ? "#e6e6e6cf" : "#1a1a1aaf"
-    $: dark = $dark_mode ? "#0a0a0aaf" : "#d6d6d6cf"
+    $: light = $dark_mode ? "#e6e6e6cf" : "#1a1a1aaf";
+    $: dark = $dark_mode ? "#0a0a0aaf" : "#d6d6d6cf";
 </script>
-<button class="font-pcl {isChecked ? 'button-active' : 'button-style cursor-pointer'}" on:click={buttonClick} style="{in_style}; --dark-color: {dark}; --light-color: {light};">
+
+<button
+    class="font-pcl {isChecked
+        ? 'button-active'
+        : 'button-style cursor-pointer'}"
+    on:click={buttonClick}
+    style="{in_style}; --dark-color: {dark}; --light-color: {light};"
+>
     <slot />
 </button>
+
 <style>
     .button-style,
-    .button-active{
+    .button-active {
         background-color: transparent;
         position: relative;
         width: 100%;
@@ -34,9 +42,9 @@
         stroke: rgba(0, 128, 255, 207);
     }
     .button-active::before,
-    .button-style::before{
+    .button-style::before {
         position: absolute;
-        content: '';
+        content: "";
         width: 4px;
         height: 0;
         background-color: rgba(0, 128, 255, 207);

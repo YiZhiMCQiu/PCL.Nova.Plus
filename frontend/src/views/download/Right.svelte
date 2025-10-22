@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {current_download} from "../../store/changeBody";
-    import {slide_up} from "../../store/functions";
-    import {onDestroy} from "svelte";
+    import { current_download } from "../../store/changeBody";
+    import { slide_up } from "../../store/functions";
+    import { onDestroy } from "svelte";
     import AutoInstall from "./content/AutoInstall.svelte";
     import ManualInstall from "./content/ManualInstall.svelte";
     import ExtensionMod from "./content/ExtensionMod.svelte";
@@ -9,29 +9,26 @@
     import ExtensionDatapack from "./content/ExtensionDatapack.svelte";
     import ExtensionResourcepack from "./content/ExtensionResourcepack.svelte";
     import ExtensionShaderpack from "./content/ExtensionShaderpack.svelte";
-    export let slide = null
-    export let after_leave = null
-    let isTransitioning = true
+    import ExtensionWorld from "./content/ExtensionWorld.svelte";
+    export let slide = null;
+    export let after_leave = null;
+    let isTransitioning = true;
     function control_leave() {
-        isTransitioning = true
+        isTransitioning = true;
     }
-    let f = false
+    let f = false;
     const unsubscribe_current_download = current_download.subscribe((value) => {
-        if(!f) {
-            f = true
-            isTransitioning = true
-        }else{
-            isTransitioning = !isTransitioning
+        if (!f) {
+            f = true;
+            isTransitioning = true;
+        } else {
+            isTransitioning = !isTransitioning;
         }
-    })
-    onDestroy(unsubscribe_current_download)
+    });
+    onDestroy(unsubscribe_current_download);
 </script>
-<div
-        class="component-right"
-        in:slide
-        out:slide
-        on:outroend={after_leave}
->
+
+<div class="component-right" in:slide out:slide on:outroend={after_leave}>
     {#if $current_download === "Auto-Install" && isTransitioning}
         <AutoInstall slide={slide_up} after_leave={control_leave} />
     {:else if $current_download === "Manual-Install" && isTransitioning}
@@ -46,8 +43,11 @@
         <ExtensionResourcepack slide={slide_up} after_leave={control_leave} />
     {:else if $current_download === "Extension-Shaderpack" && isTransitioning}
         <ExtensionShaderpack slide={slide_up} after_leave={control_leave} />
+    {:else if $current_download === "Extension-World" && isTransitioning}
+        <ExtensionWorld slide={slide_up} after_leave={control_leave} />
     {/if}
 </div>
+
 <style>
     .component-right {
         position: absolute;

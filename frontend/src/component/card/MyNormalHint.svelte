@@ -1,8 +1,15 @@
 <script lang="ts">
-    import {h_content, h_level} from "../../store/messagebox";
-    import {quadInOut} from "svelte/easing";
-    $: backColor = $h_level == 0 ? "rgba(0, 128, 255, 207)" : $h_level == 1 ? "#c7ad2acf" : $h_level == 2 ? "#ff4c4ccf" : "#10e830cf"
-    $: content = $h_content
+    import { h_content, h_level } from "../../store/messagebox";
+    import { quadInOut } from "svelte/easing";
+    $: backColor =
+        $h_level == 0
+            ? "rgba(0, 128, 255, 207)"
+            : $h_level == 1
+              ? "#c7ad2acf"
+              : $h_level == 2
+                ? "#ff4c4ccf"
+                : "#10e830cf";
+    $: content = $h_content;
     function slide(node: HTMLElement) {
         return {
             duration: 200,
@@ -10,16 +17,18 @@
             css: (t: number) => {
                 return `
                     transform: translateX(-${100 - t * 100}%);
-                `
-            }
-        }
+                `;
+            },
+        };
     }
 </script>
+
 {#if content !== ""}
     <div in:slide out:slide id="hint" style="--back-color: {backColor}">
         {content}
     </div>
 {/if}
+
 <style>
     #hint {
         position: fixed;

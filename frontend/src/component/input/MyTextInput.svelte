@@ -1,32 +1,50 @@
 <script lang="ts">
-    import {dark_mode} from "../../store/changeBody";
-    import {createEventDispatcher} from "svelte";
-    export let placeholder = ""
-    export let style_in = ""
-    const dispatch = createEventDispatcher()
-    export let title = ""
-    export let value = ""
+    import { dark_mode } from "../../store/changeBody";
+    import { createEventDispatcher } from "svelte";
+
+    export let placeholder = "";
+    export let style_in = "";
+    const dispatch = createEventDispatcher();
+    export let title = "";
+    export let value = "";
+    export let password = false;
+
     function onInput(e: Event) {
-        dispatch('input', {
-            value: (e.target as HTMLInputElement).value
-        })
+        dispatch("input", {
+            value: (e.target as HTMLInputElement).value,
+        });
     }
+
     function onBlur(e: Event) {
-        dispatch('blur', {
-            value: (e.target as HTMLInputElement).value
-        })
+        dispatch("blur", {
+            value: (e.target as HTMLInputElement).value,
+        });
     }
-    $: ({light, dark} = $dark_mode ? {light: '#e6e6e6cf', dark: '#1a1a1acf'} : {light: '#1a1a1acf', dark: '#e6e6e6cf'})
+
+    function updateInputType(node: HTMLInputElement, isPassword: boolean) {
+        node.type = isPassword ? "password" : "text";
+        return {
+            update(isPassword: boolean) {
+                node.type = isPassword ? "password" : "text";
+            },
+        };
+    }
+    $: ({ light, dark } = $dark_mode
+        ? { light: "#e6e6e6cf", dark: "#1a1a1acf" }
+        : { light: "#1a1a1acf", dark: "#e6e6e6cf" });
 </script>
+
 <input
-        type="text"
-        bind:value={value}
-        title={title}
-        placeholder={placeholder}
-        class="text-input font-pcl"
-        style="{style_in}; --light-color: {light}; --dark-color: {dark};"
-        on:input={onInput}
-        on:blur={onBlur} />
+    use:updateInputType={password}
+    bind:value
+    {title}
+    {placeholder}
+    class="text-input font-pcl"
+    style="{style_in}; --light-color: {light}; --dark-color: {dark};"
+    on:input={onInput}
+    on:blur={onBlur}
+/>
+
 <style>
     .text-input {
         border: 1px solid var(--light-color);

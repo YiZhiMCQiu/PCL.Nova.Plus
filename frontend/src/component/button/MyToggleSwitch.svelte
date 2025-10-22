@@ -1,23 +1,32 @@
 <script lang="ts">
-    import {dark_mode} from "../../store/changeBody";
-    import {createEventDispatcher} from "svelte";
+    import { dark_mode } from "../../store/changeBody";
+    import { createEventDispatcher } from "svelte";
 
-    export let isSelect = false
-    export let html_close_span = ""
-    export let html_open_span = ""
-    export let title = ""
-    $: ({dark, back} = $dark_mode ? {dark: "#303030cf", back: "#707070cf"} : {dark: "#eeeeeecf", back: "#909090cf"})
-    const dispatch = createEventDispatcher()
+    export let isSelect = false;
+    export let html_close_span = "";
+    export let html_open_span = "";
+    export let title = "";
+    $: ({ dark, back } = $dark_mode
+        ? { dark: "#303030cf", back: "#707070cf" }
+        : { dark: "#eeeeeecf", back: "#909090cf" });
+    const dispatch = createEventDispatcher();
     function buttonClick() {
-        dispatch('click')
+        dispatch("click");
     }
-    // export let click = null
 </script>
-<div title={title} class="switch"
-     style="--dark-color: {dark}; --back-color: {isSelect ? 'skyblue' : back}; --left-value: {isSelect ? '28px' : '4px'}"
-     on:click={buttonClick} on:keydown|preventDefault>
+
+<div
+    {title}
+    class="switch"
+    style="--dark-color: {dark}; --back-color: {isSelect
+        ? 'skyblue'
+        : back}; --left-value: {isSelect ? '28px' : '4px'}"
+    on:click={buttonClick}
+    on:keydown|preventDefault
+>
     <button>{@html isSelect ? html_open_span : html_close_span}</button>
 </div>
+
 <style>
     .switch {
         position: relative;
@@ -31,11 +40,13 @@
     }
 
     .switch button {
+        position: absolute;
         border-radius: 50%;
         cursor: pointer;
         width: 16px;
         height: 16px;
-        margin: 4px 4px 4px var(--left-value);
+        top: 4px;
+        left: var(--left-value);
         border: 0;
         background-color: var(--dark-color);
         transition: 0.2s;

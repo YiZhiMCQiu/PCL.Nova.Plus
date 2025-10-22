@@ -10,6 +10,10 @@ export function GetCurrentExeDir() {
   return window['go']['launcher']['ReaderWriter']['GetCurrentExeDir']();
 }
 
+export function GetIsolationPath(arg1, arg2) {
+  return window['go']['launcher']['ReaderWriter']['GetIsolationPath'](arg1, arg2);
+}
+
 export function GetOtherIniPath() {
   return window['go']['launcher']['ReaderWriter']['GetOtherIniPath']();
 }

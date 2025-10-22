@@ -1,14 +1,10 @@
 <script lang="ts">
-    export let slide = null
-    export let after_leave = null
+    export let slide = null;
+    export let after_leave = null;
 </script>
-<div
-        class="component-help"
-        in:slide
-        out:slide
-        on:outroend={after_leave}
->
-</div>
+
+<div class="component-help" in:slide out:slide on:outroend={after_leave}></div>
+
 <style>
     .component-help {
         position: absolute;

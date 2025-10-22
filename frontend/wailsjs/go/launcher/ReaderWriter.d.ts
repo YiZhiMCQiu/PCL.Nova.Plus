@@ -5,6 +5,8 @@ export function GetConfigIniPath():Promise<string>;
 
 export function GetCurrentExeDir():Promise<string>;
 
+export function GetIsolationPath(arg1:string,arg2:number):Promise<string>;
+
 export function GetOtherIniPath():Promise<string>;
 
 export function OpenDirectoryDialog(arg1:string):Promise<string>;

@@ -1,14 +1,15 @@
 <script lang="ts">
-    export let slide = null
-    export let after_leave = null
+    export let slide = null;
+    export let after_leave = null;
 </script>
+
 <div
-        class="component-feedback"
-        in:slide
-        out:slide
-        on:outroend={after_leave}
->
-</div>
+    class="component-feedback"
+    in:slide
+    out:slide
+    on:outroend={after_leave}
+></div>
+
 <style>
     .component-feedback {
         position: absolute;

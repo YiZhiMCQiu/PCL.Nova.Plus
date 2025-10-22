@@ -33,15 +33,21 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log/slog"
+	"math"
+	"math/rand"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"math"
-	"os/exec"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 // App struct
@@ -55,9 +61,13 @@ var mainMethod = &launcher.MainMethod{}
 var accountMethod = &launcher.AccountMethod{}
 var network = &launcher.Network{}
 var launchMethod = &launcher.LaunchMethod{}
+var downloadMethod = &launcher.DownloadMethod{}
+
+var logLevel = "0"
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
+
 func startup(ctx context.Context) {
 	app.Ctx = ctx
 	readerWriter.Ctx = ctx
@@ -65,6 +75,7 @@ func startup(ctx context.Context) {
 	accountMethod.Ctx = ctx
 	network.Ctx = ctx
 	launchMethod.Ctx = ctx
+	downloadMethod.Ctx = ctx
 }
 
 func (a *App) StartDownload() {
@@ -76,32 +87,65 @@ func (a *App) StartDownload() {
 }
 
 // GetMachineCode 在Windows上尝试生成PCL2原版的识别码~
-func (a *App) GetMachineCode() string {
-	return strings.ToUpper(launcher.GetMachineCode())
+func (a *App) GetPCL2Identify() string {
+	return strings.ToUpper(launcher.GetPCL2Identify())
+}
+func (a *App) GetUniqueAddress() string {
+	return strings.ToUpper(launcher.GetUniqueAddress())
+}
+func genRandomInt(seed int64) int {
+	return rand.New(rand.NewSource(seed)).Intn(100)
+}
+
+// 此处使用了 Privacy.go 里面的 PV_KEY，用来加密解密你的数据！
+func (a *App) CryptoUnlock(wc string) bool {
+	article := strings.Split(launcher.PV_KEY, "^|")
+	key := article[0]
+	iv := article[1]
+	wm, err := launcher.AESDecrypt(key, iv, wc)
+	if err != nil {
+		return false
+	}
+	ua := a.GetUniqueAddress()
+	wt := "<moduleKey>" + ua + "</moduleKey><version>" + strconv.Itoa(genRandomInt(int64(launcher.GetHash(ua)))) + "</version>"
+	fmt.Println(wt)
+	return wm == wt
+}
+func BankerRound(x float64) float64 {
+	floor := math.Floor(x)
+	ceil := math.Ceil(x)
+	if floor == ceil {
+		return x
+	}
+	if x-floor < ceil-x {
+		return floor
+	}
+	return ceil
 }
 
 // GetTodayLucky 生成今日人品，有3个报错类型。-1：未能找到注册表中的机器码，你可能在虚拟机中运行Nova、-2：未能找到注册表中的PCL-Identify键值，你可能需要从原版PCL里主动生成一次识别码才能。-3：不支持的系统。
 func (a *App) GetTodayLucky(code string) int {
-	if code == "ERR_1" {
+	switch code {
+	case "ERR_1":
 		return -1
-	} else if code == "ERR_2" {
+	case "ERR_2":
 		return -2
-	} else if code == "DNS" {
+	case "DNS":
 		return -3
-	} else {
+	default:
 		// 以下为标准的PCL生成今日人品的代码【参数code为PCL原版识别码】~
 		now := time.Now()
 		str1 := fmt.Sprintf("asdfgbn%d12#3$45%dIUY", now.YearDay(), now.Year())
-		str2 := fmt.Sprintf("QWERTY%s0*8&6%dkjhg", code, now.Day())
+		str2 := fmt.Sprintf("QWERTY%s0*8&6%dkjhg", "2E97-2E0C-4038-BE81", now.Day())
 		hash1 := launcher.GetHash(str1)
 		hash2 := launcher.GetHash(str2)
-		combined := math.Abs(float64(hash1)/3.0 + float64(hash2)/3.0)
-		num := int(math.Round(math.Mod(combined/527.0, 1001.0)))
+		combined := math.Abs((float64(hash1)/3.0 + float64(hash2/3.0)) / 527.0)
+		num := int(BankerRound(math.Mod(combined, 1001.0)))
 		var lucky int
 		if num >= 970 {
 			lucky = 100
 		} else {
-			lucky = int(math.Round(float64(num) / 969.0 * 99.0))
+			lucky = int(BankerRound(float64(num) / 969.0 * 99.0))
 		}
 		return lucky
 	}
@@ -135,18 +179,19 @@ func runRawMain() {
 			mainMethod,
 			network,
 			launchMethod,
+			downloadMethod,
 		},
 	})
 	if err != nil {
 		println("Error:", err.Error())
 	}
 }
-func runMyTestMain() {
+func runMMCLLTestMain() {
 	defer func() {
 		var m string
 		_, _ = fmt.Scan(&m)
 	}()
-	if f, err := mmcll.GetFile(filepath.Join(launcher.GetCurrentExeDir(), "mmcll.json")); err == nil {
+	if f, err := mmcll.GetFile(filepath.Join(launcher.GetCurrentDir(), "mmcll.json")); err == nil {
 		var m map[string]any
 		err := json.Unmarshal([]byte(f), &m)
 		if err != nil {
@@ -239,7 +284,48 @@ func runMyTestMain() {
 		fmt.Println(string(res))
 	}
 }
+
+type MyHandler struct {
+	writer io.Writer
+	level  slog.Level
+}
+
+func (h *MyHandler) Enabled(_ context.Context, level slog.Level) bool {
+	minLevel := slog.LevelInfo
+	if h.level != slog.LevelInfo {
+		minLevel = h.level
+	}
+	return level >= minLevel
+}
+func (h *MyHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return h
+}
+func (h *MyHandler) WithGroup(name string) slog.Handler {
+	return h
+}
+func (h *MyHandler) Handle(_ context.Context, record slog.Record) error {
+	timeStr := record.Time.Format("2006/01/02 15:04:05")
+	levelStr := record.Level.String()[0:4] // 取级别的前四个字母，如 "INFO", "WARN"
+	logLine := fmt.Sprintf("%s %s %s\n", timeStr, levelStr, record.Message)
+	_, err := h.writer.Write([]byte(logLine))
+	return err
+}
 func main() {
+	// 设置 slog
+	p := filepath.Join(launcher.GetCurrentDir(), "PCL.Nova", "log", "Log.log")
+	mmcll.SetFile(p, "")
+	f, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	mw := io.MultiWriter(os.Stdout, f)
+	l := slog.New(&MyHandler{
+		writer: mw,
+		level:  mmcll.If(logLevel == "DEBUG", slog.LevelDebug, slog.LevelInfo).(slog.Level),
+	})
+	slog.SetDefault(l)
+	slog.Info("日志初始化完成！")
 	runRawMain()
-	//runMyTestMain()
+	//runMMCLLTestMain()
 }

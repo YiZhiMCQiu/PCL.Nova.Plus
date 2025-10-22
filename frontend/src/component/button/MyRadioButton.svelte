@@ -1,27 +1,30 @@
 <script lang="ts">
-    import {dark_mode} from "../../store/changeBody";
-    import {createEventDispatcher} from "svelte";
+    import { dark_mode } from "../../store/changeBody";
+    import { createEventDispatcher } from "svelte";
 
-    export let isChecked = false
-    export let style_in = ""
-    const dispatch = createEventDispatcher()
+    export let isChecked = false;
+    export let style_in = "";
+    const dispatch = createEventDispatcher();
     function buttonClick() {
-        dispatch('click')
+        dispatch("click");
     }
-    export let title = ""
-    $: light = $dark_mode ? '#e6e6e6cf' : '#1a1a1acf'
+    export let title = "";
+    $: light = $dark_mode ? "#e6e6e6cf" : "#1a1a1acf";
 </script>
+
 <div
-        class="radio {isChecked ? 'button-active' : 'button-style cursor-pointer'}"
-        style="{style_in}; --light-color: {light}"
-        title={title}
-        on:click={buttonClick}
-        on:keydown|preventDefault>
+    class="radio {isChecked ? 'button-active' : 'button-style cursor-pointer'}"
+    style="{style_in}; --light-color: {light}"
+    {title}
+    on:click={buttonClick}
+    on:keydown|preventDefault
+>
     <div class="circle"></div>
     <div class="slot">
         <slot />
     </div>
 </div>
+
 <style>
     .radio {
         color: var(--light-color);
@@ -44,7 +47,7 @@
         height: 17px;
     }
     .circle::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 2px;
         left: 2px;

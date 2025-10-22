@@ -28,6 +28,6 @@ func (n *Network) HttpPost(url, key string, isJSON bool) string {
 
 func (n *Network) HttpCurseForge(url string) string {
 	m := mmcll.NewUrlMethod(url)
-	getCurseForge, err := m.GetCurseForge(XApiKey())
+	getCurseForge, err := m.GetCurseForge(CF_KEY)
 	return mmcll.If(err != nil, "", getCurseForge).(string)
 }

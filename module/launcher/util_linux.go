@@ -1,25 +1,41 @@
 package launcher
 
 import (
+	"NovaPlus/module/mmcll"
+	"crypto/md5"
 	"fmt"
 	"os"
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
 
-func GetMachineCode() string {
+func GetCurrentDir() string {
+	exePath, err := os.Executable()
+	return mmcll.If(err != nil, "", filepath.Dir(exePath)).(string)
+}
+
+func GetPCL2Identify() string {
 	return "DNS"
 }
 
-func GetHomeDir() (string, error) {
+func GetUniqueAddress() string {
+	out, err := mmcll.GetFile("/sys/class/dmi/id/product_uuid")
+	if err != nil {
+		return "ERR_LINUX"
+	}
+	re := regexp.MustCompile("[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}")
+	return strings.ToUpper(fmt.Sprintf("%x", md5.Sum([]byte(re.FindString(strings.ToLower(string(out)))))))
+}
+func GetOtherDir() (string, error) {
 	currentUser, err := user.Current()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(currentUser.HomeDir, ".PCL.Nova"), nil
+	return currentUser.HomeDir, nil
 }
 func PingCMD(ip string, timeout time.Duration) *exec.Cmd {
 	return CMD("ping", "-c", "1", "-W", fmt.Sprintf("%.0f", timeout.Seconds()), ip)

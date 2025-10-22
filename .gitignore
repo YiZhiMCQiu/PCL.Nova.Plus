@@ -8,13 +8,20 @@ frontend/package.json.md5
 .idea/
 go.sum
 
-# ignore privacy.go!
 # In Future, This file will be replace!
 
-module/launcher/privacy.go
 my/
 .mixin.out/
 logs/
+mmcll_test.go
+wailsbuild.sh
+wailsdev.sh
+frontend/.vscode
+authlib-injector.log
+crypto_test.go
+dev.bat
+build.bat
+runtime_test.go
 
 # macOS
 .DS_Store

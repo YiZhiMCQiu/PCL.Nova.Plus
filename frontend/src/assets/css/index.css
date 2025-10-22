@@ -4,16 +4,19 @@ body {
 }
 * {
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     font-synthesis: none;
     image-rendering: pixelated;
     flex-shrink: 0;
 }
 @font-face {
-    font-family: 'PCL';
-    src: url('../fonts/PCL-English.ttf');
+    font-family: "PCL";
+    src: url("../fonts/PCL-English.ttf");
 }
 .font-pcl {
-    font-family: 'PCL';
+    font-family: "PCL";
 }
 .hint {
     margin-top: 5px;
@@ -52,7 +55,7 @@ body {
     align-items: center;
 }
 .cursor-pointer,
-details{
+details {
     cursor: pointer;
 }
 .code {
@@ -62,6 +65,9 @@ details{
     color: black;
     padding: 0 5px;
     user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
     font-size: 14px;
 }
 .side-icon {

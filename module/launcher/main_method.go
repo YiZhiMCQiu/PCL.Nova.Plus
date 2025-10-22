@@ -2,12 +2,16 @@ package launcher
 
 import (
 	"NovaPlus/module/mmcll"
+	"bytes"
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"github.com/shirou/gopsutil/mem"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"io"
 	"io/fs"
+	"log/slog"
 	"math"
 	"math/rand"
 	"net"
@@ -17,11 +21,10 @@ import (
 	runtime2 "runtime"
 	"strings"
 	"time"
+
+	"github.com/shirou/gopsutil/mem"
 )
 
-type ReaderWriter struct {
-	Ctx context.Context
-}
 type MainMethod struct {
 	Ctx context.Context
 }
@@ -35,6 +38,25 @@ type IPv6Struct struct {
 // 使用 Golang 内置库达到跨平台效果！
 func Ping(host string, timeout time.Duration) error {
 	return PingCMD(host, timeout).Run()
+}
+
+// 获取文件 sha256（用于校验 Authlib Injector。。）
+func GetFileSHA256(path string) (string, error) {
+	open, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer open.Close()
+	hash := sha256.New()
+	if _, err = io.Copy(hash, open); err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%x", hash.Sum(nil)), nil
+}
+
+// Operation 获取操作系统，1是windows，2是macOS，3是其他系统
+func (mm *MainMethod) Operation() int {
+	return mmcll.If(runtime2.GOOS == "windows", 1, mmcll.If(runtime2.GOOS == "darwin", 2, 3).(int)).(int)
 }
 
 // EnsureConfigFile 生成所有父文件夹，以及在此处生成一个文件
@@ -79,79 +101,13 @@ func (mm *MainMethod) GetAllIPv6() ExceptionHandler[[]IPv6Struct] {
 	}
 	return NewExceptionHandler(200, true, "Ok!", result)
 }
-func (rw *ReaderWriter) WriteConfig(path, section, key, value string) {
-	conf := NewConfig(path)
-	_ = conf.Write(section, key, value)
-}
-func (rw *ReaderWriter) ReadConfig(path, section, key string) string {
-	conf := NewConfig(path)
-	if v, err := conf.Read(section, key); err == nil {
-		return v
-	}
-	return ""
-}
-func (rw *ReaderWriter) GetOtherIniPath() string {
-	home, err := GetHomeDir()
-	if err != nil {
-		home = filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config")
-	}
-	res := filepath.Join(home, "Other.ini")
-	err = EnsureConfigFile(res)
-	return mmcll.If(err != nil, "", res).(string)
-}
-func (rw *ReaderWriter) GetConfigIniPath() string {
-	res := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "config", "PCL2.Nova.ini")
-	err := EnsureConfigFile(res)
-	return mmcll.If(err != nil, "", res).(string)
-}
-func (rw *ReaderWriter) GetCurrentExeDir() string {
-	return GetCurrentExeDir()
-}
-func (rw *ReaderWriter) OpenDirectoryDialog(title string) string {
-	dialog, err := runtime.OpenDirectoryDialog(rw.Ctx, runtime.OpenDialogOptions{
-		Title:                title,
-		CanCreateDirectories: true,
-	})
-	return mmcll.If(err != nil, "", dialog).(string)
-}
-func (rw *ReaderWriter) OpenFileDialog(title string, filter []string) string {
-	var fileFilter []runtime.FileFilter
-	for _, f := range filter {
-		fileFilter = append(fileFilter, runtime.FileFilter{
-			DisplayName: f,
-			Pattern:     f,
-		})
-	}
-	if len(filter) == 0 {
-		dialog, err := runtime.OpenFileDialog(rw.Ctx, runtime.OpenDialogOptions{
-			Title:                title,
-			CanCreateDirectories: true,
-		})
-		return mmcll.If(err != nil, "", dialog).(string)
-	} else {
-		dialog, err := runtime.OpenFileDialog(rw.Ctx, runtime.OpenDialogOptions{
-			Title:                title,
-			CanCreateDirectories: true,
-			Filters:              fileFilter,
-		})
-		return mmcll.If(err != nil, "", dialog).(string)
-	}
-}
-func (rw *ReaderWriter) OpenExplorer(fpath string) bool {
-	err := openExp(fpath)
-	return err == nil
-}
 
-func GetCurrentExeDir() string {
-	exePath, err := os.Executable()
-	return mmcll.If(err != nil, "", filepath.Dir(exePath)).(string)
-}
 func GetHash(str string) uint64 {
 	result := uint64(5381)
 	for _, r := range str {
 		result = (result << 5) ^ result ^ uint64(r)
 	}
-	return result ^ uint64(0xA98F501BC684032F)
+	return result ^ uint64(12218072394304324399)
 }
 func StrFill(str, code string, length int) string {
 	if len(str) > length {
@@ -159,7 +115,7 @@ func StrFill(str, code string, length int) string {
 	}
 	fillCount := length - len(str)
 	var builder strings.Builder
-	for i := 0; i < fillCount; i++ {
+	for _ = range fillCount {
 		builder.WriteString(code)
 	}
 	builder.WriteString(str)
@@ -174,10 +130,11 @@ func Mid(source string, start, length int) string {
 		return ""
 	}
 	available := len(source) - start0
-	actualLength := length
-	if actualLength > available {
-		actualLength = available
-	}
+	actualLength := int(math.Min(float64(length), float64(available)))
+	// actualLength := length
+	// if actualLength > available {
+	// 	actualLength = available
+	// }
 	return source[start0 : start0+actualLength]
 }
 
@@ -213,7 +170,7 @@ func (mm *MainMethod) UUIDToAvatar(uuid string) int64 {
 		most1 := bin[0:64]
 		least1 := bin[64:128]
 		xor1 := ""
-		for index := 0; index < 64; index++ {
+		for index := range 64 {
 			if most1[index] == least1[index] {
 				xor1 += "0"
 			} else {
@@ -223,7 +180,7 @@ func (mm *MainMethod) UUIDToAvatar(uuid string) int64 {
 		most2 := xor1[0:32]
 		least2 := xor1[32:64]
 		xor2 := ""
-		for index := 0; index < 32; index++ {
+		for index := range 32 {
 			if most2[index] == least2[index] {
 				xor2 += "0"
 			} else {
@@ -231,7 +188,7 @@ func (mm *MainMethod) UUIDToAvatar(uuid string) int64 {
 			}
 		}
 		var ten int64
-		for index := 0; index < 32; index++ {
+		for index := range 32 {
 			if xor2[index] == '1' {
 				ten += int64(math.Trunc(math.Pow(float64(len(xor2)-index), 2.0)))
 			}
@@ -243,7 +200,7 @@ func (mm *MainMethod) UUIDToAvatar(uuid string) int64 {
 
 // GetBackgroundImage 获取一张附带索引的背景图片
 func (mm *MainMethod) GetBackgroundImage(index int) []string {
-	res := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "BackgroundImage")
+	res := filepath.Join(GetCurrentDir(), "PCL.Nova", "BackgroundImage")
 	if err := os.MkdirAll(res, fs.ModePerm); err != nil {
 		return []string{}
 	}
@@ -266,10 +223,9 @@ func (mm *MainMethod) GetBackgroundImage(index int) []string {
 		if file.IsDir() {
 			continue
 		}
-
 		fileName := file.Name()
 		ext := strings.ToLower(filepath.Ext(fileName))
-		if ext != ".png" && ext != ".jpg" {
+		if ext != ".png" && ext != ".jpg" && ext != ".gif" {
 			continue
 		}
 		if i == ind {
@@ -323,7 +279,7 @@ func (mm *MainMethod) ReadFile(path string) string {
 }
 func (mm *MainMethod) GetAllHomePage() ExceptionHandler[[]HomePageStruct] {
 	res := make([]HomePageStruct, 0)
-	dir := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "HomePage")
+	dir := filepath.Join(GetCurrentDir(), "PCL.Nova", "HomePage")
 	if err := os.MkdirAll(dir, fs.ModePerm); err != nil {
 		return NewExceptionHandler(400, false, "File System Error: "+err.Error(), []HomePageStruct{})
 	}
@@ -346,8 +302,71 @@ func (mm *MainMethod) GetAllHomePage() ExceptionHandler[[]HomePageStruct] {
 	}
 	return NewExceptionHandler(200, true, "Ok!", res)
 }
+
+func (mm *MainMethod) GetArgsDir() string {
+	return filepath.Join(GetCurrentDir(), "PCL.Nova", "args")
+}
+
+// AESEncrypt AES 加密！（传参 key、iv和待处理数据）
+func AESEncrypt(key, iv, data string) string {
+	block, _ := aes.NewCipher([]byte(key))
+	paddedPlainData := pkcs7Padding([]byte(data), block.BlockSize())
+	ciphertext := make([]byte, len(paddedPlainData))
+	mode := cipher.NewCBCEncrypter(block, []byte(iv))
+	mode.CryptBlocks(ciphertext, paddedPlainData)
+	return base64.StdEncoding.EncodeToString(ciphertext)
+}
+
+// AESDecrypt AES 解密！（传参 key、iv和待处理数据）
+func AESDecrypt(key, iv, cirData string) (string, error) {
+	block, _ := aes.NewCipher([]byte(key))
+	decodeCiphertext, err := base64.StdEncoding.DecodeString(cirData)
+	if err != nil {
+		return "", err
+	}
+	decryptedData := make([]byte, len(decodeCiphertext))
+	blockSize := block.BlockSize()
+	if len(decodeCiphertext) == 0 {
+		return "", fmt.Errorf("ciphertext is empty")
+	}
+	if len(decodeCiphertext)%blockSize != 0 {
+		return "", fmt.Errorf("ciphertext length %d is not multiple of block size %d",
+			len(decodeCiphertext), blockSize)
+	}
+	mode := cipher.NewCBCDecrypter(block, []byte(iv))
+	mode.CryptBlocks(decryptedData, decodeCiphertext)
+	str, err := pkcs7UnPadding(decryptedData)
+	if err != nil {
+		return "", err
+	}
+	return string(str), nil
+}
+
+// 以 pkcs7 形式填充数据
+func pkcs7Padding(data []byte, blockSize int) []byte {
+	padding := blockSize - (len(data) % blockSize)
+	padText := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(data, padText...)
+}
+
+// 以 pkcs7 形式解填充数据
+func pkcs7UnPadding(data []byte) ([]byte, error) {
+	if len(data) == 0 {
+		return nil, fmt.Errorf("data is empty")
+	}
+	paddingLength := int(data[len(data)-1])
+	if paddingLength <= 0 || paddingLength > len(data) {
+		return nil, fmt.Errorf("invalid padding length: %d", paddingLength)
+	}
+	for i := len(data) - paddingLength; i < len(data); i++ {
+		if data[i] != byte(paddingLength) {
+			return nil, fmt.Errorf("invalid padding byte at position %d", i)
+		}
+	}
+	return data[:len(data)-paddingLength], nil
+}
 func (mm *MainMethod) GenerateTutorialHomePage() {
-	HPPath := filepath.Join(GetCurrentExeDir(), "PCL.Nova", "HomePage", "Custom.nxml")
+	HPPath := filepath.Join(GetCurrentDir(), "PCL.Nova", "HomePage", "Custom.nxml")
 	err := EnsureConfigFile(HPPath)
 	if err != nil {
 		return
@@ -439,7 +458,7 @@ func (mm *MainMethod) GenerateTutorialHomePage() {
         <MySvg viewbox="0 0 16 16" style="width: 32px; height: 32px; stroke: red; stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; fill: none;"
                path="M3 15.5h3a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V8.5h1.453a.497.497 0 0 0 .404-.836L8.354.654a.5.5 0 0 0-.708 0L.643 7.664a.497.497 0 0 0 .404.836H2.5V15a.5.5 0 0 0 .5.5z" />
     </MyDiv>
-    <MyDiv>由于 MySvg 不支持 hov-style 事件，因此你暂时无法对其进行 鼠标悬浮上去的提示（也许将来会支持呢！</MyDiv>
+    <MyDiv>由于 MySvg 不支持 hov-style 和 active-style 事件，因此你暂时无法对其进行 鼠标悬浮和点击上去的提示（也许将来会支持呢！</MyDiv>
     <MyDiv>好，接下来说一下图片吧！图片其实非常简单！只需要输入 MyImg 标签即可！里面有三个属性，分别是：src、alt、style。。是的！这是整个 Nova 控件库里面第四个支持 style 的控件！请看以下示例！</MyDiv>
     <MyDiv>例如，加载一个苹果~</MyDiv>
     <MyDiv style="display: flex; align-items: center; justify-content: center;">
@@ -450,7 +469,7 @@ func (mm *MainMethod) GenerateTutorialHomePage() {
 <MyCard title="MyButton 高级使用案例" isExpand="True" canExpand="True">
     <MyDiv>这一张卡片，我将教会各位如何使用 MyButton 写出那种类似 PCL 的 MyListItem！在我们学习了上述 MyImg 和 MySvg 以及 MySpan 之后，各位应该对于盒子布局有所了解了！请看下面示例！</MyDiv>
     <MyDiv style="width: 100%; height: 50px;">
-        <MyButton type="label" style="display: block; width: 100%; height: 40px; border-radius: 10px;" hov-style="display: block; width: 100%; height: 40px; border-radius: 10px; cursor: pointer; background-color: rgba(0, 0, 255, 0.2);">
+        <MyButton type="label" style="display: block; width: 100%; height: 40px; border-radius: 10px;" hov-style="display: block; width: 100%; height: 40px; border-radius: 10px; cursor: pointer; background-color: rgba(0, 0, 255, 0.2);" active-style="display: block; width: 100%; height: 40px; border-radius: 10px; cursor: pointer; background-color: rgba(0, 0, 255, 0.2); scale: 0.98">
             <MyDiv style="display: flex; align-items: center; width: 100%; height: 40px;">
                 <MyImg src="https://www.baidu.com/favicon.ico" alt="百度" style="margin-left: 10px; height: 30px; width: 30px" />
                 <MyDiv style="flex: 1; margin-left: 10px; margin-top: 0">
@@ -498,7 +517,7 @@ func (mm *MainMethod) GenerateTutorialHomePage() {
     </MyDiv>
     <MyDiv>因此，各位可以使用上述图片来随时制作自己的图片按钮~就像以下：</MyDiv>
     <MyDiv style="width: 100%; height: 50px;">
-        <MyButton type="label" style="display: block; width: 100%; height: 40px; border-radius: 10px;" hov-style="display: block; width: 100%; height: 40px; border-radius: 10px; cursor: pointer; background-color: rgba(0, 0, 255, 0.2);">
+        <MyButton type="label" style="display: block; width: 100%; height: 40px; border-radius: 10px;" hov-style="display: block; width: 100%; height: 40px; border-radius: 10px; cursor: pointer; background-color: rgba(0, 0, 255, 0.2);" active-style="display: block; width: 100%; height: 40px; border-radius: 10px; cursor: pointer; background-color: rgba(0, 0, 255, 0.2); scale: 0.98">
             <MyDiv style="display: flex; align-items: center; width: 100%; height: 40px;">
                 <MyImg src="CommandBlock" alt="百度" style="margin-left: 10px; height: 32px; width: 32px" />
                 <MyDiv style="flex: 1; margin-left: 10px; margin-top: 0">
@@ -561,6 +580,24 @@ func (mm *MainMethod) GenerateTutorialHomePage() {
     <MyDiv style="${mydivstyle}">你也可以定义 MyDiv 和 <MySpan style="${myspanstyle}">MySpan</MySpan> 的 style 作为变量。</MyDiv>
     <MyDiv>MyValue 标签的适用范围：【文本、MyDiv的style、MySpan的style】，很抱歉，没有其余的功能了……</MyDiv>
     <MyDiv>style 的样式作为 Value 值时，不仅可以设置变量，还可以加一点自己的值，比如说<MySpan style="${myspanstyle}; color: red;">50px，但是红色</MySpan></MyDiv>
-    <MyDiv>这边建议的是：将 MyValue 设置在整个主页的最顶端。这样相当于是全局引入了~整个主页都可以使用 Value 变量~<MyDiv style="margin-top: 0;"></MyDiv>因为主页的加载过程是主要的从上往下执行💦</MyDiv>
+    <MyDiv>这边建议的是：将 MyValue 设置在整个主页的最顶端。这样相当于是全局引入了~整个主页都可以使用 Value 变量~<MyDiv style="margin-top: 0;" />因为主页的加载过程是主要的从上往下执行💦</MyDiv>
 </MyCard>`)
+}
+func (mm *MainMethod) Version() string {
+	return mmcll.LauncherVersion
+}
+func Log(level int, msg string) {
+	switch level {
+	case 0:
+		slog.Info(msg)
+	case 1:
+		slog.Warn(msg)
+	case 2:
+		slog.Error(msg)
+	default:
+		slog.Debug(msg)
+	}
+}
+func (mm *MainMethod) Log(level int, msg string) {
+	Log(level, msg)
 }

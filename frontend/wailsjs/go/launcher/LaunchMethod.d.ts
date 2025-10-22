@@ -12,7 +12,7 @@ export function GetMCAllVersion(arg1:string):Promise<Array<string>>;
 
 export function GetMCVersionConfig():Promise<launcher.ExceptionHandler_NovaPlus_module_launcher_MCConfigs_>;
 
-export function LaunchGame():Promise<launcher.ExceptionHandler_string_>;
+export function LaunchGame(arg1:boolean,arg2:boolean):Promise<launcher.ExceptionHandler_string_>;
 
 export function SetJavaConfig(arg1:launcher.JavaConfigs):Promise<launcher.ExceptionHandler_interface____>;
 

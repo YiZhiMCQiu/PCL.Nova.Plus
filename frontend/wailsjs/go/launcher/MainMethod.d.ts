@@ -10,6 +10,8 @@ export function GetAllHomePage():Promise<launcher.ExceptionHandler___NovaPlus_mo
 
 export function GetAllIPv6():Promise<launcher.ExceptionHandler___NovaPlus_module_launcher_IPv6Struct_>;
 
+export function GetArgsDir():Promise<string>;
+
 export function GetAvailableMemory():Promise<number>;
 
 export function GetBackgroundImage(arg1:number):Promise<Array<string>>;
@@ -18,6 +20,12 @@ export function GetJavaExecutableFileName():Promise<Array<string>>;
 
 export function GetTotalMemory():Promise<number>;
 
+export function Log(arg1:number,arg2:string):Promise<void>;
+
+export function Operation():Promise<number>;
+
 export function ReadFile(arg1:string):Promise<string>;
 
 export function UUIDToAvatar(arg1:string):Promise<number>;
+
+export function Version():Promise<string>;
